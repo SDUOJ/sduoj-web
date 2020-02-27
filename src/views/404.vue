@@ -1,0 +1,6 @@
+<template>
+  <div>
+    404
+    <a href="/">返回主页</a>
+  </div>
+</template>
