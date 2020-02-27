@@ -10,14 +10,20 @@ router.beforeEach((to, from, next) => {
   NProgress.start();
 
   // 如果没有登陆 且不是前往 login
-  if (store.state.user.sid === "" && to.path !== "/login") {
+  console.log(store.state.user.username);
+  console.log(to.path);
+  console.log(store.state.user.username === "");
+  console.log(to.path !== "/login");
+  
+  if (store.state.user.username === "" && to.path !== "/login") {
+    console.log("login", to.path);
     next("/login");
     // store.dispatch("login", { to: to }).catch(e => {
     //   console.log(e);
     //   next("/login");
     // });
   } else {
-    // console.log(store.state.app.s1);
+    console.log("else", to.path);
     // if (!store.state.app.s1) store.dispatch("getRooms");
     // if (!store.state.app.s2) store.dispatch("getMyApply");
     // if (!store.state.app.s3) store.dispatch("getSubmission");
