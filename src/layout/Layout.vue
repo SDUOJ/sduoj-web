@@ -1,45 +1,48 @@
 <template>
-  <el-container class="container">
-    <a-side />
-
-    <el-container>
-      <el-header> <header /> </el-header>
-      <transition name="fade-transform" mode="out-in">
-        <el-main>
-          <router-view />
-        </el-main>
-      </transition>
-    </el-container>
-  </el-container>
+    <div class="container">
+        <Header />
+        <transition name="fade-transform" mode="out-in">
+            <main class="main_div">
+                <router-view />
+            </main>
+        </transition>
+        <Footer />
+    </div>
 </template>
 
 <script>
-import ASide from "./ASide.vue";
 import Header from "./Header.vue";
+import Footer from "./Footer.vue";
 
 export default {
-  components: {
-    ASide,
-    Header
-  }
+    components: {
+        Header,
+        Footer
+    }
 };
 </script>
 
 <style scoped>
+.main_div {
+    width: 80%;
+    min-height: 720px;
+    margin: 37px auto 0px auto;
+}
+
 .container {
-  height: 100%;
+    background-color: rgb(248, 248, 245);
 }
 
 .fade-transform-leave-active,
 .fade-transform-enter-active {
-  transition: all 0.23s;
+    transition: all 0.23s;
 }
 .fade-transform-enter {
-  opacity: 0;
-  transform: translateX(-30px);
+    opacity: 0;
+    transform: translateX(-30px);
 }
 .fade-transform-leave-to {
-  opacity: 0;
-  transform: translateX(30px);
+    opacity: 0;
+    transform: translateX(30px);
 }
 </style>

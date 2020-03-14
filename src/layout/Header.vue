@@ -1,104 +1,72 @@
 <template>
-  <div class="menu">
-    <span @click="logout" class="menu-item">
-      <span class="menu-item-svg"> <v-icon name="sign-out-alt" /> </span>登出
-    </span>
-    <span @click="changePassword" class="menu-item">
-      <span class="menu-item-svg"> <v-icon name="user" /> </span>
-      {{ $store.state.user.name + " [" + $store.state.user.sid + "]" }}
-    </span>
-  </div>
+    <header class="header">
+        <el-menu mode="horizontal" background-color="#24292e" text-color="#fff" active-text-color="#ffe150" :router="true" :default-active="this.$route.path">
+            <el-menu-item index="/">
+                <i class="el-icon-s-home" />
+                <span>首页</span>
+            </el-menu-item>
+            <el-menu-item index="/problem">
+                <i class="el-icon-document-copy" />
+                <span>题库</span>
+            </el-menu-item>
+            <el-menu-item index="/contest">
+                <i class="el-icon-s-data" />
+                <span>比赛</span>
+            </el-menu-item>
+            <el-menu-item index="/record">
+                <i class="el-icon-document-checked" />
+                <span>提交记录</span>
+            </el-menu-item>
+            <!-- <el-menu-item @click="logout" class="logout">
+                <i class="el-icon-switch-button" />
+                <span>登出</span>
+            </el-menu-item> -->
+            <!-- <el-menu-item index="/my-apply">
+        <el-badge
+          :hidden="$store.state.app.myApply.untreated <= 0"
+          :value="$store.state.app.myApply.untreated"
+          class="item"
+        >
+          <i class="el-icon-document"></i> <span>预约历史</span>
+        </el-badge>
+      </el-menu-item> -->
+            <el-menu-item v-if="$store.state.user.permission === 0" index="/submission">
+                <el-badge :hidden="$store.state.app.submission.length <= 0" :value="$store.state.app.submission.length" class="item"> <i class="el-icon-setting"></i> <span>处理请求</span> </el-badge>
+            </el-menu-item>
+            <el-menu-item v-if="$store.state.user.permission === 0" index="/add-room"> <i class="el-icon-circle-plus"></i> <span>添加教室</span> </el-menu-item>
+        </el-menu>
+    </header>
 </template>
 
 <script>
-import ChangePassword from "@/components/ChangePassword";
 export default {
-  components: {
-    ChangePassword
-  },
-  data: function() {
-    return {
-      form: {
-        sid: this.$store.state.user.sid,
-        password: "",
-        newPassword: "",
-        newPassword0: ""
-      }
-    };
-  },
-  methods: {
-    logout: function() {
-      this.$store.dispatch("deleteCookie").catch(e => {
-        console.log(e);
-      });
-    },
-    changePassword: function() {
-      const h = this.$createElement;
-      this.$msgbox({
-        title: "更改密码",
-        message: h("ChangePassword", { props: { inForm: this.form } }),
-        showCancelButton: true,
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        beforeClose: async (action, instance, done) => {
-          if (action === "confirm") {
-            if (
-              this.form.password === "" ||
-              this.form.newPassword === "" ||
-              this.form.newPassword0 === ""
-            ) {
-              this.$message.error("不可留空");
-              return;
-            }
-            instance.confirmButtonLoading = true;
-            instance.confirmButtonText = "执行中...";
-            try {
-              await this.$store.dispatch("changePassword", this.form);
-              this.$message({
-                type: "success",
-                message: "提交成功"
-              });
-            } catch (e) {
-              // 提交失败
-              this.$message.error("error: " + e);
-            }
-          }
-          instance.confirmButtonLoading = false;
-          done();
+    methods: {
+        logout: function() {
+            this.$store.dispatch("logout");
         }
-      }).catch(err => {
-        console.log(err);
-        this.$message({
-          type: "info",
-          message: "取消输入"
-        });
-      });
     }
-  }
 };
 </script>
 
+<style>
+.el-badge__content {
+    top: 17px !important;
+    right: -13px !important;
+}
+</style>
+
 <style scoped>
-.menu {
-  height: 29px;
-  background-color: rgb(52, 152, 219);
-  color: white;
+.header {
+    user-select: none;
 }
-.menu-item {
-  display: inline-block;
-  height: 29px;
-  line-height: 29px;
-  font-size: 17px;
-  float: right;
-  vertical-align: middle;
-  margin-right: 7px;
-  padding: 0px 7px 0 7px;
-  cursor: pointer;
+/* .logout {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
-.menu-item:hover {
-  background-color: aqua;
-}
-.menu-item-svg {
-  margin-right: 7px;
-}
+.el-menu {
+    height: 100%;
+    user-select: none;
+} */
 </style>
