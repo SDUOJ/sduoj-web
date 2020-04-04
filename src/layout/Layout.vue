@@ -32,7 +32,7 @@ export default {
     width: 67%;
     min-width: 800px;
     min-height: 720px;
-    margin: 37px auto 0px auto;
+    margin: 43px auto 0px auto;
 }
 
 .container {

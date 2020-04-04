@@ -1,11 +1,20 @@
 <template>
     <div>
-        <div class="search_div">
-            <el-input v-model="this.search_pid">
-                <template slot="prepend">题号</template>
-                <el-button slot="append" icon="el-icon-search"></el-button>
-            </el-input>
-        </div>
+        <el-row :gutter="10">
+            <el-col :span="10">
+                <el-input v-model="this.problem_id" placeholder="所有题目">
+                    <template slot="prepend">题号</template>
+                </el-input>
+            </el-col>
+            <el-col :span="10">
+                <el-input v-model="this.username" placeholder="所有用户">
+                    <template slot="prepend">用户名</template>
+                </el-input>
+            </el-col>
+            <el-col :span="4">
+                <el-button type="success" style="width:100%;">查找</el-button>
+            </el-col>
+        </el-row>
         <div class="problem_list_div">
             <el-table :data="this.table_data" stripe style="width: 100%">
                 <!-- <el-table-column prop="submission_id" label="id" align="center" width="130"> </el-table-column> -->
@@ -45,7 +54,8 @@ export default {
             page_now: 1,
             page_size: 50,
             page_count: 1,
-            search_pid: 1001,
+            problem_id: "",
+            username: this.$store.state.user.username,
             table_data: []
         };
     },
@@ -56,8 +66,8 @@ export default {
                 let res = await post("/record/list", {
                     pageNow: this.page_now,
                     pageSize: this.page_size,
-                    username: '',
-                    problemId:''
+                    username: "",
+                    problemId: ""
                 });
                 console.log(res);
                 this.page_count = res.totalPage;
@@ -73,15 +83,15 @@ export default {
                         // memory_use: Math.floor(Math.random() * 1000).toString() + "MB",
                         // language: ["c++ 11", "java 8", "python 3.8"][Math.floor(Math.random() * 3)],
                         // submit_time: dayjs(Math.floor(Math.random() * 1e13)).format('MM-DD HH:mm:ss')
-                        submission_id:item.submissionId,
-                        problem_id:item.problemId,
-                        problem_title:'',
-                        username:'',
-                        score:'',
-                        time_use:'',
-                        memory_use:'',
-                        language:'',
-                        submit_time:''
+                        submission_id: item.submissionId,
+                        problem_id: item.problemId,
+                        problem_title: "",
+                        username: "",
+                        score: "",
+                        time_use: "",
+                        memory_use: "",
+                        language: "",
+                        submit_time: ""
                     });
                 }
             } catch (error) {

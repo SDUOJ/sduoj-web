@@ -1,11 +1,15 @@
 <template>
     <div>
-        <div class="search_div">
-            <el-input v-model="this.search_pid">
-                <template slot="prepend">题号</template>
-                <el-button slot="append" icon="el-icon-search"></el-button>
-            </el-input>
-        </div>
+        <el-row :gutter="10">
+            <el-col :span="20">
+                <el-input v-model="this.problem_id" placeholder="所有题目">
+                    <template slot="prepend">题号</template>
+                </el-input>
+            </el-col>
+            <el-col :span="4">
+                <el-button type="success" style="width:100%;">查找</el-button>
+            </el-col>
+        </el-row>
         <div class="problem_list_div">
             <el-table :data="this.tableData" stripe style="width: 100%">
                 <el-table-column prop="problem_id" label="题号" align="center" width="160"> </el-table-column>
@@ -32,7 +36,7 @@ export default {
             page_now: 1,
             page_size: 50,
             page_count: 1,
-            search_pid: 1001,
+            problem_id: 1001,
             tableData: []
         };
     },
@@ -66,9 +70,6 @@ export default {
 </script>
 
 <style scoped>
-.search_div {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
-}
 .problem_list_div {
     padding: 11px;
     background-color: white;

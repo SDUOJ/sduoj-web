@@ -2,10 +2,10 @@ import { post } from "@/api/api.js";
 import router from "@/router/index.js";
 export default {
     state: {
-        username: "",
+        username: "201700001111",
         nickname: "",
         permission: "",
-        is_logined: false // 临时测试所以改成 true 了ßß
+        is_logined: true // 临时测试所以改成 true 了ßß
     },
     mutations: {
         SET_USERNAME(state, payload) {
@@ -27,12 +27,14 @@ export default {
                 username: payload.username,
                 password: payload.password
             });
+            commit("SET_USERNAME", res.username);
             commit("SET_IS_LOGINED", true);
             router.push(payload.to);
         },
         // 登出，后端会删除 cookie 的
         logout: function() {
             post("/auth/logout", {});
+            console.log("click logout");
             router.push("/login");
         }
     }
