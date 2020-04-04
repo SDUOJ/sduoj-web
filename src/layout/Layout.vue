@@ -1,5 +1,6 @@
 <template>
     <div class="container">
+        <!-- <Tab /> -->
         <Header />
         <transition name="fade-transform" mode="out-in">
             <main class="main_div">
@@ -7,29 +8,35 @@
             </main>
         </transition>
         <Footer />
+
+       
     </div>
 </template>
 
 <script>
 import Header from "./Header.vue";
 import Footer from "./Footer.vue";
+import Tab from "./Tab.vue";
 
 export default {
     components: {
         Header,
-        Footer
+        Footer,
+        Tab
     }
 };
 </script>
 
 <style scoped>
 .main_div {
-    width: 80%;
+    width: 67%;
+    min-width: 800px;
     min-height: 720px;
     margin: 37px auto 0px auto;
 }
 
 .container {
+    z-index: 0;
     background-color: rgb(248, 248, 245);
 }
 

@@ -6,6 +6,8 @@ Vue.use(Router);
 import Layout from "../layout/Layout.vue";
 import Problem from "../views/ViewProblem.vue";
 import ProblemProfile from "../views/ViewProblemProfile.vue";
+import Record from "../views/ViewRecord.vue";
+import RecordProfile from "../views/ViewRecordProfile.vue";
 
 export default new Router({
     mode: "history",
@@ -41,7 +43,11 @@ export default new Router({
                 },
                 {
                     path: "record",
-                    component: Problem
+                    component: Record
+                },
+                {
+                    path: "record/:sid",
+                    component: RecordProfile
                 }
             ]
         },

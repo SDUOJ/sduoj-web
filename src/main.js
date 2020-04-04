@@ -13,7 +13,7 @@ Vue.component("v-icon", Icon);
 import "normalize.css/normalize.css";
 // Element UI
 import ElementUI from "element-ui";
-import "element-ui/lib/theme-chalk/index.css";
+import "./css/element-variables.scss";
 Vue.use(ElementUI);
 // VueShowdown
 import VueShowdown from "vue-showdown";
@@ -23,6 +23,11 @@ import Vue from "vue";
 import App from "@/App.vue";
 
 Vue.config.productionTip = false;
+
+import "github-markdown-css";
+import "./css/global.css";
+// var Han = require("han-css");
+// Han.init();
 
 new Vue({
     router: router,

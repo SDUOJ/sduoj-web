@@ -5,7 +5,7 @@ export default {
         username: "",
         nickname: "",
         permission: "",
-        is_logined: true // 临时测试所以改成 true 了ßß
+        is_logined: false // 临时测试所以改成 true 了ßß
     },
     mutations: {
         SET_USERNAME(state, payload) {
@@ -27,11 +27,8 @@ export default {
                 username: payload.username,
                 password: payload.password
             });
-            // commit("SET_USERNAME", res.username);
-            // commit("SET_NICKNAME", res.nickname);
-            // commit("SET_PERMISSION", res.permission);
             commit("SET_IS_LOGINED", true);
-            router.push("/");
+            router.push(payload.to);
         },
         // 登出，后端会删除 cookie 的
         logout: function() {

@@ -10,7 +10,7 @@
             <el-table :data="this.tableData" stripe style="width: 100%">
                 <el-table-column prop="problem_id" label="题号" align="center" width="160"> </el-table-column>
                 <el-table-column label="题目" width="auto">
-                    <router-link :to="'/problem/' + scope.row.problem_id" slot-scope="scope">
+                    <router-link class="link_a" :to="'/problem/' + scope.row.problem_id" slot-scope="scope">
                         {{ scope.row.problem_title }}
                     </router-link>
                 </el-table-column>
@@ -42,7 +42,7 @@ export default {
             try {
                 let res = await post("/problem/list", {
                     page: this.page_now,
-                    rows: this.page_size
+                    limit: this.page_size
                 });
                 console.log(res);
                 this.page_count = res.totalPage;

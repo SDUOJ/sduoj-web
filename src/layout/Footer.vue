@@ -1,7 +1,7 @@
 <template>
     <footer class="footer">
         <span>
-            footer
+            Shandong University Online Judge @ 2020
         </span>
     </footer>
 </template>

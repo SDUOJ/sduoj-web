@@ -1,6 +1,6 @@
 <template>
     <header class="header">
-        <el-menu mode="horizontal" background-color="#24292e" text-color="#fff" active-text-color="#ffe150" :router="true" :default-active="this.$route.path">
+        <el-menu mode="horizontal" background-color="#24292e" text-color="#fff" active-text-color="#cc8e35" :router="true" :default-active="this.$route.path">
             <el-menu-item index="/">
                 <i class="el-icon-s-home" />
                 <span>首页</span>
@@ -48,25 +48,8 @@ export default {
 };
 </script>
 
-<style>
-.el-badge__content {
-    top: 17px !important;
-    right: -13px !important;
-}
-</style>
-
 <style scoped>
 .header {
     user-select: none;
 }
-/* .logout {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-}
-.el-menu {
-    height: 100%;
-    user-select: none;
-} */
 </style>

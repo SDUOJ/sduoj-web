@@ -67,7 +67,8 @@ export default {
             this.$refs["loginForm"].validate(valid => {
                 if (valid) {
                     this.loading = true;
-                    this.$store.dispatch("login", this.loginForm).catch(err => {
+                    // to 表示 login 后要跳转到哪里
+                    this.$store.dispatch("login", {...this.loginForm,to:'/'}).catch(err => {
                         console.log("登陆错误：", err);
                         this.loginForm.password = "";
                         this.loading = false;

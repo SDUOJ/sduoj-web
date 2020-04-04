@@ -1,0 +1,8 @@
+.link_a {
+    color: #3498db;
+    font-weight: bold;
+    text-decoration: none;
+}
+.link_a:visited {
+    color: #3498db;
+}

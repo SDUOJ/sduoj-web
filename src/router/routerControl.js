@@ -7,28 +7,34 @@ import "../css/nprogress.css"; // Progress 进度条样式
 NProgress.configure({ showSpinner: false });
 
 router.beforeEach((to, from, next) => {
-    NProgress.start();
-    // 如果没有登陆 且不是前往 login
-    // console.log(store.state.user.username);
-    console.log(to.path);
-    // console.log(store.state.user.username === "");
-    // console.log(to.path !== "/login");
 
-    // 如果用户没有登陆，并且不是前往 login，那么让他去登陆
-    if (store.state.user.is_logined === false && to.path !== "/login") {
-        // console.log("login", to.path);
-        next("/login");
-        // store.dispatch("login", { to: to }).catch(e => {
-        //   console.log(e);
-        //   next("/login");
-        // });
-    } else {
-        // console.log("else", to.path);
-        // if (!store.state.app.s1) store.dispatch("getRooms");
-        // if (!store.state.app.s2) store.dispatch("getMyApply");
-        // if (!store.state.app.s3) store.dispatch("getSubmission");
+    if (to.path === "/login") {
         next();
-    }
+    } else if (store.state.user.is_logined === false) {
+        store.dispatch("login", { to: to }).catch(e => {
+            console.log(e);
+            next("/login");
+        });
+    } else {
+        NProgress.start();
+        next();
+    } 
+
+    // // 如果用户没有登陆，并且不是前往 login，那么让他去登陆
+    // if (store.state.user.is_logined === false && to.path !== "/login") {
+    //     // console.log("login", to.path);
+    //     next("/login");
+    //     // store.dispatch("login", { to: to }).catch(e => {
+    //     //   console.log(e);
+    //     //   next("/login");
+    //     // });
+    // } else {
+    //     // console.log("else", to.path);
+    //     // if (!store.state.app.s1) store.dispatch("getRooms");
+    //     // if (!store.state.app.s2) store.dispatch("getMyApply");
+    //     // if (!store.state.app.s3) store.dispatch("getSubmission");
+    //     next();
+    // }
 });
 
 router.afterEach(() => {
