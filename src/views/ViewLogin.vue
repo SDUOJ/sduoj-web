@@ -18,8 +18,8 @@
                 <el-button :loading="loading" type="primary" style="width:100%;" @click.native.prevent="handleLogin">登录</el-button>
             </el-form-item>
             <div class="tips">
-                <span style="margin-right:20px;">默认账号: 学号/教工号</span>
-                <span>默认密码: 学号/教工号</span>
+                <span style="margin-right:20px;">默认账号: 学号/教工号 测试：tttt</span>
+                <span>默认密码: 学号/教工号 测试：111</span>
             </div>
         </el-form>
     </div>

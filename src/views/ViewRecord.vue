@@ -2,17 +2,17 @@
     <div>
         <el-row :gutter="10">
             <el-col :span="10">
-                <el-input v-model="this.problem_id" placeholder="所有题目">
+                <el-input v-model="problem_id" placeholder="所有题目">
                     <template slot="prepend">题号</template>
                 </el-input>
             </el-col>
             <el-col :span="10">
-                <el-input v-model="this.username" placeholder="所有用户">
+                <el-input v-model="username" placeholder="所有用户">
                     <template slot="prepend">用户名</template>
                 </el-input>
             </el-col>
             <el-col :span="4">
-                <el-button type="success" style="width:100%;">查找</el-button>
+                <el-button type="success" style="width:100%;" @click="fetchData">查找</el-button>
             </el-col>
         </el-row>
         <div class="problem_list_div">
@@ -27,7 +27,7 @@
                 <el-table-column prop="username" label="提交者" align="center" width="80"> </el-table-column>
                 <el-table-column label="结果" align="center" width="100">
                     <router-link class="link_a" :to="'/record/' + scope.row.submission_id" slot-scope="scope">
-                        {{ scope.row.reason }}
+                        {{ scope.row.judge_result }}
                     </router-link>
                 </el-table-column>
                 <!-- <el-table-column prop="reason" label="结果" align="center" width="80"> </el-table-column> -->
@@ -48,50 +48,45 @@
 <script>
 import { post } from "../api/api.js";
 import dayjs from "dayjs";
+import { INT_TO_JADGE_STATUS, INT_TO_JADGE_STATUS_2 } from "../const";
 export default {
     data() {
         return {
             page_now: 1,
             page_size: 50,
             page_count: 1,
-            problem_id: "",
+            problem_id: null,
             username: this.$store.state.user.username,
-            table_data: []
+            table_data: [],
+            INT_TO_JADGE_STATUS_2: INT_TO_JADGE_STATUS_2
         };
     },
     methods: {
         // 请求数据
         async fetchData() {
             try {
-                let res = await post("/record/list", {
+                this.table_data = [];
+                this.page_count = 0;
+                let res = await post("/submit/list", {
                     pageNow: this.page_now,
                     pageSize: this.page_size,
-                    username: "",
-                    problemId: ""
+                    username: this.username,
+                    problemId: this.problem_id
                 });
                 console.log(res);
                 this.page_count = res.totalPage;
                 for (const item of res.rows) {
                     this.table_data.push({
-                        // submission_id: "#" + Math.floor(Math.random() * 10000000).toString(),
-                        // problem_id: item.id,
-                        // problem_title: item.problemName,
-                        // username: Math.floor(Math.random() * 10000000).toString(36),
-                        // score: Math.floor(Math.random() * 100),
-                        // reason: ["Accepted", "java 8", "python 3.8"][Math.floor(Math.random() * 3)],
-                        // time_use: Math.floor(Math.random() * 1000).toString() + "ms",
-                        // memory_use: Math.floor(Math.random() * 1000).toString() + "MB",
-                        // language: ["c++ 11", "java 8", "python 3.8"][Math.floor(Math.random() * 3)],
-                        // submit_time: dayjs(Math.floor(Math.random() * 1e13)).format('MM-DD HH:mm:ss')
                         submission_id: item.submissionId,
                         problem_id: item.problemId,
-                        problem_title: "",
-                        username: "",
-                        score: "",
-                        time_use: "",
-                        memory_use: "",
-                        language: "",
-                        submit_time: ""
+                        problem_title: item.problemTitle,
+                        username: item.username,
+                        judge_result: INT_TO_JADGE_STATUS_2[item.judgeResult],
+                        score: item.score,
+                        time_use: item.tiemUse,
+                        memory_use: item.momoryUse,
+                        language: "CPP11",
+                        submit_time: dayjs(item.createTime).format("MM-DD HH:mm:ss")
                     });
                 }
             } catch (error) {

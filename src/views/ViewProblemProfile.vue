@@ -54,11 +54,11 @@ export default {
         async fetchData() {
             try {
                 let res = await post("/problem/query", {
-                    id: parseInt(this.$route.params.pid)
+                    problemId: parseInt(this.$route.params.pid)
                 });
-                this.problem_content = res.description;
-                this.problem_title = res.problemName;
-                this.problem_id = res.id;
+                this.problem_content = res.markdown;
+                this.problem_title = res.problemTitle;
+                this.problem_id = res.problemId;
             } catch (error) {
                 console.log("获取题面错误：", error);
             }

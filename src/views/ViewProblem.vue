@@ -45,15 +45,15 @@ export default {
         async fetchData() {
             try {
                 let res = await post("/problem/list", {
-                    page: this.page_now,
-                    limit: this.page_size
+                    pageNow: this.page_now,
+                    pageSize: this.page_size
                 });
                 console.log(res);
                 this.page_count = res.totalPage;
                 for (const item of res.rows) {
                     this.tableData.push({
-                        problem_id: item.id,
-                        problem_title: item.problemName,
+                        problem_id: item.problemId,
+                        problem_title: item.problemTitle,
                         rate: item.submitNum + "/" + item.acceptNum
                     });
                 }

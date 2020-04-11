@@ -5,7 +5,7 @@ export default {
         username: "201700001111",
         nickname: "",
         permission: "",
-        is_logined: true // 临时测试所以改成 true 了ßß
+        is_logined: false // 临时测试所以改成 true 了ßß
     },
     mutations: {
         SET_USERNAME(state, payload) {
