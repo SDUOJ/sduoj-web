@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Message } from "element-ui";
-// const url = "https://mockapi.eolinker.com/ubZtMVv79b19290b98f726da0d0bcd06d77089f92f40270/api";
+
 const url = "//api.oj.xrvitd.com:8080/api";
 
 axios.defaults.withCredentials = true; // 开启 cookie
@@ -12,12 +12,14 @@ function alert_message(message) {
         duration: "1900"
     });
 }
+
 export function post(backUrl, data) {
     return new Promise((resolve, reject) => {
         axios
             .post(url + backUrl, data)
             .then(res => {
                 // 如何返回值不是 0 的话，那么返回错误信息
+                console.log(backUrl,data);
                 console.log(res.data);
 
                 if (res.data.code !== 0) {
@@ -33,6 +35,7 @@ export function post(backUrl, data) {
                 }
             })
             .catch(err => {
+                alert_message(err);
                 reject(err);
             });
     });

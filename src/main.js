@@ -28,6 +28,11 @@ import "github-markdown-css";
 import "./css/global.css";
 // var Han = require("han-css");
 // Han.init();
+// Import Vue and vue-highlgihtjs
+import VueHighlightJS from 'vue-highlightjs'
+import 'highlight.js/styles/atom-one-dark.css'
+// Tell Vue.js to use vue-highlightjs
+Vue.use(VueHighlightJS)
 
 new Vue({
     router: router,

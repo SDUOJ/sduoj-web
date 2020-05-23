@@ -18,7 +18,7 @@ npm run build
 pushd dist
 
 # required for custom domain at github pages
-echo 'oj.oops-sdu.cn' > CNAME
+echo 'oj.xrvitd.com' > CNAME
 # hack on github page
 cp index.html 404.html
 
