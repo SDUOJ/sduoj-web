@@ -46,9 +46,11 @@
         <el-pagination
           background
           layout="prev, pager, next"
+          :current-page.sync="this.page_now"
           :page-size="this.page_size"
           :page-count="this.page_count"
           :hide-on-single-page="true"
+          @current-change="handleCurrentChange"
         />
       </div>
     </div>
@@ -78,10 +80,17 @@ export default {
   },
   methods: {
     // 请求数据
+    handleCurrentChange(page){
+      console.log("page ",page);
+      console.log("page now",this.page_now);
+      console.log("page_count",this.page_now);
+      this.page_now=page;
+      this.fetchData();
+    },
     async fetchData() {
       try {
         this.table_data = [];
-        this.page_count = 0;
+        
         if(this.problem_id!==null) {
           this.problem_id = parseInt(this.problem_id);
         }
