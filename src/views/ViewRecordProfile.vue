@@ -102,8 +102,16 @@ export default {
     for (let i = 0; i < this.submission_data.checkpointNum; i++) {
       this.table_data.push([0, 0, 0]);
     }
+    console.log("aaaaaaaaaaaaaaaaaaaaa"+this.submission_data.judgeResult);
+    
     if (this.submission_data.judgeResult !== 0) {
-      this.table_data = this.submission_data.checkpointResults;
+      // this.table_data = this.submission_data.checkpointResults;
+      
+      for(let i =0;i<this.submission_data.checkpointNum;i++){
+        let tmp = this.submission_data.checkpointResults[i];
+       Vue.set(this.table_data,i,tmp)
+          
+       }
     } else {
       let socket = new WebSocket(
         "ws://api.oj.xrvitd.com:8080/api/submit/listen/" +
