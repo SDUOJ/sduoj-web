@@ -89,7 +89,7 @@ export default {
     },
     async fetchData() {
       try {
-        this.table_data = [];
+        
         
         if(this.problem_id!==null) {
           this.problem_id = parseInt(this.problem_id);
@@ -101,6 +101,7 @@ export default {
           problemId: this.problem_id
         });
         this.page_count = res.totalPage;
+        this.table_data = [];
         for (const item of res.rows) {
           this.table_data.push({
             submission_id: item.submissionId,
