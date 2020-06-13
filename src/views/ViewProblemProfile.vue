@@ -27,7 +27,7 @@
           </el-col>
         </el-row>
       </el-tab-pane>
-      <el-tab-pane label="统计" name="third">这是统计页面</el-tab-pane>
+      <!-- <el-tab-pane label="统计" name="third">这是统计页面</el-tab-pane> -->
     </el-tabs>
   </div>
 </template>

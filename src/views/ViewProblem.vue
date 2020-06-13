@@ -62,7 +62,7 @@ export default {
           this.tableData.push({
             problem_id: item.problemId,
             problem_title: item.problemTitle,
-            rate: item.submitNum + "/" + item.acceptNum
+            rate: item.acceptNum + "/" + item.submitNum
           });
         }
       } catch (error) {

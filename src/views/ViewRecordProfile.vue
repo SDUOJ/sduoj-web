@@ -11,14 +11,10 @@
       </el-col>
       <el-col :span="20" class="record_profile_label">
         <span>
-          <b>用户</b>
+          <b>  用户</b>
           ：{{ this.$store.state.user.username }}
         </span>
-        <span></span>
-        <span>
-          <b>结果</b>
-          ：{{ INT_TO_JADGE_STATUS[this.submission_data.judgeResult] }}
-        </span>
+      
       </el-col>
     </el-row>
 
@@ -149,9 +145,9 @@ export default {
   font-size: 23px;
 }
 .record_profile_label > span {
-  line-height: 27px;
-  height: 27px;
-  font-size: 23px;
+  line-height: 40px;
+  height: 40px;
+  font-size: 30px;
 }
 .result_list_div > i {
   width: 111px;

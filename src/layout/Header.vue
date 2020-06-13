@@ -16,10 +16,10 @@
         <i class="el-icon-document-copy" />
         <span>题库</span>
       </el-menu-item>
-      <el-menu-item index="/contest">
+      <!-- <el-menu-item index="/contest">
         <i class="el-icon-s-data" />
         <span>比赛</span>
-      </el-menu-item>
+      </el-menu-item> -->
       <el-menu-item index="/record">
         <i class="el-icon-document-checked" />
         <span>提交记录</span>

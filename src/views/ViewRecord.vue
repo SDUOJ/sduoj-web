@@ -66,7 +66,7 @@ import {
 export default {
   data() {
     return {
-      page_now: 2,
+      page_now: 1,
       page_size: 50,
       page_count: 1,
       problem_id: null,
@@ -82,6 +82,9 @@ export default {
       try {
         this.table_data = [];
         this.page_count = 0;
+        if(this.problem_id!==null) {
+          this.problem_id = parseInt(this.problem_id);
+        }
         let res = await post("/submit/list", {
           pageNow: this.page_now,
           pageSize: this.page_size,
@@ -89,7 +92,6 @@ export default {
           problemId: this.problem_id
         });
         this.page_count = res.totalPage;
-        res.rows.reverse();
         for (const item of res.rows) {
           this.table_data.push({
             submission_id: item.submissionId,
