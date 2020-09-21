@@ -16,6 +16,7 @@ module.exports = {
     semi: 0,
     'eol-last': 0,
     'no-trailing-spaces': 0,
-    'no-unused-vars': ['warn']
+    'no-unused-vars': ['warn'],
+    'space-before-function-paren': 0
   }
 }
