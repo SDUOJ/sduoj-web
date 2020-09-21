@@ -1,66 +1,32 @@
 {
-  "name": "sduoj-web",
+  "name": "SDUOJ",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve --host oj.xrvitd.com",
+    "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "axios": "^0.19.2",
-    "core-js": "^3.6.4",
-    "dayjs": "^1.8.23",
-    "element-ui": "^2.13.0",
-    "github-markdown-css": "^4.0.0",
-    "highlight.js": "^10.0.0",
-    "normalize.css": "^8.0.1",
-    "nprogress": "^0.2.0",
+    "core-js": "^3.6.5",
     "vue": "^2.6.11",
-    "vue-awesome": "^4.0.2",
-    "vue-highlightjs": "^1.3.3",
-    "vue-router": "^3.1.6",
-    "vue-showdown": "^2.4.1",
-    "vuex": "^3.1.3"
+    "vue-router": "^3.2.0",
+    "vuex": "^3.4.0"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^4.2.3",
-    "@vue/cli-plugin-eslint": "^4.2.3",
-    "@vue/cli-plugin-router": "^4.2.3",
-    "@vue/cli-plugin-vuex": "^4.2.3",
-    "@vue/cli-service": "^4.2.3",
-    "@vue/eslint-config-prettier": "^6.0.0",
-    "babel-eslint": "^10.0.3",
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-plugin-router": "~4.5.0",
+    "@vue/cli-plugin-vuex": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "@vue/eslint-config-standard": "^5.1.2",
+    "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
-    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-vue": "^6.2.2",
-    "node-sass": "^4.9.2",
-    "prettier": "^1.19.1",
-    "sass": "^1.26.3",
-    "sass-loader": "^8.0.2",
-    "vue-cli-plugin-element": "^1.0.1",
     "vue-template-compiler": "^2.6.11"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended",
-      "@vue/prettier"
-    ],
-    "parserOptions": {
-      "parser": "babel-eslint"
-    },
-    "rules": {
-      "no-unused-vars": "warn",
-      "vue/no-unused-components": "warn"
-    }
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions"
-  ]
+  }
 }
