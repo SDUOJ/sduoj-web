@@ -71,13 +71,7 @@ export default {
     font-weight: bold;
     margin: 0 20px 0 20px;
   }
-  /deep/ .ivu-input:hover {
-    border-color: #9a9a9a;
-  }
-  /deep/ .ivu-input:focus {
-      border-color: #9a9a9a;
-      box-shadow: 0 0 0 2px rgba(154, 154, 154, 0.2);
-  }
+
 }
 
 .ivu-btn {
