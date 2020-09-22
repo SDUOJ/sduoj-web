@@ -20,7 +20,7 @@ export default {
 
 <style lang="less" scoped>
 .nav-path {
-  padding: 15px 50px;
+  padding: 12px 50px;
   border-bottom: 1px solid #f3f4f5;
   background-color: #f5f7f9;
   span {

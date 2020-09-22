@@ -1,5 +1,6 @@
 import Vue from 'vue';
-import 'view-design/dist/styles/iview.css';
+// import 'view-design/dist/styles/iview.css';
+import '../styles/global.less';
 import ViewUI from 'view-design'
 Vue.use(ViewUI);
 // import {

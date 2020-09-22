@@ -1,7 +1,7 @@
 <template>
   <div class="header">
-    <Menu mode="horizontal" theme="light" @on-select="selectNavItem">
-      <div class="logo" @click="selectNavItem('home')">
+    <Menu mode="horizontal" theme="light" @on-select="selectNavItem" :active-name="activeItemName">
+      <div class="logo" @click="selectNavItem('')">
         <img src="../assets/logo.png" />
       </div>
       <div class="navbar">
@@ -73,12 +73,26 @@ export default {
     margin-right: 50px;
     float: left;
     position: relative;
-    top: 20px;
-    left: 20px;
+    top: 14px;
+    left: 30px;
   }
   :hover {
     cursor: pointer;
   }
+}
+
+.navbar {
+    /deep/ .ivu-menu-item-active {
+    background: rgba(0, 0, 0, .05);
+  }
+    /deep/ .ivu-menu-item:hover {
+      background: rgba(0, 0, 0, .05);
+    }
+}
+
+/deep/ .ivu-menu-horizontal {
+  height: 50px;
+  line-height: 50px;
 }
 
 .navbar-user {
@@ -89,8 +103,11 @@ export default {
     margin: auto 8px;
     font-size: 16px;
   }
-    :hover {
-      cursor: pointer;
-    }
+  :hover {
+    cursor: pointer;
+  }
+  .ivu-btn:hover {
+    background: rgba(0, 0, 0, .05);
+  }
 }
 </style>
