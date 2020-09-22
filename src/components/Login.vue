@@ -8,14 +8,14 @@
         <Form ref="loginForm" :model="loginForm" :rules="loginRules">
           <FormItem prop="user">
             <span>Username</span>
-            <Input v-model="loginForm.username" placeholder="Enter something..." style="width: 200px" />
+            <Input v-model="loginForm.username" placeholder="Username" style="width: 250px" />
           </FormItem>
           <FormItem prop="password">
             <span>Password</span>
-            <Input type="password" v-model="loginForm.password" placeholder="Password" style="width: 200px" />
+            <Input type="password" v-model="loginForm.password" placeholder="Password" style="width: 250px" />
           </FormItem>
           <FormItem>
-            <Button type="text" @click="handleSubmit('loginForm')">Signin</Button>
+            <Button type="text" @click="handleSubmit('loginForm')">Sign In</Button>
           </FormItem>
         </Form>
       </div>
@@ -66,10 +66,10 @@ export default {
 
 .login-body {
   border-top: 1px solid rgb(185, 185, 185);
-  padding: 1em 1em 0 1em;
+  padding: 2em 1em 0 1em;
   span {
     font-weight: bold;
-    margin: 0 50px 0 20px;
+    margin: 0 20px 0 20px;
   }
   /deep/ .ivu-input:hover {
     border-color: #9a9a9a;
@@ -77,6 +77,13 @@ export default {
   /deep/ .ivu-input:focus {
       border-color: #9a9a9a;
       box-shadow: 0 0 0 2px rgba(154, 154, 154, 0.2);
+  }
+}
+
+.ivu-btn {
+  float: right;
+  :hover {
+    background: rgba(0, 0, 0, .05);
   }
 }
 
