@@ -1,7 +1,7 @@
 <template>
   <div class="header">
-    <Menu mode="horizontal" theme="light" @on-select="selectNavItem">
-      <div class="logo" @click="selectNavItem('home')">
+    <Menu mode="horizontal" theme="light" @on-select="selectNavItem" :active-name="activeItemName">
+      <div class="logo" @click="selectNavItem('')">
         <img src="../assets/logo.png" />
       </div>
       <div class="navbar">
