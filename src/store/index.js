@@ -1,13 +1,14 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+import UserModule from './user';
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
     footerInfo: '2020-2020 &copy Shandong University',
-    pathComponents: [],
-    currentUser: ''
+    pathComponents: []
   },
   mutations: {
     updateFooterInfo(state, info) {
@@ -18,17 +19,11 @@ export default new Vuex.Store({
         name: 'Home',
         url: '/'
       }, ...paths]
-    },
-    doLogin(state, user) {
-      Object.assign(state.currentUser, user);
     }
   },
   actions: {
-    doLogin(context, username, password) {
-      //
-      context.commit('doLogin', username);
-    }
   },
   modules: {
+    user: UserModule
   }
 })

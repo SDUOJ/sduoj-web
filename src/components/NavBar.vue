@@ -1,10 +1,10 @@
 <template>
-  <div id="header">
+  <div class="header">
     <Menu mode="horizontal" theme="light" @on-select="selectNavItem">
       <div class="logo" @click="selectNavItem('home')">
         <img src="../assets/logo.png" />
       </div>
-      <div class="nav">
+      <div class="navbar">
         <MenuItem name="problem">
           <Icon type="ios-navigate"></Icon>题库
         </MenuItem>
@@ -18,16 +18,12 @@
           <Icon type="ios-paper"></Icon>Item 4
         </MenuItem>
       </div>
-      <div class="user">
-        <template v-if="currentUser === ''">
-          <Button type="text">登录</Button>
-          <Button type="text">注册</Button>
-        </template>
-        <template v-else>
-          <Avatar :src="currentUser.avatar" />
+      <div class="navbar-user">
+        <template v-if="isLogin">
+          <Avatar :src="avatar" />
           <Dropdown>
-            <div class="username">
-              {{currentUser.username}}
+            <div class="navbar-username">
+              {{username}}
               <Icon type="ios-arrow-down"></Icon>
             </div>
           <DropdownMenu slot="list">
@@ -39,6 +35,10 @@
           </DropdownMenu>
           </Dropdown>
           <!-- <div class="username">{{ currentUser.username }}</div> -->
+        </template>
+        <template v-else>
+          <Button type="text">登录</Button>
+          <Button type="text">注册</Button>
         </template>
       </div>
     </Menu>
@@ -61,7 +61,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['currentUser'])
+    ...mapState('user', ['isLogin', 'username', 'avatar'])
   }
 };
 </script>
@@ -76,18 +76,21 @@ export default {
     top: 20px;
     left: 20px;
   }
-}
-.logo:hover {
-  cursor: pointer;
+  :hover {
+    cursor: pointer;
+  }
 }
 
-.user {
+.navbar-user {
   float: right;
   margin: 0 80px;
-  .username {
+  .navbar-username {
     // display: inline;
     margin: auto 8px;
     font-size: 16px;
   }
+    :hover {
+      cursor: pointer;
+    }
 }
 </style>
