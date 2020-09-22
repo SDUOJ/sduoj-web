@@ -1,52 +1,47 @@
 <template>
-  <div id="layout">
+  <div class="layout">
     <NavBar></NavBar>
-    <div id="container">
-      <Breadcrumb class="container-nav">
-          <BreadcrumbItem>Home</BreadcrumbItem>
-          <BreadcrumbItem>Components</BreadcrumbItem>
-          <!-- <BreadcrumbItem>Layout</BreadcrumbItem> -->
-      </Breadcrumb>
-      <Card>
-          <div style="min-height: 200px;">
-              Content
-          </div>
-      </Card>
+    <div>
+      <router-view></router-view>
     </div>
-    <div id="footer">2020-2020 &copy; Shandong University</div>
+    <div class="footer" v-once v-html='footerInfo'></div>
   </div>
 </template>
 <script>
 import NavBar from './components/NavBar.vue';
+import { mapState } from 'vuex';
+
 export default {
-  components: { NavBar }
+  components: { NavBar },
+  computed: {
+    ...mapState(['footerInfo'])
+  }
 };
 </script>
 
-<style lang="less" scoped>
-#layout {
+<style lang="less">
+.layout {
   height: 100%;
   border: 1px solid #d7dde4;
-  background: #f5f7f9;
+  // background: #f5f7f9;
   position: relative;
   border-radius: 4px;
   overflow: hidden;
 }
 
-#container {
-  height: 100%;
-  padding: 0 50px;
+.container {
+  min-height: 200px;
+  margin: 24px 50px;
+  // border: 2px solid #f5f7f9;
+  border-radius: 3px;
 }
 
-#footer {
+.footer {
   text-align: center;
-  background: #f5f7f9;
-  padding: 24px 50px;
+  // background: #f5f7f9;
+  padding: 24px 50px 24px;
   color: #515a6e;
   font-size: 14px;
 }
 
-.container-nav {
-  padding: 20px 0;
-}
 </style>
