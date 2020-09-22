@@ -85,6 +85,9 @@ export default {
     /deep/ .ivu-menu-item-active {
     background: rgba(0, 0, 0, .05);
   }
+    /deep/ .ivu-menu-item:hover {
+      background: rgba(0, 0, 0, .05);
+    }
 }
 
 /deep/ .ivu-menu-horizontal {
@@ -102,6 +105,9 @@ export default {
   }
   :hover {
     cursor: pointer;
+  }
+  .ivu-btn:hover {
+    background: rgba(0, 0, 0, .05);
   }
 }
 </style>

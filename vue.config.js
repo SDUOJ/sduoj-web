@@ -1,5 +1,3 @@
-const lessLoader = require('less-loader');
-
 module.exports = {
   configureWebpack: {
     module: {

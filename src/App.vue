@@ -31,7 +31,7 @@ export default {
 
 .container {
   min-height: 200px;
-  margin: 24px 50px;
+  margin: 30px 50px 24px;
   // border: 2px solid #f5f7f9;
   border-radius: 3px;
 }
