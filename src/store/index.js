@@ -6,15 +6,18 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     footerInfo: '2020-2020 &copy Shandong University',
-    pathFromHome: [],
+    pathComponents: [],
     currentUser: ''
   },
   mutations: {
     updateFooterInfo(state, info) {
       state.footerInfo = info;
     },
-    updatePathFromHome(state, path) {
-      state.pathFromHome = path;
+    updatePathComponents(state, paths) {
+      state.pathComponents = [{
+        name: 'Home',
+        url: '/'
+      }, ...paths]
     },
     doLogin(state, user) {
       Object.assign(state.currentUser, user);
