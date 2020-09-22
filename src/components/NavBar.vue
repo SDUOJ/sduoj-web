@@ -82,6 +82,7 @@ export default {
 }
 
 .navbar {
+  // min-width: 200px;
     /deep/ .ivu-menu-item-active {
     background: rgba(0, 0, 0, .05);
   }

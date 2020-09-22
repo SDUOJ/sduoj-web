@@ -17,6 +17,7 @@ module.exports = {
     'eol-last': 0,
     'no-trailing-spaces': 0,
     'no-unused-vars': ['warn'],
-    'space-before-function-paren': 0
+    'space-before-function-paren': 0,
+    'vue/no-parsing-error': [2, { 'x-invalid-end-tag': false }]
   }
 }
