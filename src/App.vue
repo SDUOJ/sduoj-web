@@ -21,6 +21,7 @@ export default {
 
 <style lang="less">
 .layout {
+  min-width: 900px;
   height: 100%;
   border: 1px solid #d7dde4;
   // background: #f5f7f9;
@@ -42,6 +43,12 @@ export default {
   padding: 24px 50px 24px;
   color: #515a6e;
   font-size: 14px;
+}
+
+.clearfix:after {
+  content: '';
+  clear:both;
+  display: table;
 }
 
 </style>

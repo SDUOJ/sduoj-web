@@ -37,8 +37,8 @@
           <!-- <div class="username">{{ currentUser.username }}</div> -->
         </template>
         <template v-else>
-          <Button type="text">登录</Button>
-          <Button type="text">注册</Button>
+          <Button type="text" @click="toLogin">登录</Button>
+          <Button type="text" @click="toRegist">注册</Button>
         </template>
       </div>
     </Menu>
@@ -58,6 +58,12 @@ export default {
     selectNavItem: function(name) {
       this.activeItemName = name;
       this.$router.push('/' + this.activeItemName);
+    },
+    toLogin: function() {
+      this.$router.push('/login');
+    },
+    toRegist: function() {
+      this.$router.push('/regist');
     }
   },
   computed: {
@@ -82,6 +88,7 @@ export default {
 }
 
 .navbar {
+  // min-width: 200px;
     /deep/ .ivu-menu-item-active {
     background: rgba(0, 0, 0, .05);
   }
@@ -99,7 +106,6 @@ export default {
   float: right;
   margin: 0 80px;
   .navbar-username {
-    // display: inline;
     margin: auto 8px;
     font-size: 16px;
   }
