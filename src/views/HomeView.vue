@@ -15,40 +15,43 @@
     </Carousel>
     <Row class="main">
       <Col span="16" class="main-lf">
-        <div class="card">
-          <div class="card-title bold-font big-font">
+        <DisplayCard>
+          <template slot="header">
             <Icon type="ios-alert-outline" />&nbsp; 公告
-          </div>
-          <div class="card-content">
-            <Row class="card-content-item bold-font">
+          </template>
+          <template slot="content">
+            <Row class="announce-subtitle">
               <Col span="18">标题</Col>
               <Col span="6">时间</Col>
             </Row>
-            <Row class="card-content-item link" v-for="item in announcements" :key="item.url">
+            <Row class="announce-item" v-for="item in announcements" :key="item.url">
               <Col span="18">{{ item.title }}</Col>
               <Col span="6">{{ item.time }}</Col>
             </Row>
-          </div>
-        </div>
+          </template>
+        </DisplayCard>
       </Col>
       <Col span="8" class="main-ri">
-      <div class="card">
-       <div class="card-title bold-font big-font">
-            <Icon type="ios-search" />&nbsp; 搜索
-       </div> 
-       <div class="card-content">
-         <div class="card-content-item card-search">
-         <Input style="width: 100%; display: block;" type="text" autocomplete="off" placeholder="ID"><Icon type="ios-search" slot="prefix" /></Input>
-         </div>
-       </div>
-      </div>
+      <DisplayCard>
+        <template slot="header">
+          <Icon type="ios-search" />&nbsp; 搜索
+        </template>
+        <template slot="content">
+          <div class="global-search">
+            <Input style="width: 100%; display: block;" type="text" autocomplete="off" placeholder="ID" />
+          </div>
+        </template>
+      </DisplayCard>
       </Col> 
     </Row>
   </div>
 </template>
 
 <script>
+import DisplayCard from '../components/DisplayCard';
+
 export default {
+  components: { DisplayCard },
   data: function() {
     return {
       carouselSettings: {
@@ -79,13 +82,12 @@ export default {
 .demo-carousel {
   width: 100%;
   min-height: 300px;
-  img{
+  img {
     width: auto;
     height: auto;
     max-width: 100%;
     max-height: 100%;
   }
-  // background-color: #bfa;
 }
 
 .main {
@@ -97,45 +99,29 @@ export default {
   }
 }
 
-.card {
-  border: 1px solid #d4d4d5;
-  border-radius: 4px;
-  .card-title {
-    border-bottom: 1px solid #d4d4d5;
-    margin-bottom: -1px;
-    padding: 0.6em 0.5em 0.4em 0.5em;
-    position: relative;
-    background-color: #f3f4f5;
-  }
-  .card-content {
-    padding: 0 15px;
-    .card-content-item {
-      border-top: 1px solid #d4d4d5;
-      height: 40px;
-      display: -webkit-box;
-      -webkit-box-align: center;
-    }
-  }
-  .card-search {
-    width: 100%;
-    /deep/ .ivu-input {
-      border-radius: 20px;
-    }
-  }
-}
-
-.bold-font {
+.announce-subtitle {
+  height: 40px;
+  border-top: 1px solid #d4d4d5;
   font-weight: bold;
+  display: -webkit-box;
+  -webkit-box-align: center;
 }
-
-.big-font {
-  font-size: 1.2em;
-}
-
-.link {
+.announce-item {
+  height: 40px;
   color: #2D7ABA;
+  border-top: 1px solid #d4d4d5;
+  display: -webkit-box;
+  -webkit-box-align: center;
   :hover {
     cursor: pointer;
+  } 
+}
+
+.global-search {
+  margin-top: 10px;
+  height: 40px;
+  /deep/ .ivu-input {
+    border-radius: 20px;
   }
 }
 
