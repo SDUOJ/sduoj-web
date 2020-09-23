@@ -15,7 +15,7 @@
             <Input type="password" v-model="loginForm.password" placeholder="Password" style="width: 250px" />
           </FormItem>
           <FormItem>
-            <Button type="text" @click="handleSubmit('loginForm')">Sign In</Button>
+            <Button type="text" @click="handleSubmit(loginForm)">Sign In</Button>
           </FormItem>
         </Form>
       </div>
@@ -38,7 +38,7 @@ export default {
   },
   methods: {
     handleSubmit: function(loginForm) {
-
+      console.log(loginForm);
     }
   }
 }
