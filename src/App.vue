@@ -1,9 +1,7 @@
 <template>
   <div class="layout">
     <NavBar></NavBar>
-    <div>
-      <router-view></router-view>
-    </div>
+    <router-view></router-view>
     <div class="footer" v-once v-html='footerInfo'></div>
   </div>
 </template>
@@ -20,29 +18,9 @@ export default {
 </script>
 
 <style lang="less">
-.layout {
-  min-width: 900px;
-  height: 100%;
-  border: 1px solid #d7dde4;
-  // background: #f5f7f9;
-  position: relative;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
 .container {
-  min-height: 200px;
-  margin: 30px 50px 24px;
-  // border: 2px solid #f5f7f9;
-  border-radius: 3px;
-}
-
-.footer {
-  text-align: center;
-  // background: #f5f7f9;
-  padding: 24px 50px 24px;
-  color: #515a6e;
-  font-size: 14px;
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
 .clearfix:after {
@@ -51,4 +29,22 @@ export default {
   display: table;
 }
 
+</style>
+
+<style lang="less" scoped>
+.layout {
+  min-width: 900px;
+  margin-top: 50px;
+  padding-top: 24px;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.footer {
+  text-align: center;
+  padding: 50px 50px 24px;
+  color: #515a6e;
+  font-size: 14px;
+}
 </style>
