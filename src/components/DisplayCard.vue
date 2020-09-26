@@ -1,10 +1,10 @@
 <template>
   <div class="card">
-    <div class="card-title bold-font big-font">
+    <div class="card-title bold-font big-font" v-if="$slots.header">
       <slot name="header"></slot>
     </div>
     <div class="card-content">
-      <slot name="content"></slot>
+      <slot></slot>
     </div>
   </div>
 </template>

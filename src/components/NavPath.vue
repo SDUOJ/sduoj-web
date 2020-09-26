@@ -2,8 +2,8 @@
     <div class="nav-path">
       <div class="container">
         <Breadcrumb>
-          <BreadcrumbItem v-for="item in pathComponents" :key="item.id">
-            <span @click="$router.push(item.url)">{{ item.name }}</span>
+          <BreadcrumbItem v-for="item in pathComponents" :key="item.path">
+            <span @click="$router.push(item.path)">{{ item.meta.title }}</span>
           </BreadcrumbItem>
         </Breadcrumb>
       </div>
@@ -11,11 +11,22 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapMutations } from 'vuex';
 
 export default {
   computed: {
     ...mapState(['pathComponents'])
+  },
+  watch: {
+    $route: function() {
+      this.updatePathComponents(this.$route);
+    }
+  },
+  methods: {
+    ...mapMutations(['updatePathComponents'])
+  },
+  created: function() {
+    this.updatePathComponents(this.$route);
   }
 }
 </script>
