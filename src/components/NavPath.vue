@@ -1,10 +1,12 @@
 <template>
     <div class="nav-path">
+      <div class="container">
         <Breadcrumb>
-            <BreadcrumbItem v-for="item in pathComponents" :key="item.id">
+          <BreadcrumbItem v-for="item in pathComponents" :key="item.id">
             <span @click="$router.push(item.url)">{{ item.name }}</span>
-            </BreadcrumbItem>
+          </BreadcrumbItem>
         </Breadcrumb>
+      </div>
     </div>
 </template>
 
@@ -20,9 +22,8 @@ export default {
 
 <style lang="less" scoped>
 .nav-path {
-  padding: 12px 50px;
-  border-bottom: 1px solid #f3f4f5;
-  background-color: #f5f7f9;
+  margin-bottom: 24px;
+  background-color: #fff;
   span {
     font-size: 17px;
     :hover {
