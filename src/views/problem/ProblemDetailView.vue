@@ -8,16 +8,16 @@
         <Row class="main">
           <Col span="17" class="main-lf">
           <!-- 题面描述 -->
-            <DisplayCard class="problem-block">
-              <div slot="header" class="problem-block-header">Description</div>
+            <DisplayCard class="problem-box">
+              <div slot="header" class="problem-box-header">Description</div>
               <div class="problem-markdown">
                 <markdown-it-vue-light :content="problemInfo.content"></markdown-it-vue-light>
               </div>
             </DisplayCard>
           <!--  -->
           <!-- 样例输入输出 -->
-            <DisplayCard class="problem-block" v-for="ex in problemInfo.examples" :key="ex.id">
-              <div slot="header" class="problem-block-header">
+            <DisplayCard class="problem-box" v-for="ex in problemInfo.examples" :key="ex.id">
+              <div slot="header" class="problem-box-header">
                 Example {{ ex.id }}
               </div>
                 <div class="problem-example">
@@ -34,11 +34,22 @@
                 </div>
             </DisplayCard>
           <!--  -->
+          <!-- 代码编辑器 -->
+          <DisplayCard class="problem-box clearfix">
+            <CodeEditor style="margin-left: -15px;" 
+              :code.sync="code" 
+              :file.sync="file"
+              :language="lang" 
+              @changeLang="onChangeLang">
+            </CodeEditor>
+            <Button style="float: right; margin: 5px 0;" @click="onSubmit">提交</Button>
+          </DisplayCard>
+          <!--  -->
           </Col>
           <Col span="7">
           <!-- 题目基本信息 -->
-            <DisplayCard class="problem-block">
-              <div slot="header" class="problem-block-header">Info</div>
+            <DisplayCard class="problem-box">
+              <div slot="header" class="problem-box-header">Info</div>
               <div class="problem-info">
                 <dl>
                   <dt>Problem ID</dt>
@@ -60,8 +71,8 @@
             </DisplayCard>
           <!--  -->
           <!-- 近期提交记录 -->
-          <DisplayCard class="problem-block clearfix">
-            <div slot="header" class="problem-block-header">近期提交</div>
+          <DisplayCard class="problem-box">
+            <div slot="header" class="problem-box-header">近期提交</div>
             <table border="0" cellpadding="0" cellspacing="0" style="margin: 5px 0; width: 100%;">
               <tr style="height: 30px;">
                 <th>结果</th>
@@ -85,13 +96,16 @@
 import DisplayCard from '../../components/DisplayCard';
 import MarkdownItVueLight from 'markdown-it-vue/dist/markdown-it-vue-light.umd.min.js'
 import 'markdown-it-vue/dist/markdown-it-vue-light.css'
+import CodeEditor from '../../components/CodeEditor';
+
 import { format } from 'timeago.js';
 import JudgeResultMap from '../../utils/JudgeResultMap';
 
 export default {
   components: { 
     DisplayCard,
-    MarkdownItVueLight
+    MarkdownItVueLight,
+    CodeEditor
   },
   filters: {
     changeTime: timestamp => format(new Date(timestamp), 'zh_CN'),
@@ -108,15 +122,25 @@ export default {
         examples: [],
         source: ''
       },
-      submissions: []
+      submissions: [],
+      code: '',
+      file: null,
+      lang: 'C++'
     }
   },
   methods: {
     copyToClipboard: function(content) {
-      this.$copyText(content).then(e => console.log(e), e => console.log(e));
+      this.$copyText(content).then(e => this.$Message.success('已复制到剪切板'), e => console.log(e));
     },
     showDetail: function(sid) {
       console.log(sid);
+    },
+    onChangeLang: function(newLang) {
+      this.lang = newLang;
+    },
+    onSubmit: function() {
+      console.log(this.code);
+      console.log(this.file);
     }
   },
   mounted: function() {
@@ -143,9 +167,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.problem-block {
+.problem-box {
   margin: 20px 20px 20px 0; 
-  .problem-block-header {
+  .problem-box-header {
     margin-left: 8px;
   }
 }
