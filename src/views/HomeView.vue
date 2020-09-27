@@ -19,7 +19,7 @@
           <template slot="header">
             <Icon type="ios-alert-outline" />&nbsp; 公告
           </template>
-          <template slot="content">
+          <template>
             <Row class="announce-subtitle">
               <Col span="18">标题</Col>
               <Col span="6">时间</Col>
@@ -36,7 +36,7 @@
         <template slot="header">
           <Icon type="ios-search" />&nbsp; 搜索
         </template>
-        <template slot="content">
+        <template>
           <div class="global-search">
             <Input style="width: 100%; display: block;" type="text" autocomplete="off" placeholder="ID" />
           </div>
@@ -101,7 +101,6 @@ export default {
 
 .announce-subtitle {
   height: 40px;
-  border-top: 1px solid #d4d4d5;
   font-weight: bold;
   display: -webkit-box;
   -webkit-box-align: center;
@@ -114,7 +113,7 @@ export default {
   -webkit-box-align: center;
   :hover {
     cursor: pointer;
-  } 
+  }
 }
 
 .global-search {

@@ -69,6 +69,7 @@ export default {
 
 <style lang="less" scoped>
 .header {
+  user-select: none;
   position: fixed;
   height: 50px;
   top: 0px;

@@ -14,11 +14,13 @@ export default new Vuex.Store({
     updateFooterInfo(state, info) {
       state.footerInfo = info;
     },
-    updatePathComponents(state, paths) {
-      state.pathComponents = [{
-        name: 'Home',
-        url: '/'
-      }, ...paths]
+    updatePathComponents(state, route) {
+      let matched = route.matched;
+      console.log(matched)
+      if (matched.length === 0 || matched[0].name !== 'home') {
+        matched = [{ path: '/home', meta: { title: '首页' } }].concat(matched);
+      }
+      state.pathComponents = matched;
     }
   },
   actions: {

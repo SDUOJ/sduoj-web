@@ -1,9 +1,10 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import HomeView from '../views/HomeView.vue';
-import ProblemView from '../views/problem/ProblemView.vue';
-import NotFoundView from '../views/404View.vue';
-import Login from '../components/Login.vue';
+import HomeView from '../views/HomeView';
+import ProblemView from '../views/problem/ProblemView';
+import ProblemDetailView from '../views/problem/ProblemDetailView';
+import NotFoundView from '../views/404View';
+import Login from '../components/Login';
 
 Vue.use(VueRouter);
 const originalPush = VueRouter.prototype.push;
@@ -22,11 +23,20 @@ const routes = [
   },
   {
     path: '/home',
-    component: HomeView
+    name: 'home',
+    component: HomeView,
+    meta: { title: '首页' }
   },
   {
     path: '/problem',
-    component: ProblemView
+    name: 'problem',
+    component: ProblemView,
+    meta: { title: '题库' }
+  },
+  {
+    path: '/problem/:id',
+    component: ProblemDetailView
+    // meta: { title: }
   },
   {
     path: '*',
