@@ -101,12 +101,12 @@ export default {
   methods: {
     onFiltering: function() {
       let matched = this.submissions;
-      matched = matched.filter(item => item.username.toLowerCase().indexOf(this.filterOpetions.username) !== -1);
-      matched = matched.filter(item => item.problemId.toString().startsWith(this.filterOpetions.problemId));
+      matched = matched.filter(item => item.username.toLowerCase().indexOf(this.filterOpetions.username.toLowerCase()) !== -1);
+      matched = matched.filter(item => item.problemId.toString().toLowerCase().startsWith(this.filterOpetions.problemId.toString().toLowerCase()));
       if (this.filterOpetions.judgeResult) {
         matched = matched.filter(item => item.judgeResult === utils.result2Status(this.filterOpetions.judgeResult));
       }
-      matched = matched.filter(item => item.lang.toLowerCase().indexOf(this.filterOpetions.lang) !== -1);
+      matched = matched.filter(item => item.lang.toLowerCase().toLowerCase().indexOf(this.filterOpetions.lang.toLowerCase()) !== -1);
       this.submissionFilted = matched;
     },
     clearFilterOptions: function() {
