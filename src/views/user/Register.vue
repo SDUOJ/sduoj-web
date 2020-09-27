@@ -1,5 +1,5 @@
 <template>
-    <div class="box clearfix">
+    <div class="box clearfix" v-if="apply">
       <div class="title">
         <span>Register in SDUOJ</span>
       </div>
@@ -19,7 +19,7 @@
               style="width: 220px"
             />
           </FormItem>
-          <FormItem prop="email" label="Emai">
+          <FormItem prop="email" label="Email">
             <Input v-model="registerForm.email" style="width: 220px" type="email" />
           </FormItem>
           <FormItem prop="password" label="Password">
@@ -122,7 +122,8 @@ export default {
       },
       captchaId: 0,
       captchaImg: '',
-      btnRegisterLoading: false
+      btnRegisterLoading: false,
+      apply: true
     };
   },
   methods: {
@@ -157,6 +158,19 @@ export default {
           this.btnRegisterLoading = false;
         }, 1000);
       });
+    }
+  },
+  mounted: function() {
+    if (this.$route.query.token) {
+      this.token = this.$route.query.token;
+      // TODO: 验证token是否有效
+      // 如果有效 则提示3秒钟后跳转到首页
+      this.apply = false;
+      this.$Message.success({
+        content: 'Activated, redirect to home in 3 seconds',
+        duration: 3,
+        onClose: () => this.$router.push('/')
+      })
     }
   }
 };

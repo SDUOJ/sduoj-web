@@ -22,7 +22,7 @@
         <div class="btns">
           <a href="/#/resetpass">Forgot your password?</a>
           <Button type="text" 
-            @click="handleRegister('loginForm')" 
+            @click="handleLogin('loginForm')" 
             :loading="btnLoginLoading">Login</Button>
         </div>
       </div>
@@ -49,8 +49,14 @@ export default {
     }
   },
   methods: {
-    handleSubmit: function(loginForm) {
-      console.log(loginForm);
+    handleLogin: function(name) {
+      this.$refs[name].validate(valid => {
+        if (!valid) {
+          return;
+        }
+        const dataForm = Object.assign({}, this.loginForm);
+        console.log(dataForm);
+      })
     }
   }
 }
