@@ -58,7 +58,7 @@ export default {
       this.$router.push('/login');
     },
     toRegist: function() {
-      this.$router.push('/regist');
+      this.$router.push('/register');
     }
   },
   computed: {
