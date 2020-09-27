@@ -15,7 +15,7 @@
     </Carousel>
     <Row class="main">
       <Col span="16" class="main-lf">
-        <DisplayCard>
+        <Card>
           <template slot="header">
             <Icon type="ios-alert-outline" />&nbsp; 公告
           </template>
@@ -29,10 +29,10 @@
               <Col span="6">{{ item.time }}</Col>
             </Row>
           </template>
-        </DisplayCard>
+        </Card>
       </Col>
       <Col span="8" class="main-ri">
-      <DisplayCard>
+      <Card>
         <template slot="header">
           <Icon type="ios-search" />&nbsp; 搜索
         </template>
@@ -41,17 +41,17 @@
             <Input style="width: 100%; display: block;" type="text" autocomplete="off" placeholder="ID" />
           </div>
         </template>
-      </DisplayCard>
+      </Card>
       </Col> 
     </Row>
   </div>
 </template>
 
 <script>
-import DisplayCard from '../components/DisplayCard';
+import Card from '../components/Card';
 
 export default {
-  components: { DisplayCard },
+  components: { Card },
   data: function() {
     return {
       carouselSettings: {
