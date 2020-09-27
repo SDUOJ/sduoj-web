@@ -5,8 +5,9 @@ import ProblemView from '@/views/problem/ProblemView';
 import ProblemDetailView from '@/views/problem/ProblemDetailView';
 import SubmissionView from '@/views/submission/SubmissionView';
 import NotFoundView from '@/views/404View';
-import Login from '@/components/Login';
-import Register from '@/components/Register';
+import LoginView from '@/views/user/Login';
+import RegisterView from '@/views/user/Register';
+import ResetPassView from '@/views/user/ResetPass';
 
 Vue.use(VueRouter);
 const originalPush = VueRouter.prototype.push;
@@ -21,11 +22,15 @@ const routes = [
   },
   {
     path: '/login',
-    component: Login
+    component: LoginView
   },
   {
     path: '/register',
-    component: Register
+    component: RegisterView
+  },
+  {
+    path: '/resetpass',
+    component: ResetPassView
   },
   {
     path: '/home',
