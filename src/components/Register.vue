@@ -1,5 +1,4 @@
 <template>
-  <div class>
     <div class="box clearfix">
       <div class="title">
         <span>Register in SDUOJ</span>
@@ -68,7 +67,6 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
