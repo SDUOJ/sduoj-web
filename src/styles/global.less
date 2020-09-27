@@ -1,8 +1,54 @@
 .ivu-input:hover {
-    border-color: #9a9a9a;
-  }
+  border-color: #9a9a9a;
+}
 .ivu-input:focus {
-      border-color: #9a9a9a;
-      box-shadow: 0 0 0 2px rgba(154, 154, 154, 0.2);
-  }
+  border-color: #9a9a9a;
+  box-shadow: 0 0 0 2px rgba(154, 154, 154, 0.2);
+}
+
+.layout {
+  min-width: 900px;
+  margin-top: 50px;
+  padding-top: 24px;
+  height: 100%;
+  position: relative;
+}
+
+.footer {
+  text-align: center;
+  padding: 50px 50px 24px;
+  color: #515a6e;
+  font-size: 14px;
+}
   
+.verdict-accepted {
+  color: #5cb85c;
+  font-weight: 500;
+}
+.verdict-accepted:hover {
+  cursor: pointer;
+}
+
+.verdict-failed {
+  color: #d9534f;
+  font-weight: 500;
+}
+.verdict-failed:hover {
+  cursor: pointer;
+}
+
+.verdict-pending {
+  color: grey;
+  font-weight: 500;
+}
+.verdict-pending:hover {
+  cursor: pointer;
+}
+
+.verdict-compile-error {
+  color: orange;
+  font-weight: 500;
+}
+.verdict-compile-error:hover {
+  cursor: pointer;
+}

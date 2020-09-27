@@ -18,6 +18,7 @@ module.exports = {
     'no-trailing-spaces': 0,
     'no-unused-vars': ['warn'],
     'space-before-function-paren': 0,
-    'vue/no-parsing-error': [0, { 'x-invalid-end-tag': false }]
+    'vue/no-parsing-error': [0, { 'x-invalid-end-tag': false }],
+    'no-multi-spaces': 0
   }
 }

@@ -8,15 +8,15 @@
         <Row class="main">
           <Col span="17" class="main-lf">
           <!-- 题面描述 -->
-            <DisplayCard class="problem-box">
+            <Card class="problem-box">
               <div slot="header" class="problem-box-header">Description</div>
               <div class="problem-markdown">
                 <markdown-it-vue-light :content="problemInfo.content"></markdown-it-vue-light>
               </div>
-            </DisplayCard>
+            </Card>
           <!--  -->
           <!-- 样例输入输出 -->
-            <DisplayCard class="problem-box" v-for="ex in problemInfo.examples" :key="ex.id">
+            <Card class="problem-box" v-for="ex in problemInfo.examples" :key="ex.id">
               <div slot="header" class="problem-box-header">
                 Example {{ ex.id }}
               </div>
@@ -32,10 +32,10 @@
                   </Tooltip>
                   <markdown-it-vue-light :content="'```text\n' + ex.output + '\n```'"></markdown-it-vue-light>
                 </div>
-            </DisplayCard>
+            </Card>
           <!--  -->
           <!-- 代码编辑器 -->
-          <DisplayCard class="problem-box clearfix">
+          <Card class="problem-box clearfix">
             <CodeEditor style="margin-left: -15px;" 
               :code.sync="code" 
               :file.sync="file"
@@ -43,17 +43,17 @@
               @changeLang="onChangeLang">
             </CodeEditor>
             <Button style="float: right; margin: 5px 0;" @click="onSubmit">提交</Button>
-          </DisplayCard>
+          </Card>
           <!--  -->
           </Col>
           <Col span="7">
           <!-- 题目基本信息 -->
-            <DisplayCard class="problem-box">
+            <Card class="problem-box">
               <div slot="header" class="problem-box-header">Info</div>
               <div class="problem-info">
                 <dl>
                   <dt>Problem ID</dt>
-                  <dd>{{ problemInfo.pid }}</dd>
+                  <dd>{{ problemInfo.problemId }}</dd>
                 </dl>
                 <dl>
                   <dt>Time Limit</dt>
@@ -68,23 +68,23 @@
                   <dd>{{ problemInfo.source }}</dd>
                 </dl>
               </div>
-            </DisplayCard>
+            </Card>
           <!--  -->
           <!-- 近期提交记录 -->
-          <DisplayCard class="problem-box">
+          <Card class="problem-box">
             <div slot="header" class="problem-box-header">近期提交</div>
             <table border="0" cellpadding="0" cellspacing="0" style="margin: 5px 0; width: 100%;">
               <tr style="height: 30px;">
                 <th>结果</th>
                 <th>时间</th>
               </tr>
-              <tr class="judge-result" @click="showDetail(sb.sid)" v-for="sb in submissions" :key="sb.sid">
-                <td width="70%" :class="sb.judge_result === 1 ? 'verdict-accepted' : 'verdict-failed'" style="text-align: center;">{{ sb.judge_result | changeResult }}</td>
-                <td width="30%" style="text-align: center;">{{ sb.date | changeTime }}</td>
+              <tr class="judge-result" @click="showDetail(sb.submissionId)" v-for="sb in submissions" :key="sb.submissionId">
+                <td width="70%" :class="utils.status2Class(sb.judgeResult)" style="text-align: center;">{{ sb.judgeResult | changeResult }}</td>
+                <td width="30%" style="text-align: center;">{{ sb.when | changeTime }}</td>
               </tr>
             </table>
             <Button type="text" style="width: 100%; margin: 5px auto;">查看所有提交</Button>
-          </DisplayCard>
+          </Card>
           </Col>
         </Row>
        </div>
@@ -93,28 +93,28 @@
 
 <script>
 // import NavPath from '../../components/NavPath.vue';
-import DisplayCard from '../../components/DisplayCard';
+import Card from '@/components/Card';
 import MarkdownItVueLight from 'markdown-it-vue/dist/markdown-it-vue-light.umd.min.js'
 import 'markdown-it-vue/dist/markdown-it-vue-light.css'
-import CodeEditor from '../../components/CodeEditor';
+import CodeEditor from '@/components/CodeEditor';
 
 import { format } from 'timeago.js';
-import JudgeResultMap from '../../utils/JudgeResultMap';
+import utils from '@/utils';
 
 export default {
   components: { 
-    DisplayCard,
+    Card,
     MarkdownItVueLight,
     CodeEditor
   },
   filters: {
     changeTime: timestamp => format(new Date(timestamp), 'zh_CN'),
-    changeResult: res => JudgeResultMap[res]
+    changeResult: res => utils.judgeResultMap[res]
   },
   data: function() {
     return {
       problemInfo: {
-        pid: '',
+        problemId: '',
         title: '',
         content: '',
         timeLimit: '',
@@ -143,9 +143,12 @@ export default {
       console.log(this.file);
     }
   },
+  computed: {
+    utils: () => utils
+  },
   mounted: function() {
     this.problemInfo = {
-      pid: 1001,
+      problemId: 1001,
       title: 'A + B Problem',
       content: '## 123123123\n`$a^2+b^2=c^2$`\n```c\n#include <sdtio.h>\nint main() {\n\rleturn 0;\n}\n```\n',
       timeLimit: '1000',
@@ -158,9 +161,10 @@ export default {
     };
 
     this.submissions = [
-      { sid: 1, judge_result: 1, date: 1601125200000 },
-      { sid: 2, judge_result: 2, date: 1601125200000 },
-      { sid: 3, judge_result: 8, date: 1601125200000 }
+      { submissionId: 1, judgeResult: 0, when: 1601125200000 },
+      { submissionId: 2, judgeResult: 1, when: 1601125200000 },
+      { submissionId: 3, judgeResult: 2, when: 1601125200000 },
+      { submissionId: 4, judgeResult: 8, when: 1601125200000 }
     ]
   }
 }
@@ -217,21 +221,8 @@ export default {
 
 .judge-result {
   height: 30px;
-  :hover {
-    cursor: pointer;
-  }
 }
 th, td {
   border-bottom: 1px solid #d4d4d5;
-}
-
-.verdict-accepted {
-  color: #5cb85c;
-  font-weight: 500;
-}
-
-.verdict-failed {
-  color: #d9534f;
-  font-weight: 500;
 }
 </style>

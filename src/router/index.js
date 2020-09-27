@@ -1,10 +1,11 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import HomeView from '../views/HomeView';
-import ProblemView from '../views/problem/ProblemView';
-import ProblemDetailView from '../views/problem/ProblemDetailView';
-import NotFoundView from '../views/404View';
-import Login from '../components/Login';
+import HomeView from '@/views/HomeView';
+import ProblemView from '@/views/problem/ProblemView';
+import ProblemDetailView from '@/views/problem/ProblemDetailView';
+import SubmissionView from '@/views/submission/SubmissionView';
+import NotFoundView from '@/views/404View';
+import Login from '@/components/Login';
 
 Vue.use(VueRouter);
 const originalPush = VueRouter.prototype.push;
@@ -37,6 +38,10 @@ const routes = [
     path: '/problem/:id',
     component: ProblemDetailView
     // meta: { title: }
+  },
+  {
+    path: '/submission',
+    component: SubmissionView
   },
   {
     path: '*',
