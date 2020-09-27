@@ -6,6 +6,7 @@ import ProblemDetailView from '@/views/problem/ProblemDetailView';
 import SubmissionView from '@/views/submission/SubmissionView';
 import NotFoundView from '@/views/404View';
 import Login from '@/components/Login';
+import Register from '@/components/Register';
 
 Vue.use(VueRouter);
 const originalPush = VueRouter.prototype.push;
@@ -21,6 +22,10 @@ const routes = [
   {
     path: '/login',
     component: Login
+  },
+  {
+    path: '/register',
+    component: Register
   },
   {
     path: '/home',
