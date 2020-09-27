@@ -101,9 +101,6 @@ export default {
   methods: {
     onFiltering: function() {
       let matched = this.submissions;
-      for (let i = 0; i < matched.length; ++i) {
-        console.log(matched[i].problemId, matched[i].problemId.indexOf(this.filterOpetions.problemId));
-      }
       matched = matched.filter(item => item.username.toLowerCase().indexOf(this.filterOpetions.username) !== -1);
       matched = matched.filter(item => item.problemId.toString().startsWith(this.filterOpetions.problemId));
       if (this.filterOpetions.judgeResult) {
