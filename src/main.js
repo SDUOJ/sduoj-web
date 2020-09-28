@@ -7,6 +7,10 @@ import './plugins/clipboard2';
 
 Vue.config.productionTip = false;
 
+Vue.prototype.$Message.config({
+  duration: 2
+});
+
 new Vue({
   router,
   store,

@@ -30,12 +30,15 @@
 </template>
 
 <script>
+import api from '@/utils/api';
+import { mapActions } from 'vuex';
+
 export default {
   data: function() {
     return {
       loginForm: {
-        username: '',
-        password: ''
+        username: 'jeshrz',
+        password: '123456'
       },
       loginRules: {
         username: [
@@ -49,13 +52,16 @@ export default {
     }
   },
   methods: {
+    ...mapActions('user', ['setProfile', 'setLogin']),
     handleLogin: function(name) {
       this.$refs[name].validate(valid => {
-        if (!valid) {
-          return;
+        if (valid) {
+          const dataForm = Object.assign({}, this.loginForm);
+          api.login(dataForm).then(ret => {
+            this.setProfile(ret);
+            this.$router.replace({ path: '/' });
+          });
         }
-        const dataForm = Object.assign({}, this.loginForm);
-        console.log(dataForm);
       })
     }
   }
