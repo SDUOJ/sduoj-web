@@ -1,9 +1,9 @@
 export default {
   namespaced: true,
   state: {
-    username: '',
+    username: 'jeshrz',
     avatar: '',
-    isLogin: false
+    isLogin: true
   },
   mutations: {
     updateUsername(state, username) {
