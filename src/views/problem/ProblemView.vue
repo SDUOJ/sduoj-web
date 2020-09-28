@@ -1,7 +1,9 @@
 <template>
     <div>
+      <!-- 页面容器 -->
       <div class="container">
         <Row>
+          <!-- 页面左边部分 -->
           <Col span="19" class="main-lf">
             <div class="problem-set">
               <!-- 题库 header -->
@@ -18,19 +20,24 @@
 
               <!-- 题库 content -->
               <div class="problem-set-content">
-                <Table :columns="columns5" :data="data5" class="problem-set-content-table"></Table>
+                  <Table :columns="columns5" :data="data5" class="problem-set-content-table"></Table>
+                  <Page :total="100" :current="1" show-elevator class="problem-set-content-page"/>
               </div>
               <!-- 题库 content -->
             </div>
           </Col>
+          <!-- 页面左边部分 -->
 
+          <!-- 页面右边部分 -->
           <Col span="5" class="main-rf">
             <div class="problem-set-search">
 
             </div>
           </Col>
+          <!-- 页面右边部分 -->
         </Row>
       </div>
+      <!-- 页面容器 -->
     </div>
 </template>
 
@@ -42,6 +49,8 @@ export default {
         {
           title: '#',
           key: 'id',
+          width: 70,
+          ellipsis: true,
           sortable: true
         },
         {
@@ -49,55 +58,72 @@ export default {
           key: 'name'
         },
         {
-          title: '算法标签',
-          key: 'tags'
+          title: '标签',
+          key: 'tags',
+          align: 'right',
+          ellipsis: true,
+          render: (h, params) => {
+            return h('div', { class: 'problem-set-tags' },
+              params.row.tags.map(item => {
+                return h('div', { class: 'problem-set-tagbox' }, [
+                  h('div', { class: 'problem-set-tag' }, item)
+                ])
+              }));
+          }
         },
         {
           title: '递交数',
-          key: 'commits',
+          key: 'submit',
+          ellipsis: true,
+          width: 100,
           sortable: true
         },
         {
           title: '%AC',
-          key: 'acrate',
-          sortable: true
+          key: 'acRate',
+          width: 90,
+          ellipsis: true,
+          sortable: true,
+          render: (h, params) => {
+            return h('span', params.row.acRate.toFixed(2));
+          }
         }
       ],
       data5: [
         {
           id: '1',
           name: 'A + B Problem',
-          tags: '模拟',
-          commits: 4586,
-          acrate: 51.22
+          tags: ['模拟', '暴力', '思维', '模拟', '暴力', '思维', '模拟', '暴力', '思维'],
+          submit: 4586,
+          acRate: 100.00
         },
         {
           id: '2',
-          name: 'GZS 与古英文字典',
-          tags: '暴力',
-          commits: 339,
-          acrate: 9.73
+          name: 'GZS 与古英文字典 数组中出现的数据哈哈十三水',
+          tags: ['暴力'],
+          submit: 339,
+          acRate: 99.99
         },
         {
           id: '3',
           name: 'GZS 的三角形',
-          tags: '找规律',
-          commits: 179,
-          acrate: 16.20
+          tags: ['找规律'],
+          submit: 179,
+          acRate: 16.20
         },
         {
           id: '4',
           name: 'GZS 与素数大法',
-          tags: '数学',
-          commits: 353,
-          acrate: 7.37
+          tags: ['数学'],
+          submit: 35222223,
+          acRate: 7.4
         },
         {
-          id: '5',
+          id: '9999',
           name: '吉老师的线段树',
-          tags: '数据结构',
-          commits: 3532,
-          acrate: 2.37
+          tags: ['数据结构'],
+          submit: 3532,
+          acRate: 2.4
         }
       ]
     }
@@ -146,7 +172,7 @@ export default {
 </style>
 
 <style lang="less">
-.problem-set {
+.problem-set .problem-set-content {
   .problem-set-content-table {
     border-right: 1px solid #d4d4d5;
     .ivu-table-header {
@@ -161,6 +187,26 @@ export default {
     .ivu-table-row-hover td {
         background-color: #fbfcfc;
     }
+    .problem-set-name {
+      float: left;
+    }
+    .problem-set-tags {
+      float: right;
+      .problem-set-tagbox {
+        margin: 2px;
+        background-color: #F8F9F9;
+        float: right;
+        border-radius: 4px;
+        .problem-set-tag {
+          margin: 4px 6px;
+        }
+      }
+    }
+  }
+
+  .problem-set-content-page {
+    margin-top: 15px;
+    float: right;
   }
 }
 </style>
