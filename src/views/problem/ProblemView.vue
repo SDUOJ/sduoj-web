@@ -30,7 +30,13 @@
 
           <!-- 页面右边部分 -->
           <Col span="5" class="main-rf">
-            <div class="problem-set-search">
+            <!-- 搜索框 -->
+            <div class="problem-search">
+              <Input suffix="ios-search" placeholder="题目查询"/>
+            </div>
+            <!-- 搜索框 -->
+
+            <div class="problem-tags">
 
             </div>
           </Col>
@@ -55,7 +61,9 @@ export default {
         },
         {
           title: '题目',
-          key: 'name'
+          key: 'name',
+          minWidth: 150,
+          maxWidth: 300
         },
         {
           title: '标签',
@@ -93,16 +101,16 @@ export default {
         {
           id: '1',
           name: 'A + B Problem',
-          tags: ['模拟', '暴力', '思维', '模拟', '暴力', '思维', '模拟', '暴力', '思维'],
+          tags: ['模拟', '暴力', '思维'],
           submit: 4586,
-          acRate: 100.00
+          acRate: 57.63
         },
         {
           id: '2',
-          name: 'GZS 与古英文字典 数组中出现的数据哈哈十三水',
-          tags: ['暴力'],
+          name: 'GZS 与古英文字典',
+          tags: ['暴力', '字典树', '字符串'],
           submit: 339,
-          acRate: 99.99
+          acRate: 80.02
         },
         {
           id: '3',
@@ -114,14 +122,14 @@ export default {
         {
           id: '4',
           name: 'GZS 与素数大法',
-          tags: ['数学'],
-          submit: 35222223,
+          tags: ['数学', '线性筛', '莫比乌斯反演'],
+          submit: 352,
           acRate: 7.4
         },
         {
-          id: '9999',
+          id: '5',
           name: '吉老师的线段树',
-          tags: ['数据结构'],
+          tags: ['数据结构', '线段树'],
           submit: 3532,
           acRate: 2.4
         }
@@ -133,10 +141,8 @@ export default {
 
 <style lang="less" scoped>
 .problem-set {
-  height: 1000px;
-  // background-color: pink;
   border-radius: 4px;
-  
+  // 题库表头
   .problem-set-header {
     height: 45px;
     margin-right: 20px;
@@ -158,55 +164,73 @@ export default {
       padding-top: 10px;
     }
   }
-
-  .problem-set-content {
-    margin-right: 20px;
-    border-left: 1px solid #d4d4d5;
-  }
-}
-
-.problem-set-search {
-  height: 100px;
-  background-color: pink;
 }
 </style>
 
 <style lang="less">
-.problem-set .problem-set-content {
-  .problem-set-content-table {
-    border-right: 1px solid #d4d4d5;
-    .ivu-table-header {
-      padding-right: 0;
-      th {
-        background-color: #fff;
+.problem-set {
+  // 题库内容
+  .problem-set-content {
+    margin-right: 20px;
+    border-left: 1px solid #d4d4d5;
+
+    .problem-set-content-table {
+      border-right: 1px solid #d4d4d5;
+      // ivu 表格头部
+      .ivu-table-header {
+        padding-right: 0;
+        th {
+          background-color: #fff;
+        }
       }
-    }
-    .ivu-table-body {
-      padding-right: 0;
-    }
-    .ivu-table-row-hover td {
-        background-color: #fbfcfc;
-    }
-    .problem-set-name {
-      float: left;
-    }
-    .problem-set-tags {
-      float: right;
-      .problem-set-tagbox {
-        margin: 2px;
-        background-color: #F8F9F9;
+      // ivu 表格内部
+      .ivu-table-body {
+        padding-right: 0;
+      }
+      .ivu-table-row-hover td {
+          background-color: #fbfcfc;
+      }
+      // ivu 数据内容
+      .problem-set-name {
+        float: left;
+      }
+      .problem-set-tags {
         float: right;
-        border-radius: 4px;
-        .problem-set-tag {
-          margin: 4px 6px;
+        .problem-set-tagbox {
+          margin: 2px;
+          background-color: #F8F9F9;
+          float: right;
+          border-radius: 4px;
+          .problem-set-tag {
+            margin: 4px 6px;
+          }
         }
       }
     }
-  }
 
-  .problem-set-content-page {
-    margin-top: 15px;
-    float: right;
+    // 题库分页栏
+    .problem-set-content-page {
+      margin-top: 15px;
+      float: right;
+    }
   }
+}
+
+// 题库搜索框
+.problem-search {
+  .ivu-input:hover {
+    border-color: #CACFD2;
+  }
+  .ivu-input-default:focus {
+    border-color: #BDC3C7;
+    box-shadow: 0 0 0 0.5px rgba(154, 154, 154, 0.1);
+  }
+}
+
+// 题库标签搜索
+.problem-tags {
+  margin-top: 12px;
+  height: 400px;
+  background-color: pink;
 }
 </style>
