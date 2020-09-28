@@ -83,7 +83,7 @@
             </Card>
           <!--  -->
           <!-- 近期提交记录 -->
-          <Card class="problem-box">
+          <Card class="problem-box" v-if="isLogin">
             <div slot="header" class="problem-box-header">近期提交</div>
             <table border="0" cellpadding="0" cellspacing="0" style="margin: 5px 0; width: 100%;">
               <tr style="height: 30px;">
@@ -95,7 +95,7 @@
                 <td width="30%" style="text-align: center;">{{ sb.when | changeTime }}</td>
               </tr>
             </table>
-            <Button type="text" style="width: 100%; margin: 5px auto;">查看所有提交</Button>
+            <Button type="text" style="width: 100%; margin: 5px auto;" @click="handleShowSubmission">查看所有提交</Button>
           </Card>
           </Col>
         </Row>
@@ -112,6 +112,8 @@ import CodeEditor from '@/components/CodeEditor';
 
 import { format } from 'timeago.js';
 import utils from '@/utils';
+
+import { mapState } from 'vuex';
 
 export default {
   components: { 
@@ -155,9 +157,13 @@ export default {
     onSubmit: function() {
       console.log(this.code);
       console.log(this.file);
+    },
+    handleShowSubmission: function() {
+      this.$router.push('/submission?username=' + this.username + '&pid=' + this.problemInfo.problemId)
     }
   },
   computed: {
+    ...mapState('user', ['username', 'isLogin']),
     utils: () => utils
   },
   mounted: function() {
