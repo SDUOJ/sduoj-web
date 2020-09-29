@@ -56,7 +56,7 @@ export default {
   },
   getProfile: function() {
     return new Promise((resolve, reject) => {
-      resolve({ userId: 1, username: 'jeshrz' });
+      resolve({ userId: 2, username: 'jeshrz', nickname: 'hrz', email: 'jeshrz@gmail.com', studentId: '201705130113', emailVerified: 1, roles: ['superadmin'], ipv4: '101.76.220.251', userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36' });
     });
   }
 }

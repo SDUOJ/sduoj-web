@@ -1,72 +1,36 @@
 <template>
   <div class="container">
     <Row>
-      <Col span="18">
-        <router-view></router-view>
-      </Col>
-      <Col span="6">
-        <div class="profile">
-          <div class="avatar-box">
-            <img :src="profile.avatar || defaultAvatar" alt="">
-          </div>
+      <Col span="16">
+        <div style="margin-right: 30px;">
+          <UserProfile />
+          <UserPassword v-if="isVerified" style="margin: 20px 0;" />
+          <UserEmail v-if="isVerified" />
         </div>
+      </Col>
+      <Col span="8">
+        <Card class="profile">
+          <div class="avatar-box">
+            <img :src="avatar || defaultAvatar" alt="">
+          </div>
+        </Card>
       </Col>
     </Row>
   </div>
-    <!-- <Card class="container clearfix">
-      <Row style="margin: 20px 10px">
-        <Col span="8">
-          <Menu theme="light" :active-name="$route.path">
-            <MenuItem name="/user/profile" to="profile">
-              <Icon type="md-document" />
-              Profile
-            </MenuItem>
-            <MenuItem name="/user/password" to="password">
-              <Icon type="md-chatbubbles" />
-              Password
-            </MenuItem>
-            <MenuItem name="/user/email" to="email">
-              <Icon type="md-chatbubbles" />
-              Email 
-            </MenuItem>
-          </Menu>
-        </Col>
-        <Col span="16">
-          <Row>
-            <Col span="15">
-              <router-view></router-view>
-            </Col> 
-            <Col span="9" class="">
-            <div class="avatar-box">
-              <div class="avatar">
-                <Avatar icon="ios-person" :size="100" />
-              </div>
-                <Upload
-                  multiple
-                  type="drag"
-                  action="">
-                  <div style="padding: 5px 0">
-                      <Icon type="ios-cloud-upload" size="30" style="color: #3399ff"></Icon>
-                      <p>Click or drag</p>
-                  </div>
-                </Upload>
-            </div>
-            </Col>
-          </Row> 
-        </Col>
-      </Row>
-    </Card> -->
 </template>
 
 <script>
 import defaultAvatar from '@/assets/default.png';
-import { mapState } from 'vuex';
+import { mapGetters } from 'vuex';
 import Card from '@/components/Card';
+import UserProfile from '@/views/user/children/UserProfile';
+import UserPassword from '@/views/user/children/UserPassword';
+import UserEmail from '@/views/user/children/UserEmail';
 
 export default {
-  // components: { Card }
+  components: { Card, UserProfile, UserPassword, UserEmail },
   computed: {
-    ...mapState('user', ['profile']),
+    ...mapGetters('user', ['avatar', 'isVerified']),
     defaultAvatar: function() {
       return defaultAvatar;
     }
@@ -84,14 +48,7 @@ export default {
 .avatar-box {
   height: 150px;
   width: 150px;
-  // border: 1px solid #eee;
-  // border-radius: 50%;
   margin: 10px auto;
-  // box-shadow: 0 0 10px #ddd;
-  // position: absolute;
-  // top: 50%;
-  // left: 50%;
-  // transform: translate(-50%, -50%);
   background-color: #fff;
   img {
     width: 100%;

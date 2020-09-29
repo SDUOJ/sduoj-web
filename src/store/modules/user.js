@@ -3,9 +3,11 @@ const state = {
 }
 
 const getters = {
+  profile: state => state.profile || {},
   username: state => state.profile.username || '',
   avatar: state => state.profile.avatar || '',
-  isLogin: state => !!state.profile.userId
+  isLogin: state => !!state.profile.userId,
+  isVerified: state => !!state.profile.emailVerified
 }
 
 const mutations = {
@@ -15,7 +17,6 @@ const mutations = {
   },
   clearProfile: function(state) {
     state.profile = {};
-    console.log(123);
     window.localStorage.clear();
   }
 }

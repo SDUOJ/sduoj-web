@@ -7,7 +7,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    footerInfo: '2020-2020 &copy Shandong University',
+    footerInfo: '2020-2020 &copy; Shandong University',
     pathComponents: []
   },
   mutations: {

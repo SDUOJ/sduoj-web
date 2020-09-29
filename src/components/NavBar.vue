@@ -31,7 +31,7 @@
                 <Icon type="ios-arrow-down"></Icon>
               </div>
               <DropdownMenu slot="list">
-                <DropdownItem name="setting">设置</DropdownItem>
+                <DropdownItem name="home">主页</DropdownItem>
                 <DropdownItem name="logout" divided>登出</DropdownItem>
               </DropdownMenu>
             </Dropdown>
@@ -61,15 +61,15 @@ export default {
     onClick: function(name) {
       if (name === 'logout') {
         this.handleLogout();
-      } else if (name === 'settings') {
-        this.handleSettings();
+      } else if (name === 'home') {
+        this.toHome();
       }
     },
     handleLogout: function() {
       api.logout().then(_ => this.$store.dispatch('user/clearProfile'));
     },
-    handleSettings: function() {
-      console.log('settings');
+    toHome: function() {
+      this.$router.push('/user');
     }
   },
   computed: {

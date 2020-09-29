@@ -8,6 +8,7 @@ import NotFoundView from '@/views/404View';
 import LoginView from '@/views/user/Login';
 import RegisterView from '@/views/user/Register';
 import ResetPassView from '@/views/user/ResetPass';
+import UserHomeView from '@/views/user/UserHome';
 
 Vue.use(VueRouter);
 const originalPush = VueRouter.prototype.push;
@@ -47,7 +48,10 @@ const routes = [
   {
     path: '/problem/:id',
     component: ProblemDetailView
-    // meta: { title: }
+  },
+  {
+    path: '/user',
+    component: UserHomeView
   },
   {
     path: '/submission',
