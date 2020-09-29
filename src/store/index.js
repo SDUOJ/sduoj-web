@@ -1,13 +1,13 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import UserModule from './user';
+import user from './modules/user';
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    footerInfo: '2020-2020 &copy Shandong University',
+    footerInfo: '2020-2020 &copy; Shandong University',
     pathComponents: []
   },
   mutations: {
@@ -26,6 +26,6 @@ export default new Vuex.Store({
   actions: {
   },
   modules: {
-    user: UserModule
+    user: user
   }
 })

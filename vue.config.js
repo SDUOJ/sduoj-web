@@ -9,15 +9,14 @@ module.exports = {
           use: [
             {
               loader: 'less-loader',
-              options: {
-                lessOptions: {
-                  javascriptEnabled: true
-                }
-              }
+              options: { lessOptions: { javascriptEnabled: true } }
             }
           ]
         }
       ]
     }
+  },
+  devServer: {
+    disableHostCheck: true
   }
 }

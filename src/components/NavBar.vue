@@ -25,18 +25,15 @@
         <div class="navbar-user">
           <template v-if="isLogin">
             <Avatar :src="avatar" />
-            <Dropdown>
+            <Dropdown @on-click="onClick">
               <div class="navbar-username">
                 {{username}}
                 <Icon type="ios-arrow-down"></Icon>
               </div>
-            <DropdownMenu slot="list">
-              <DropdownItem>驴打滚</DropdownItem>
-              <DropdownItem>炸酱面</DropdownItem>
-              <DropdownItem disabled>豆汁儿</DropdownItem>
-              <DropdownItem>冰糖葫芦</DropdownItem>
-              <DropdownItem divided>北京烤鸭</DropdownItem>
-            </DropdownMenu>
+              <DropdownMenu slot="list">
+                <DropdownItem name="home">主页</DropdownItem>
+                <DropdownItem name="logout" divided>登出</DropdownItem>
+              </DropdownMenu>
             </Dropdown>
           </template>
           <template v-else>
@@ -50,19 +47,37 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import api from '@/utils/api';
+import { mapGetters } from 'vuex';
 
 export default {
+  // components: { Gravatar },
   methods: {
     toLogin: function() {
       this.$router.push('/login');
     },
     toRegist: function() {
       this.$router.push('/register');
+    },
+    onClick: function(name) {
+      if (name === 'logout') {
+        this.handleLogout();
+      } else if (name === 'home') {
+        this.toHome();
+      }
+    },
+    handleLogout: function() {
+      api.logout().then(_ => this.$store.dispatch('user/clearProfile'));
+    },
+    toHome: function() {
+      this.$router.push('/user');
     }
   },
   computed: {
-    ...mapState('user', ['isLogin', 'username', 'avatar'])
+    ...mapGetters('user', ['isLogin', 'username', 'avatar'])
+  },
+  mounted: function() {
+    api.getProfile().then(ret => this.$store.dispatch('user/setProfile', ret)); 
   }
 };
 </script>
