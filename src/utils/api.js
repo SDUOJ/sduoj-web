@@ -26,12 +26,33 @@ function post(url, data) {
   });
 }
 
+function get(url, params) {
+  params = params || {};
+  return new Promise((resolve, reject) => {
+    axios.get(url, params)
+      .then(response => {
+        if (response.data.code === 0) {
+          // everything alright
+          resolve(response.data.data);
+        } else if (response.data.code === LOGIN_CODE) {
+          // timeout, login needed
+        } else {
+          Vue.prototype.$Message.error(response.data.message);
+          reject(response);
+        }
+      }, err => {
+        Vue.prototype.$Message.error(err.data);
+        reject(err);
+      })
+  })
+}
+
 export default {
   login: function(data) {
     return post('/user/login', data);
   },
   logout: function() {
-    return post('/user/logout');
+    return get('/user/logout');
   },
   getProfile: function() {
     return new Promise((resolve, reject) => {

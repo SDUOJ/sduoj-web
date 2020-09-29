@@ -15,6 +15,7 @@ const mutations = {
   },
   clearProfile: function(state) {
     state.profile = {};
+    console.log(123);
     window.localStorage.clear();
   }
 }
