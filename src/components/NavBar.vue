@@ -77,7 +77,7 @@ export default {
     ...mapGetters('user', ['isLogin', 'username', 'avatar'])
   },
   mounted: function() {
-    api.getProfile().then(ret => this.$store.dispatch('user/setProfile', ret)).catch(_ => console.log(_)); 
+    api.getProfile().then(ret => this.$store.dispatch('user/setProfile', ret)); 
   }
 };
 </script>

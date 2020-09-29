@@ -15,16 +15,11 @@ function post(url, data) {
         if (response.data.code === 0) {
           // everything alright
           resolve(response.data.data);
-        } else if (response.data.code === LOGIN_NEEDED) {
-          // timeout, login needed
-          reject(response);
         } else {
           Vue.prototype.$Message.error(response.data.message);
           reject(response);
         }
       }, err => {
-        console.log(err);
-        Vue.prototype.$Message.error(err.data);
         reject(err);
       })
   });
@@ -36,18 +31,13 @@ function get(url, params) {
     axios.get(url, params)
       .then(response => {
         if (response.data.code === 0) {
-          // everything alright
           resolve(response.data.data);
-        } else if (response.data.code === LOGIN_NEEDED) {
-          // timeout, login needed
-          reject(response);
         } else {
           Vue.prototype.$Message.error(response.data.message);
           reject(response);
         }
       }, err => {
-        // Vue.prototype.$Message.error(err.data);
-        reject(err);
+        reject(err.response);
       })
   })
 }
