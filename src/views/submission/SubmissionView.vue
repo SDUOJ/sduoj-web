@@ -136,6 +136,8 @@ export default {
       { submissionId: 3, username: 'TTTT', problemId: '1001', judgeResult: 2, time: 5, memory: 100, lang: 'C++', when: 1601176051000 },
       { submissionId: 4, username: 'jeshrz', problemId: '1001', judgeResult: 8, time: 0, memory: 0, lang: 'C++', when: 1601176001000 }
     ];
+    this.filterOpetions.username = this.$route.query.username;
+    this.filterOpetions.problemId = this.$route.query.pid;
     this.onFiltering();
   }
 }

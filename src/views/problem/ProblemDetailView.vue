@@ -67,11 +67,23 @@
                   <dt>Source</dt>
                   <dd>{{ problemInfo.source }}</dd>
                 </dl>
+                <dl>
+                  <dt>Tags</dt>
+                  <dd v-if="showTags" class="show-tags">
+                    <Poptip placement="bottom">
+                      <a>Show</a>
+                      <div slot="content">
+                        <span style="margin: 5px 5px" v-for="tag in problemInfo.tags" :key="tag">{{tag}}</span>
+                      </div>
+                    </Poptip>
+                  </dd>
+                  <dd v-else>Disabled</dd>
+                </dl>
               </div>
             </Card>
           <!--  -->
           <!-- 近期提交记录 -->
-          <Card class="problem-box">
+          <Card class="problem-box" v-if="isLogin">
             <div slot="header" class="problem-box-header">近期提交</div>
             <table border="0" cellpadding="0" cellspacing="0" style="margin: 5px 0; width: 100%;">
               <tr style="height: 30px;">
@@ -83,7 +95,7 @@
                 <td width="30%" style="text-align: center;">{{ sb.when | changeTime }}</td>
               </tr>
             </table>
-            <Button type="text" style="width: 100%; margin: 5px auto;">查看所有提交</Button>
+            <Button type="text" style="width: 100%; margin: 5px auto;" @click="handleShowSubmission">查看所有提交</Button>
           </Card>
           </Col>
         </Row>
@@ -100,6 +112,8 @@ import CodeEditor from '@/components/CodeEditor';
 
 import { format } from 'timeago.js';
 import utils from '@/utils';
+
+import { mapState } from 'vuex';
 
 export default {
   components: { 
@@ -120,12 +134,14 @@ export default {
         timeLimit: '',
         memoryLimit: '',
         examples: [],
-        source: ''
+        source: '',
+        tags: []
       },
       submissions: [],
       code: '',
       file: null,
-      lang: 'C++'
+      lang: 'C++',
+      showTags: true
     }
   },
   methods: {
@@ -141,9 +157,13 @@ export default {
     onSubmit: function() {
       console.log(this.code);
       console.log(this.file);
+    },
+    handleShowSubmission: function() {
+      this.$router.push('/submission?username=' + this.username + '&pid=' + this.problemInfo.problemId)
     }
   },
   computed: {
+    ...mapState('user', ['username', 'isLogin']),
     utils: () => utils
   },
   mounted: function() {
@@ -157,7 +177,8 @@ export default {
       examples: [
         { id: 1, input: '1 2', output: '3' },
         { id: 2, input: '4 5', output: '9' }
-      ]
+      ],
+      tags: ['greedy', 'math']
     };
 
     this.submissions = [
@@ -216,6 +237,9 @@ export default {
   .memlimit::after {
     content:" KB\0A";
     white-space:pre; 
+  }
+  .show-tags:hover {
+    cursor: pointer;
   }
 }
 
