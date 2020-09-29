@@ -51,6 +51,7 @@ import api from '@/utils/api';
 import { mapGetters } from 'vuex';
 
 export default {
+  // components: { Gravatar },
   methods: {
     toLogin: function() {
       this.$router.push('/login');
@@ -76,7 +77,7 @@ export default {
     ...mapGetters('user', ['isLogin', 'username', 'avatar'])
   },
   mounted: function() {
-    api.getProfile().then(ret => this.$store.dispatch('user/setProfile', ret)); 
+    api.getProfile().then(ret => this.$store.dispatch('user/setProfile', ret)).catch(_ => console.log(_)); 
   }
 };
 </script>

@@ -11,7 +11,7 @@
       <Col span="8">
         <Card class="profile">
           <div class="avatar-box">
-            <img :src="avatar || defaultAvatar" alt="">
+            <img :src="avatar" />
           </div>
         </Card>
       </Col>
@@ -20,7 +20,6 @@
 </template>
 
 <script>
-import defaultAvatar from '@/assets/default.png';
 import { mapGetters } from 'vuex';
 import Card from '@/components/Card';
 import UserProfile from '@/views/user/children/UserProfile';
@@ -30,10 +29,7 @@ import UserEmail from '@/views/user/children/UserEmail';
 export default {
   components: { Card, UserProfile, UserPassword, UserEmail },
   computed: {
-    ...mapGetters('user', ['avatar', 'isVerified']),
-    defaultAvatar: function() {
-      return defaultAvatar;
-    }
+    ...mapGetters('user', ['avatar', 'isVerified'])
   }
 }
 </script>
