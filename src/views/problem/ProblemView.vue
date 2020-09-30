@@ -10,7 +10,7 @@
               <div class="problem-set-header">
                 <span class="problem-set-header-name">题库</span>
                 <div class="problem-set-header-switch">
-                  <i-switch size="large">
+                  <i-switch size="large" @on-change="switchTag">
                     <span slot="open">标签</span>
                     <span slot="close">标签</span>
                   </i-switch>
@@ -20,8 +20,15 @@
 
               <!-- 题库 content -->
               <div class="problem-set-content">
-                  <Table :columns="columns5" :data="data5" class="problem-set-content-table"></Table>
-                  <Page :total="100" :current="1" show-elevator class="problem-set-content-page"/>
+                  <Table :columns="columns5" :data="data5" class="problem-set-content-table" @on-cell-click="handleProblemClick"></Table>
+                  <Page 
+                    class="problem-set-content-page"
+                    size="small" show-elevator show-sizer
+                    :total="totalPage" 
+                    :current.sync="curPage"
+                    @on-change="onPageChange"
+                    @on-page-size-change="onPageSizeChange"/>
+                  <!-- <Page :total="100" :current="1" show-elevator class="problem-set-content-page"/> -->
               </div>
               <!-- 题库 content -->
             </div>
@@ -45,6 +52,45 @@
               <!-- header -->
               <!-- 标签内容 -->
               <div class="problem-tags-content">
+                
+                <Row> 
+                  <Col span="12" class="problem-tags-content-col"> 
+                    <template v-for="(ptag, index) in tags">
+                      <div class="problem-tags-content-line" v-if="index % 2 === 0" :key="ptag.name">
+                        <Poptip trigger="hover" placement="left" :disabled="(ptag.children || []).length === 0" word-wrap width="300">
+                          <span>{{ ptag.name }}</span>
+                          <div slot="content" class="problem-tags-content-poptip">
+                            <span v-for="tag in (ptag.children || [])" :key="tag"> {{ tag }}</span>
+                          </div>
+                        </Poptip>  
+                      </div>
+                    </template>
+                  </Col>
+                  <Col span="12" class="problem-tags-content-col"> 
+                    <template v-for="(ptag, index) in tags">
+                      <div class="problem-tags-content-line" v-if="index % 2 === 1" :key="ptag.name">
+                        <Poptip trigger="hover" placement="right" :disabled="(ptag.children || []).length === 0" word-wrap width="300">
+                          <span>{{ ptag.name }}</span>
+                          <div slot="content" class="problem-tags-content-poptip">
+                            <span v-for="tag in (ptag.children || [])" :key="tag"> {{ tag }}</span>
+                          </div>
+                        </Poptip>  
+                      </div>
+                    </template>
+                  </Col>
+                </Row>
+
+                <!-- <Row class="problem-tags-content-line" v-for="ptag in tags" :key="ptag.name">
+                  <Col span="12" class="problem-tags-content-col">
+                    <Poptip trigger="hover" placement="left" :disabled="ptag.children.length === 0" word-wrap width="300">
+                        <span>{{ ptag.name }}</span>
+                        <div slot="content" class="problem-tags-content-poptip">
+                          <span v-for="tag in ptag.children" :key="tag"> {{ tag }}</span>
+                        </div>
+                      </Poptip> 
+                  </Col>
+                </Row> -->
+<!-- 
                 <Row class="problem-tags-content-line">
                     <Col span="12" class="problem-tags-content-col">
                       <Poptip trigger="hover" placement="left" :disabled="false" word-wrap width="300">
@@ -163,7 +209,7 @@
                       <span>其他</span>
                     </Poptip>
                   </Col>
-                </Row>
+                </Row> -->
               </div>
               <!-- 标签内容 -->
             </div>
@@ -183,7 +229,7 @@ export default {
       columns5: [
         {
           title: '#',
-          key: 'id',
+          key: 'problemId',
           width: 70,
           ellipsis: true,
           sortable: true
@@ -191,22 +237,8 @@ export default {
         {
           title: '题目',
           key: 'name',
-          minWidth: 150
-        },
-        {
-          title: '标签',
-          key: 'tags',
-          align: 'right',
-          minWidth: 270,
-          ellipsis: true,
-          render: (h, params) => {
-            return h('div', { class: 'problem-set-tags' },
-              params.row.tags.map(item => {
-                return h('div', { class: 'problem-set-tagbox' }, [
-                  h('div', { class: 'problem-set-tag' }, item)
-                ])
-              }));
-          }
+          minWidth: 150,
+          render: (h, params) => h('span', { class: 'hover' }, params.row.name)
         },
         {
           title: '递交数',
@@ -228,41 +260,151 @@ export default {
       ],
       data5: [
         {
-          id: '1',
+          problemId: '1',
           name: 'A + B Problem',
           tags: ['模拟', '暴力', '思维'],
           submit: 4586,
           acRate: 57.63
         },
         {
-          id: '2',
+          problemId: '2',
           name: 'GZS 与古英文字典',
           tags: ['暴力', '字典树', '字符串'],
           submit: 339,
           acRate: 80.02
         },
         {
-          id: '3',
+          problemId: '3',
           name: 'GZS 的三角形',
           tags: ['找规律'],
           submit: 179,
           acRate: 16.20
         },
         {
-          id: '4',
+          problemId: '4',
           name: 'GZS 与素数大法',
           tags: ['数学', '线性筛', '莫比乌斯反演'],
           submit: 352,
           acRate: 7.4
         },
         {
-          id: '5',
+          problemId: '5',
           name: '吉老师的线段树',
           tags: ['数据结构', '线段树'],
           submit: 3532,
           acRate: 2.4
         }
-      ]
+      ],
+      tags: [
+        {
+          name: '动态规划',
+          children: [
+            '区间DP',
+            '线性DP',
+            '树形DP',
+            '背包',
+            '线段树',
+            '状压DP',
+            '概率DP',
+            '数位DP',
+            '斜率优化'
+          ]
+        },
+        {
+          name: '搜索',
+          children: [
+            '状压DP',
+            '数位DP',
+            '背包'
+          ]
+        },
+        {
+          name: '数据结构',
+          children: []
+        },
+        {
+          name: '数论'
+        },
+        {
+          name: '树结构'
+        },
+        {
+          name: '图结构'
+        },
+        {
+          name: '组合数学'
+        },
+        {
+          name: '贪心'
+        },
+        {
+          name: '字符串'
+        },
+        {
+          name: '模拟'
+        },
+        {
+          name: '高精度'
+        },
+        {
+          name: '概率论'
+        },
+        {
+          name: '线性代数'
+        },
+        {
+          name: '交互题'
+        },
+        {
+          name: '计算几何'
+        },
+        {
+          name: '其他'
+        }
+      ],
+      totalPage: 100,
+      curPage: 1,
+      pageSize: 10
+    }
+  },
+  methods: {
+    switchTag: function(open) {
+      if (open) {
+        this.columns5 = [
+          ...this.columns5.slice(0, 2), 
+          {
+            title: '标签',
+            key: 'tags',
+            align: 'right',
+            minWidth: 270,
+            ellipsis: true,
+            render: (h, params) => {
+              return h('div', { class: 'problem-set-tags' },
+                params.row.tags.map(item => {
+                  return h('div', { class: 'problem-set-tagbox' }, [
+                    h('div', { class: 'problem-set-tag' }, item)
+                  ])
+                }));
+            }
+          },
+          ...this.columns5.slice(2)
+        ]
+      } else {
+        this.columns5 = this.columns5.filter(item => item.key !== 'tags');
+      }
+    },
+    onPageChange: function(curPage) {
+      this.curPage = curPage;
+      console.log(this.curPage);
+    },
+    onPageSizeChange: function(pageSize) {
+      this.pageSize = pageSize;
+      console.log(this.pageSize);
+    },
+    handleProblemClick: function(row, col) {
+      if (col.key === 'name') {
+        this.$router.push('/problem/' + row.problemId);
+      }
     }
   }
 }
@@ -335,6 +477,7 @@ li {
           float: right;
           border-radius: 4px;
           .problem-set-tag {
+            user-select: none;
             margin: 4px 6px;
           }
         }
@@ -371,11 +514,11 @@ li {
     color: #797f7f;
   }
   .problem-tags-content {
-    margin-bottom: 25px;
-    .problem-tags-content-line {
-      margin-bottom: 20px;
-      .problem-tags-content-col {
-        padding-left: 16px;
+    margin-bottom: 14px;
+    .problem-tags-content-col {
+      padding-left: 16px;
+      .problem-tags-content-line  {
+        margin-bottom: 16px;
       }
     }
     span {
