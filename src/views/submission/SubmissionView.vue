@@ -1,8 +1,8 @@
 <template>
   <div class="container">
-    <Card class="filter">
-      <div slot="header">
-        <span>过滤</span>
+    <Card class="filter" dis-hover>
+      <div slot="title">
+        <h3 style="display: inline">过滤</h3>
         <div class="btns">
           <Button type="text" @click="onFiltering">过滤</Button>
           <Button type="text" @click="onReset">重置</Button>
@@ -43,8 +43,8 @@
         </div>
       </div>
     </Card>
-    <div class="clearfix">
-      <Table stripe :columns="columns" :data="submissionFilted" class="data-table" @on-cell-click="showSubmissionDetail"></Table>
+    <Card class="clearfix" dis-hover :padding="0">
+      <Table :columns="columns" :data="submissionFilted" class="data-table" @on-cell-click="showSubmissionDetail"></Table>
       <div class="pages">
         <Page 
           size="small" show-elevator show-sizer
@@ -53,20 +53,20 @@
           @on-change="onPageChange"
           @on-page-size-change="onPageSizeChange"/>
       </div>
-    </div>
+    </Card>
   </div>
 </template>
 
 <script>
-import Card from '@/components/Card';
+// import Card from '@/components/Card';
 import utils from '@/utils';
 
 export default {
-  components: { Card },
+  // components: { Card },
   data: function() {
     return {
       columns: [
-        { title: '#', key: 'submissionId', sortable: true },
+        { title: '#', key: 'submissionId', sortable: true, maxWidth: 80 },
         { title: '用户', key: 'username' },
         { title: '题目', key: 'problemId' },
         { 
@@ -75,13 +75,13 @@ export default {
           minWidth: 50,
           render: (h, params) => h('span', {  class: utils.status2Class(params.row.judgeResult) }, utils.judgeResultMap[params.row.judgeResult])
         },
-        { title: '用时', key: 'time', sortable: true },
-        { title: '内存', key: 'memory', sortable: true },
+        { title: '用时', key: 'time', sortable: true, maxWidth: 90 },
+        { title: '内存', key: 'memory', sortable: true, maxWidth: 90 },
         { title: '语言', key: 'lang' },
         { 
           title: '提交时间',
           key: 'when',
-          minWidth: 50,
+          minWidth: 55,
           render: (h, params) => h('span', utils.dateFormat(params.row.when, 'yyyy-MM-dd hh:mm:ss'))
         }
       ],
@@ -180,6 +180,7 @@ export default {
 .pages {
   float: right;
   margin: 20px auto;
+  padding-right: 15px;
 }
 
 </style>
