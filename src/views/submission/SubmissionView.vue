@@ -44,7 +44,7 @@
       </div>
     </Card>
     <div class="clearfix">
-      <Table stripe :columns="columns" :data="submissionFilted" class="data-table"></Table>
+      <Table stripe :columns="columns" :data="submissionFilted" class="data-table" @on-cell-click="showSubmissionDetail"></Table>
       <div class="pages">
         <Page 
           size="small" show-elevator show-sizer
@@ -102,11 +102,11 @@ export default {
     onFiltering: function() {
       let matched = this.submissions;
       matched = matched.filter(item => item.username.toLowerCase().indexOf(this.filterOpetions.username.toLowerCase()) !== -1);
-      matched = matched.filter(item => item.problemId.toString().toLowerCase().startsWith(this.filterOpetions.problemId.toString().toLowerCase()));
+      matched = matched.filter(item => item.problemId.toLowerCase().startsWith(this.filterOpetions.problemId));
       if (this.filterOpetions.judgeResult) {
         matched = matched.filter(item => item.judgeResult === utils.result2Status(this.filterOpetions.judgeResult));
       }
-      matched = matched.filter(item => item.lang.toLowerCase().toLowerCase().indexOf(this.filterOpetions.lang.toLowerCase()) !== -1);
+      matched = matched.filter(item => item.lang.toLowerCase().indexOf(this.filterOpetions.lang.toLowerCase()) !== -1);
       this.submissionFilted = matched;
     },
     clearFilterOptions: function() {
@@ -125,6 +125,11 @@ export default {
     onPageSizeChange: function(pageSize) {
       this.pageSize = pageSize;
       console.log(this.pageSize);
+    },
+    showSubmissionDetail: function(row, col, data, event) {
+      if (col.key === 'judgeResult') {
+        this.$router.push('/submission/' + row.submissionId);
+      }
     }
   },
   mounted: function() {
@@ -136,8 +141,8 @@ export default {
       { submissionId: 3, username: 'TTTT', problemId: '1001', judgeResult: 2, time: 5, memory: 100, lang: 'C++', when: 1601176051000 },
       { submissionId: 4, username: 'jeshrz', problemId: '1001', judgeResult: 8, time: 0, memory: 0, lang: 'C++', when: 1601176001000 }
     ];
-    this.filterOpetions.username = this.$route.query.username;
-    this.filterOpetions.problemId = this.$route.query.pid;
+    this.filterOpetions.username = this.$route.query.username || '';
+    this.filterOpetions.problemId = this.$route.query.pid || '';
     this.onFiltering();
   }
 }
