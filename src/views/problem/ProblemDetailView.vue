@@ -91,7 +91,7 @@
                 <th>时间</th>
               </tr>
               <tr class="judge-result" @click="showDetail(sb.submissionId)" v-for="sb in submissions" :key="sb.submissionId">
-                <td width="70%" :class="utils.status2Class(sb.judgeResult)" style="text-align: center;">{{ sb.judgeResult | changeResult }}</td>
+                <td width="70%" :class="utils.status2Class(sb.judgeResult)" style="text-align: center;" @click="toSubmissionDetail(submissionId)">{{ sb.judgeResult | changeResult }}</td>
                 <td width="30%" style="text-align: center;">{{ sb.when | changeTime }}</td>
               </tr>
             </table>
@@ -160,6 +160,9 @@ export default {
     },
     handleShowSubmission: function() {
       this.$router.push('/submission?username=' + this.username + '&pid=' + this.problemInfo.problemId)
+    },
+    toSubmissionId: function(submissionId) {
+      this.$router.push('/submission/' + submissionId);
     }
   },
   computed: {

@@ -25,6 +25,7 @@ const mutations = {
 
 const actions = {
   setProfile({ commit }, profile) {
+    console.log(profile);
     commit('setProfile', profile);
   },
   clearProfile({ commit }) {

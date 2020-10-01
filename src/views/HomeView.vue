@@ -15,11 +15,11 @@
     </Carousel>
     <Row class="main">
       <Col span="16" class="main-lf">
-        <Card>
-          <template slot="header">
+        <Card title="Announcements" icon="ios-alert-outline" dis-hover :padding="10">
+          <!-- <template slot="header">
             <Icon type="ios-alert-outline" />&nbsp; 公告
-          </template>
-          <template>
+          </template> -->
+          <div style="margin: 0 10px">
             <Row class="announce-subtitle">
               <Col span="18">标题</Col>
               <Col span="6">时间</Col>
@@ -28,14 +28,14 @@
               <Col span="18">{{ item.title }}</Col>
               <Col span="6">{{ item.time }}</Col>
             </Row>
-          </template>
+          </div>
         </Card>
       </Col>
       <Col span="8" class="main-ri">
-      <Card>
-        <template slot="header">
+      <Card dis-hover title="Search" icon="ios-search">
+        <!-- <template slot="header">
           <Icon type="ios-search" />&nbsp; 搜索
-        </template>
+        </template> -->
         <template>
           <div class="global-search">
             <Input style="width: 100%; display: block;" type="text" autocomplete="off" placeholder="ID" />
@@ -48,10 +48,10 @@
 </template>
 
 <script>
-import Card from '../components/Card';
+// import Card from '../components/Card';
 
 export default {
-  components: { Card },
+  // components: { Card },
   data: function() {
     return {
       carouselSettings: {
@@ -100,7 +100,7 @@ export default {
 }
 
 .announce-subtitle {
-  height: 40px;
+  height: 30px;
   font-weight: bold;
   display: -webkit-box;
   -webkit-box-align: center;
@@ -117,10 +117,10 @@ export default {
 }
 
 .global-search {
-  margin-top: 10px;
-  height: 40px;
+  // margin-top: 10px;
+  height: 30px;
   /deep/ .ivu-input {
-    border-radius: 20px;
+    border-radius: 10px;
   }
 }
 
