@@ -36,7 +36,6 @@ function get(url, params) {
           reject(response.data);
         }
       }, err => {
-        console.log(err.response);
         reject(err.response.data);
       })
   })
