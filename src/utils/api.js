@@ -89,5 +89,8 @@ export default {
   // 题目相关
   problemQuery: function(problemCode) {
     return get('/problem/query', { problemCode });
+  },
+  getProblemList: function(params) {
+    return get('/problem/list', params);
   }
 }
