@@ -15,8 +15,8 @@
           <MenuItem name="/contest" to="/contest">
             <Icon type="ios-keypad"></Icon>比赛
           </MenuItem>
-          <MenuItem name="/undefined" to="/undefined">
-            <Icon type="ios-analytics"></Icon>Item 3
+          <MenuItem name="/submission" to="/submission">
+            <Icon type="ios-analytics"></Icon>所有提交
           </MenuItem>
           <MenuItem name="/undefined" to="/undefined">
             <Icon type="ios-paper"></Icon>Item 4
@@ -77,7 +77,7 @@ export default {
     ...mapGetters('user', ['isLogin', 'username', 'avatar'])
   },
   mounted: function() {
-    api.getProfile().then(ret => this.$store.dispatch('user/setProfile', ret)); 
+    api.getProfile().then(ret => this.$store.dispatch('user/setProfile', ret), _ => _); 
   }
 };
 </script>
