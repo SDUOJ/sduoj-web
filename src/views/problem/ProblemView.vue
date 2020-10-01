@@ -299,8 +299,13 @@ export default {
       }
     },
     handleProblemSort: function({ column, key, order }) {
-      this.sortBy = key;
-      this.ascending = (order === 'asc');
+      if (order === 'normal') {
+        this.sortBy = '';
+        this.ascending = false
+      } else {
+        this.sortBy = key;
+        this.ascending = order === 'asc';
+      }
       this.getProblemList();
     },
     getProblemList: function() {
