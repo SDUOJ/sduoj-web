@@ -16,10 +16,10 @@ function post(url, data) {
           resolve(response.data.data);
         } else {
           Vue.prototype.$Message.error(response.data.message);
-          reject(response);
+          reject(response.data);
         }
       }, err => {
-        reject(err);
+        reject(err.response.data);
       })
   });
 }
@@ -27,16 +27,17 @@ function post(url, data) {
 function get(url, params) {
   params = params || {};
   return new Promise((resolve, reject) => {
-    axios.get(url, params)
+    axios.get(url, { params })
       .then(response => {
         if (response.data.code === 0) {
           resolve(response.data.data);
         } else {
           Vue.prototype.$Message.error(response.data.message);
-          reject(response);
+          reject(response.data);
         }
       }, err => {
-        reject(err.response);
+        console.log(err.response);
+        reject(err.response.data);
       })
   })
 }
@@ -50,5 +51,8 @@ export default {
   },
   getProfile: function() {
     return get('/user/getProfile');
+  },
+  getProblemList: function(params) {
+    return get('/problem/list', params);
   }
 }

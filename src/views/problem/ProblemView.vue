@@ -20,15 +20,20 @@
 
               <!-- 题库 content -->
               <div class="problem-set-content">
-                  <Table :columns="problemTableColumns" :data="problemTableData" class="problem-set-content-table" @on-cell-click="handleProblemClick"></Table>
+                  <Table 
+                    :columns="problemTableColumns" 
+                    :data="problemTableData" 
+                    class="problem-set-content-table" 
+                    @on-cell-click="handleProblemClick"
+                    @on-sort-change="handleProblemSort">
+                  </Table>
                   <Page 
                     class="problem-set-content-page"
                     size="small" show-elevator show-sizer
-                    :total="totalPage" 
-                    :current.sync="curPage"
+                    :total="totalPage"
+                    :current.sync="pageNow"
                     @on-change="onPageChange"
                     @on-page-size-change="onPageSizeChange"/>
-                  <!-- <Page :total="100" :current="1" show-elevator class="problem-set-content-page"/> -->
               </div>
               <!-- 题库 content -->
             </div>
@@ -91,19 +96,21 @@
 </template>
 
 <script>
+import api from '@/utils/api';
+
 export default {
   data () {
     return {
       problemTableColumns: [
         {
           title: '题目编码',
-          key: 'ojProblemId',
+          key: 'problemCode',
           width: 210,
           render: (h, params) => {
             let texts = '';
-            if (params.row.ojProblemId !== null) {
-              if (params.row.ojProblemId.length > 20) {
-                texts = params.row.ojProblemId.substring(0, 20) + '...';
+            if (params.row.problemCode !== null) {
+              if (params.row.problemCode.length > 20) {
+                texts = params.row.problemCode.substring(0, 20) + '...';
                 const strs = texts.split('-');
                 strs[1] = ' ' + strs[1]
                 return h('Tooltip', {
@@ -120,10 +127,10 @@ export default {
                       whiteSpace: 'normal',
                       wordBreak: 'break-all'
                     }
-                  }, params.row.ojProblemId)
+                  }, params.row.problemCode)
                 ]);
               } else {
-                texts = params.row.ojProblemId;
+                texts = params.row.problemCode;
                 const strs = texts.split('-');
                 strs[1] = ' ' + strs[1]
                 return h('span', [
@@ -136,82 +143,82 @@ export default {
         },
         {
           title: '标题',
-          key: 'problemInfo',
-          minWidth: 150,
-          render: (h, params) => {
-            if (params.row.problemInfo.ifPass === 0) {
-              return h('span', { class: 'hover' },
-                params.row.problemInfo.name);
-            } else {
-              return h('span', { class: 'hover' }, [
-                params.row.problemInfo.name,
-                ' ',
-                h('Icon', {
-                  props: {
-                    type: 'md-checkmark'
-                  },
-                  style: {
-                    color: '#229954',
-                    fontSize: '16px',
-                    verticalAlign: 'middle'
-                  }
-                })]);
-            } 
-          }
+          key: 'problemTitle',
+          minWidth: 150
+          // render: (h, params) => {
+          //   if (params.row.problemInfo.ifPass === 0) {
+          //     return h('span', { class: 'hover' },
+          //       params.row.problemInfo.name);
+          //   } else {
+          //     return h('span', { class: 'hover' }, [
+          //       params.row.problemInfo.name,
+          //       ' ',
+          //       h('Icon', {
+          //         props: {
+          //           type: 'md-checkmark'
+          //         },
+          //         style: {
+          //           color: '#229954',
+          //           fontSize: '16px',
+          //           verticalAlign: 'middle'
+          //         }
+          //       })]);
+          //   } 
+          // }
         },
         {
           title: '通过数',
-          key: 'acNumber',
+          key: 'acceptNum',
           width: 100,
-          sortable: true
+          sortable: 'custom'
         }
       ],
       problemTableData: [
-        {
-          ojProblemId: 'POJ-1001',
-          problemInfo: {
-            name: 'A + B Problem',
-            ifPass: 0
-          },
-          tags: ['模拟', '暴力', '思维'],
-          acNumber: 4586
-        },
-        {
-          ojProblemId: 'HDU-1200',
-          problemInfo: {
-            name: 'GZS 与古英文字典',
-            ifPass: 1
-          },
-          tags: ['暴力', '字典树', '字符串'],
-          acNumber: 339
-        },
-        {
-          ojProblemId: 'CodeForces-1221A',
-          problemInfo: {
-            name: 'GZS 的三角形',
-            ifPass: 1
-          },
-          tags: ['找规律'],
-          acNumber: 179
-        },
-        {
-          ojProblemId: 'SDUOJ-1200',
-          problemInfo: {
-            name: 'GZS 与素数大法',
-            ifPass: 0
-          },
-          tags: ['数学', '线性筛', '莫比乌斯反演', '模拟', '线性筛', '莫比乌斯反演'],
-          acNumber: 352
-        },
-        {
-          ojProblemId: 'AtCoder-soundhound2018_summer_qual_e',
-          problemInfo: {
-            name: '吉老师的线段树和瑞瑞一起',
-            ifPass: 1
-          },
-          tags: ['数据结构', '线段树'],
-          acNumber: 3532
-        }
+        // {
+        //   ojProblemId: 'POJ-1001',
+        //   problemInfo: {
+        //     name: 'A + B Problem',
+        //     ifPass: 0
+        //   },
+        //   tags: ['模拟', '暴力', '思维'],
+        //   acNumber: 4586
+        // },
+        // {
+        //   ojProblemId: 'HDU-1200',
+        //   problemInfo: {
+        //     name: 'GZS 与古英文字典',
+        //     ifPass: 1
+        //   },
+        //   tags: ['暴力', '字典树', '字符串'],
+        //   acNumber: 339
+        // },
+        // {
+        //   ojProblemId: 'CodeForces-1221A',
+        //   problemInfo: {
+        //     name: 'GZS 的三角形',
+        //     ifPass: 1
+        //   },
+        //   tags: ['找规律'],
+        //   acNumber: 179
+        // },
+        // {
+        //   ojProblemId: 'SDUOJ-1200',
+        //   problemInfo: {
+        //     name: 'GZS 与素数大法',
+        //     ifPass: 0
+        //   },
+        //   tags: ['数学', '线性筛', '莫比乌斯反演', '模拟', '线性筛', '莫比乌斯反演'],
+        //   acNumber: 352
+        // },
+        // {
+        //   ojProblemId: 'AtCoder-soundhound2018_summer_qual_e',
+        //   problemInfo: {
+        //     name: '吉老师的线段树和瑞瑞一起',
+        //     ifPass: 1
+        //   },
+        //   tags: ['数据结构', '线段树'],
+        //   acNumber: 3532
+        // }
       ],
       tags: [
         {
@@ -281,8 +288,11 @@ export default {
         }
       ],
       totalPage: 100,
-      curPage: 1,
-      pageSize: 10
+      pageNow: 1,
+      pageSize: 10,
+      totalProblemNum: 0,
+      sortBy: '',
+      ascending: false
     }
   },
   methods: {
@@ -312,18 +322,40 @@ export default {
       }
     },
     onPageChange: function(curPage) {
-      this.curPage = curPage;
-      console.log(this.curPage);
+      this.pageNow = curPage;
+      this.getProblemList();
     },
     onPageSizeChange: function(pageSize) {
       this.pageSize = pageSize;
-      console.log(this.pageSize);
+      this.getProblemList();
     },
     handleProblemClick: function(row, col) {
-      if (col.key === 'name') {
-        this.$router.push('/problem/' + row.problemId);
+      if (col.key === 'problemInfo') {
+        this.$router.push('/problem/' + row.ojProblemId);
       }
+    },
+    handleProblemSort: function({ column, key, order }) {
+      this.sortBy = key;
+      this.ascending = (order === 'asc');
+      this.getProblemList();
+    },
+    getProblemList: function() {
+      api.getProblemList({
+        pageNow: this.pageNow,
+        pageSize: this.pageSize,
+        sortBy: this.sortBy,
+        ascending: this.ascending
+      }).then(ret => {
+        this.problemTableData = ret.rows;
+        this.totalPage = parseInt(ret.totalPage);
+        this.totalProblemNum = parseInt(ret.total);
+      }).catch(err => {
+        console.log(err);
+      })
     }
+  },
+  mounted: function() {
+    this.getProblemList();
   }
 }
 </script>
