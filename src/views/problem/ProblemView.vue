@@ -183,42 +183,6 @@ export default {
         //   tags: ['模拟', '暴力', '思维'],
         //   acNumber: 4586
         // },
-        // {
-        //   ojProblemId: 'HDU-1200',
-        //   problemInfo: {
-        //     name: 'GZS 与古英文字典',
-        //     ifPass: 1
-        //   },
-        //   tags: ['暴力', '字典树', '字符串'],
-        //   acNumber: 339
-        // },
-        // {
-        //   ojProblemId: 'CodeForces-1221A',
-        //   problemInfo: {
-        //     name: 'GZS 的三角形',
-        //     ifPass: 1
-        //   },
-        //   tags: ['找规律'],
-        //   acNumber: 179
-        // },
-        // {
-        //   ojProblemId: 'SDUOJ-1200',
-        //   problemInfo: {
-        //     name: 'GZS 与素数大法',
-        //     ifPass: 0
-        //   },
-        //   tags: ['数学', '线性筛', '莫比乌斯反演', '模拟', '线性筛', '莫比乌斯反演'],
-        //   acNumber: 352
-        // },
-        // {
-        //   ojProblemId: 'AtCoder-soundhound2018_summer_qual_e',
-        //   problemInfo: {
-        //     name: '吉老师的线段树和瑞瑞一起',
-        //     ifPass: 1
-        //   },
-        //   tags: ['数据结构', '线段树'],
-        //   acNumber: 3532
-        // }
       ],
       tags: [
         {
@@ -302,15 +266,15 @@ export default {
           ...this.problemTableColumns.slice(0, 2), 
           {
             title: '标签',
-            key: 'tags',
+            key: 'problemTagDTOList',
             align: 'right',
             minWidth: 270,
             ellipsis: true,
             render: (h, params) => {
               return h('div', { class: 'problem-set-tags' },
-                params.row.tags.map(item => {
+                params.row.problemTagDTOList.map(item => {
                   return h('div', { class: 'problem-set-tagbox' }, [
-                    h('div', { class: 'problem-set-tag' }, item)
+                    h('div', { class: 'problem-set-tag' }, item.title)
                   ])
                 }));
             }
@@ -318,7 +282,7 @@ export default {
           ...this.problemTableColumns.slice(2)
         ]
       } else {
-        this.problemTableColumns = this.problemTableColumns.filter(item => item.key !== 'tags');
+        this.problemTableColumns = this.problemTableColumns.filter(item => item.key !== 'problemTagDTOList');
       }
     },
     onPageChange: function(curPage) {
