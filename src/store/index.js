@@ -16,7 +16,6 @@ export default new Vuex.Store({
     },
     updatePathComponents(state, route) {
       let matched = route.matched;
-      console.log(matched)
       if (matched.length === 0 || matched[0].name !== 'home') {
         matched = [{ path: '/home', meta: { title: '首页' } }].concat(matched);
       }

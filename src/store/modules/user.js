@@ -6,7 +6,7 @@ const state = {
 
 const getters = {
   profile: state => state.profile || {},
-  username: state => state.profile.username,
+  username: state => state.profile.username || '',
   avatar: state => 'https://www.gravatar.com/avatar/' + md5(state.profile.email || '') + '?s=200&d=mp&r=g',
   isLogin: state => !!state.profile.userId,
   isVerified: state => !!state.profile.emailVerified
@@ -25,7 +25,6 @@ const mutations = {
 
 const actions = {
   setProfile({ commit }, profile) {
-    console.log(profile);
     commit('setProfile', profile);
   },
   clearProfile({ commit }) {

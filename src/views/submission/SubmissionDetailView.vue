@@ -1,56 +1,60 @@
 <template>
   <div class="container">
     <Row>
-      <Col span="18">
+      <Col span="17">
         <div style="margin-right: 20px;">
           <!-- websocket -->
           <Card class="box" dis-hover :padding="0">
-            <div class="title" slot="title">
-              <Icon type="md-information" color="grey" v-if="submission.judgeResult === 0"/>
-              <Icon type="md-checkmark" color="#5cb85c" v-else-if="submission.judgeResult === 1"/>
-              <Icon type="md-close" color="orange" v-else-if="submission.judgeResult === 8"/>
-              <Icon type="md-close" color="#d9534f" v-else/>
-              &nbsp;
-              <span :class="utils.status2Class(submission.judgeResult)">{{ submission.judgeResult | judgeResult2Text }}</span>
-            </div>
-            <Table 
+            <JudgeResult class="title" slot="title" :result="submission.judgeResult" />
+            <!-- <Table 
               disabled-hover
-              v-if="checkpointResults.length !== 0"
+              v-if="submission.checkpointResults.length !== 0"
               :show-header="false"
               no-data-text=""
               size="small"
               :columns="columns" 
-              :data="checkpointResults" 
-              class="data-table" ></Table>
+              :data="submission.checkpointResults" 
+              class="data-table" ></Table> -->
           </Card>
           <Card v-if="showJudgerLog" class="box" :title="compilerLogTitle" dis-hover>
-            <pre v-highlightjs="submission.judgerLog"><code style="font-family: Menlo, Monaco, 'Courier New', monospace;" class="plaintext"/></pre>
+            <pre v-highlightjs="submission.judgeLog"><code style="font-family: Menlo, Monaco, 'Courier New', monospace;" class="plaintext"/></pre>
           </Card>
           <Card v-if="showCode" class="box" title="Your Code" icon="md-code" dis-hover :padding="5">
               <pre v-highlightjs="submission.code"><code style="font-family: Menlo, Monaco, 'Courier New', monospace;" :class="submission.lang" /></pre>
           </Card>
         </div>
       </Col>
-      <Col span="6">
+      <Col span="7">
         <Card title="Submission" icon="ios-options" dis-hover :padding="0">
             <CellGroup>
                 <div style="margin-top: 24px;">
                   <Cell title="Public" v-if="submission.username === username">
                       <i-switch v-model="submission.isPublic" slot="extra" true-color="#19be6b"/>
                   </Cell>
-                  <Cell title="Problem ID" :extra="submission.problemId" :to="'/problem/' + submission.problemId" />
+                  <Cell title="Problem Code" :extra="submission.problemCode" :to="'/problem/' + submission.problemCode" />
+                  <Cell title="Problem ID" :extra="submission.problemId" />
                 </div>
                 <Divider size="small"/>
                 <div style="margin-bottom: 24px;">
                   <Cell title="Submission ID" :extra="submission.submissionId" />
+                  <Cell title="Create Time" :extra="submission.gmtCreate | dateFormat('yyyy-MM-dd hh:mm:ss')" />
+                  <Cell title="Judge Time" :extra="submission.gmtModified | dateFormat('yyyy-MM-dd hh:mm:ss')" />
                   <Cell title="Username" :extra="submission.username" />
-                  <Cell title="Score" :extra="submission.judgeScore.toString()" />
-                  <Cell title="Language" :extra="submission.lang" />
+                  <Cell title="Judge Result">
+                    <JudgeResult slot="extra" :result="submission.judgeResult" />
+                  </Cell>
+                  <Cell title="Score">
+                    <span slot="extra">{{ submission.judgeScore || 0 }}</span>
+                  </Cell>
+                  <Cell title="Language" :extra="submission.language" />
+                  <Cell title="Code Length">
+                    <span slot="extra">{{ submission.codeLength || 0 }}</span>
+                  </Cell>
                   <Cell title="Total Time">
-                    <span class="time" slot="extra">{{ submission.usedTime }}</span>
+                    <span class="time" slot="extra">{{ submission.usedTime || 0 }}</span>
                   </Cell>
                   <Cell title="Total Memory">
-                    <span class="mem" slot="extra">{{ submission.usedMemory }}</span>
+                    <span class="mem" slot="extra">{{ submission.usedMemory || 0 }}</span>
                   </Cell>
                 </div>
             </CellGroup>
@@ -61,49 +65,37 @@
 </template>
 
 <script>
-// import Card from '@/components/Card';
+import JudgeResult from '@/components/JudgeResult';
 import { mapGetters } from 'vuex';
 import { sendWebsocket, closeWebsocket } from '@/utils/socket';
 import utils from '@/utils';
+import api from '@/utils/api';
 
 export default {
-  // components: { Card },
+  components: { JudgeResult },
   data: function() {
     return {
-      submission: {
-        submissionId: '123',
-        problemId: '1001',
-        username: '',
-        usedTime: '',
-        usedMemory: '',
-        code: '#include <stdio.h>\nint main() {\n\tint a, b;\n\tscanf("%d%d", &a, &b);\n\tprintf("%d\\n", a + b);\n\treturn 0;\n}',
-        lang: 'cpp',
-        judgeResult: 8,
-        judgeScore: 0,
-        judgerLog: 'warning: axxxxxx\nxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-        isPublic: true
-      },
+      submission: {},
       columns: [
         { title: '#', key: 'submissionId' },
         { 
           title: '评测结果', 
           key: 'judgeResult',
           minWidth: 50,
-          render: (h, params) => h('span', {  class: utils.status2Class(params.row.judgeResult) }, utils.judgeResultMap[params.row.judgeResult])
+          render: (h, params) => h(JudgeResult, {  props: { result: params.row.judgeResult } })
         },
         { title: '用时', key: 'time' },
         { title: '内存', key: 'memory' }
-      ],
-      checkpointResults: []
+      ]
     }
   },
   filters: {
-    judgeResult2Text: judgeResult => utils.judgeResultMap[judgeResult]
+    dateFormat: (timestamp, format) => utils.dateFormat(timestamp, format)
   },
   methods: {
     wsSuccess: function(data) {
       console.log(data);
-      if (data.length === this.submission.numOfCheckpoints) {
+      if (data.length === this.submission.checkpointNum) {
         closeWebsocket();
       }
       this.checkpointResults = data;
@@ -120,12 +112,11 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['username']),
-    utils: () => utils,
     showCode: function() {
-      return true || !!this.submission.code;
+      return !!this.submission.code;
     },
     showJudgerLog: function() {
-      return !!this.submission.judgerLog || this.submission.judgeResult === 5 || this.submission.judgeResult === 8;
+      return !!this.submission.judgeLog || this.submission.judgeResult === 5 || this.submission.judgeResult === 8;
     },
     compilerLogTitle: function() {
       if (this.submission.judgeResult === 5) {
@@ -141,6 +132,9 @@ export default {
     }
   },
   mounted: function() {
+    api.getSubmissionDetail(this.$route.params.submissionId).then(ret => {
+      this.submission = ret;
+    })
     // this.wsRequest();
   },
   beforeDestroy: function() {
@@ -164,10 +158,10 @@ export default {
     content:" ms\0A";
     white-space:pre; 
   }
-  .mem::after {
-    content:" KB\0A";
-    white-space:pre; 
-  }
+.mem::after {
+  content:" KB\0A";
+  white-space:pre; 
+}
 
 .box {
   margin-bottom: 20px;
@@ -176,6 +170,5 @@ export default {
 .title {
   line-height: 35px;
   font-size: 1.7rem;
-  // margin-bottom: .75rem;
 }
 </style>

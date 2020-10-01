@@ -1,4 +1,7 @@
 export default function dateFormat(timestamp, fmt) {
+  if (typeof (timestamp) === 'string') {
+    timestamp = parseInt(timestamp);
+  }
   const time = new Date(timestamp);
   var o = { 
     'M+': time.getMonth() + 1,                 // 月份 
