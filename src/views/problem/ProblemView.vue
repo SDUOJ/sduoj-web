@@ -20,7 +20,7 @@
 
               <!-- 题库 content -->
               <div class="problem-set-content">
-                  <Table :columns="columns5" :data="data5" class="problem-set-content-table" @on-cell-click="handleProblemClick"></Table>
+                  <Table :columns="problemTableColumns" :data="problemTableData" class="problem-set-content-table" @on-cell-click="handleProblemClick"></Table>
                   <Page 
                     class="problem-set-content-page"
                     size="small" show-elevator show-sizer
@@ -52,7 +52,6 @@
               <!-- header -->
               <!-- 标签内容 -->
               <div class="problem-tags-content">
-                
                 <Row> 
                   <Col span="12" class="problem-tags-content-col"> 
                     <template v-for="(ptag, index) in tags">
@@ -79,137 +78,6 @@
                     </template>
                   </Col>
                 </Row>
-
-                <!-- <Row class="problem-tags-content-line" v-for="ptag in tags" :key="ptag.name">
-                  <Col span="12" class="problem-tags-content-col">
-                    <Poptip trigger="hover" placement="left" :disabled="ptag.children.length === 0" word-wrap width="300">
-                        <span>{{ ptag.name }}</span>
-                        <div slot="content" class="problem-tags-content-poptip">
-                          <span v-for="tag in ptag.children" :key="tag"> {{ tag }}</span>
-                        </div>
-                      </Poptip> 
-                  </Col>
-                </Row> -->
-<!-- 
-                <Row class="problem-tags-content-line">
-                    <Col span="12" class="problem-tags-content-col">
-                      <Poptip trigger="hover" placement="left" :disabled="false" word-wrap width="300">
-                        <span>动态规划</span>
-                        <div slot="content" class="problem-tags-content-poptip">
-                          <span>区间DP</span>
-                          <span>树形DP</span>
-                          <span>线性DP</span>
-                          <span>背包</span>
-                          <span>线段树</span>
-                          <span>状压DP</span>
-                          <span>概率DP</span>
-                          <span>数位DP</span>
-                          <span>斜率优化DP</span>
-                        </div>
-                      </Poptip>
-                    </Col>
-
-                    <Col span="12" class="problem-tags-content-col">
-                      <Poptip trigger="hover" placement="right" :disabled="false" word-wrap width="200">
-                        <span>搜索</span>
-                        <div slot="content" class="problem-tags-content-poptip">
-                          <span>区间DP</span>
-                          <span>树形DP</span>
-                        </div>
-                      </Poptip>
-                    </Col>
-                </Row>
-
-                <Row class="problem-tags-content-line">
-                  <Col span="12" class="problem-tags-content-col">
-                    <Poptip trigger="click" placement="left" :disabled="true">
-                      <span>数据结构</span>
-                    </Poptip>
-                  </Col>
-                  <Col span="12" class="problem-tags-content-col">
-                    <Poptip trigger="click" placement="left" :disabled="true">
-                      <span>数论</span>
-                    </Poptip>
-                  </Col>
-                </Row>
-
-                <Row class="problem-tags-content-line">
-                  <Col span="12" class="problem-tags-content-col">
-                    <Poptip trigger="click" placement="left" :disabled="true">
-                      <span>树结构</span>
-                    </Poptip>
-                  </Col>
-                  <Col span="12" class="problem-tags-content-col">
-                    <Poptip trigger="click" placement="left" :disabled="true">
-                      <span>图结构</span>
-                    </Poptip>
-                  </Col>
-                </Row>
-
-                <Row class="problem-tags-content-line">
-                  <Col span="12" class="problem-tags-content-col">
-                    <Poptip trigger="click" placement="left" :disabled="true">
-                      <span>组合数学</span>
-                    </Poptip>
-                  </Col>
-                  <Col span="12" class="problem-tags-content-col">
-                    <Poptip trigger="click" placement="left" :disabled="true">
-                      <span>贪心</span>
-                    </Poptip>
-                  </Col>
-                </Row>
-
-                <Row class="problem-tags-content-line">
-                  <Col span="12" class="problem-tags-content-col">
-                    <Poptip trigger="click" placement="left" :disabled="true">
-                      <span>字符串</span>
-                    </Poptip>
-                  </Col>
-                  <Col span="12" class="problem-tags-content-col">
-                    <Poptip trigger="click" placement="left" :disabled="true">
-                      <span>模拟</span>
-                    </Poptip>
-                  </Col>
-                </Row>
-
-                <Row class="problem-tags-content-line">
-                  <Col span="12" class="problem-tags-content-col">
-                    <Poptip trigger="click" placement="left" :disabled="true">
-                      <span>高精度</span>
-                    </Poptip>
-                  </Col>
-                  <Col span="12" class="problem-tags-content-col">
-                    <Poptip trigger="click" placement="left" :disabled="true">
-                      <span>概率论</span>
-                    </Poptip>
-                  </Col>
-                </Row>
-
-                <Row class="problem-tags-content-line">
-                  <Col span="12" class="problem-tags-content-col">
-                    <Poptip trigger="click" placement="left" :disabled="true">
-                      <span>线性代数</span>
-                    </Poptip>
-                  </Col>
-                  <Col span="12" class="problem-tags-content-col">
-                    <Poptip trigger="click" placement="left" :disabled="true">
-                      <span>交互题</span>
-                    </Poptip>
-                  </Col>
-                </Row>
-
-                <Row class="problem-tags-content-line">
-                  <Col span="12" class="problem-tags-content-col">
-                    <Poptip trigger="click" placement="left" :disabled="true">
-                      <span>计算几何</span>
-                    </Poptip>
-                  </Col>
-                  <Col span="12" class="problem-tags-content-col">
-                    <Poptip trigger="click" placement="left" :disabled="true">
-                      <span>其他</span>
-                    </Poptip>
-                  </Col>
-                </Row> -->
               </div>
               <!-- 标签内容 -->
             </div>
@@ -226,73 +94,123 @@
 export default {
   data () {
     return {
-      columns5: [
+      problemTableColumns: [
         {
-          title: '#',
-          key: 'problemId',
-          width: 70,
-          ellipsis: true,
-          sortable: true
+          title: '题目编码',
+          key: 'ojProblemId',
+          width: 210,
+          render: (h, params) => {
+            let texts = '';
+            if (params.row.ojProblemId !== null) {
+              if (params.row.ojProblemId.length > 20) {
+                texts = params.row.ojProblemId.substring(0, 20) + '...';
+                const strs = texts.split('-');
+                strs[1] = ' ' + strs[1]
+                return h('Tooltip', {
+                  props: {
+                    placement: 'top',
+                    maxWidth: '180'
+                  }
+                }, [
+                  h('strong', strs[0]),
+                  strs[1],
+                  h('span', {
+                    slot: 'content',
+                    style: {
+                      whiteSpace: 'normal',
+                      wordBreak: 'break-all'
+                    }
+                  }, params.row.ojProblemId)
+                ]);
+              } else {
+                texts = params.row.ojProblemId;
+                const strs = texts.split('-');
+                strs[1] = ' ' + strs[1]
+                return h('span', [
+                  h('strong', strs[0]),
+                  strs[1]
+                ]);
+              }
+            }
+          }
         },
         {
-          title: '题目',
-          key: 'name',
+          title: '标题',
+          key: 'problemInfo',
           minWidth: 150,
-          render: (h, params) => h('span', { class: 'hover' }, params.row.name)
+          render: (h, params) => {
+            if (params.row.problemInfo.ifPass === 0) {
+              return h('span', { class: 'hover' },
+                params.row.problemInfo.name);
+            } else {
+              return h('span', { class: 'hover' }, [
+                params.row.problemInfo.name,
+                ' ',
+                h('Icon', {
+                  props: {
+                    type: 'md-checkmark'
+                  },
+                  style: {
+                    color: '#229954',
+                    fontSize: '16px',
+                    verticalAlign: 'middle'
+                  }
+                })]);
+            } 
+          }
         },
         {
-          title: '递交数',
-          key: 'submit',
-          ellipsis: true,
+          title: '通过数',
+          key: 'acNumber',
           width: 100,
           sortable: true
-        },
-        {
-          title: 'AC%',
-          key: 'acRate',
-          width: 90,
-          ellipsis: true,
-          sortable: true,
-          render: (h, params) => {
-            return h('span', params.row.acRate.toFixed(2));
-          }
         }
       ],
-      data5: [
+      problemTableData: [
         {
-          problemId: '1',
-          name: 'A + B Problem',
+          ojProblemId: 'POJ-1001',
+          problemInfo: {
+            name: 'A + B Problem',
+            ifPass: 0
+          },
           tags: ['模拟', '暴力', '思维'],
-          submit: 4586,
-          acRate: 57.63
+          acNumber: 4586
         },
         {
-          problemId: '2',
-          name: 'GZS 与古英文字典',
+          ojProblemId: 'HDU-1200',
+          problemInfo: {
+            name: 'GZS 与古英文字典',
+            ifPass: 1
+          },
           tags: ['暴力', '字典树', '字符串'],
-          submit: 339,
-          acRate: 80.02
+          acNumber: 339
         },
         {
-          problemId: '3',
-          name: 'GZS 的三角形',
+          ojProblemId: 'CodeForces-1221A',
+          problemInfo: {
+            name: 'GZS 的三角形',
+            ifPass: 1
+          },
           tags: ['找规律'],
-          submit: 179,
-          acRate: 16.20
+          acNumber: 179
         },
         {
-          problemId: '4',
-          name: 'GZS 与素数大法',
-          tags: ['数学', '线性筛', '莫比乌斯反演'],
-          submit: 352,
-          acRate: 7.4
+          ojProblemId: 'SDUOJ-1200',
+          problemInfo: {
+            name: 'GZS 与素数大法',
+            ifPass: 0
+          },
+          tags: ['数学', '线性筛', '莫比乌斯反演', '模拟', '线性筛', '莫比乌斯反演'],
+          acNumber: 352
         },
         {
-          problemId: '5',
-          name: '吉老师的线段树',
+          ojProblemId: 'AtCoder-soundhound2018_summer_qual_e',
+          problemInfo: {
+            name: '吉老师的线段树和瑞瑞一起',
+            ifPass: 1
+          },
           tags: ['数据结构', '线段树'],
-          submit: 3532,
-          acRate: 2.4
+          acNumber: 3532
         }
       ],
       tags: [
@@ -370,8 +288,8 @@ export default {
   methods: {
     switchTag: function(open) {
       if (open) {
-        this.columns5 = [
-          ...this.columns5.slice(0, 2), 
+        this.problemTableColumns = [
+          ...this.problemTableColumns.slice(0, 2), 
           {
             title: '标签',
             key: 'tags',
@@ -387,10 +305,10 @@ export default {
                 }));
             }
           },
-          ...this.columns5.slice(2)
+          ...this.problemTableColumns.slice(2)
         ]
       } else {
-        this.columns5 = this.columns5.filter(item => item.key !== 'tags');
+        this.problemTableColumns = this.problemTableColumns.filter(item => item.key !== 'tags');
       }
     },
     onPageChange: function(curPage) {
@@ -509,14 +427,14 @@ li {
   border: 1px solid #d4d4d5;
   border-radius: 4px;
   .problem-tags-header {
-    padding: 20px 25px 17px 25px;
-    font-size: 1.5em;
+    padding: 20px 25px 17px 35px;
+    font-size: 1.4em;
     color: #797f7f;
   }
   .problem-tags-content {
     margin-bottom: 14px;
     .problem-tags-content-col {
-      padding-left: 16px;
+      padding-left: 25px;
       .problem-tags-content-line  {
         margin-bottom: 16px;
       }

@@ -19,7 +19,7 @@ export default {
 
 <style lang="less">
 .container {
-  max-width: 1100px;
+  max-width: 1300px;
   margin: 0 auto;
 }
 
