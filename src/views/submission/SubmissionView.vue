@@ -19,8 +19,8 @@
         </div>
         <div>
           <div class="filter-title">由题目</div>
-          <Input v-model="filterOption.problemId" 
-            placeholder="Problem ID" 
+          <Input v-model="filterOption.problemCode" 
+            placeholder="Problem Code" 
             style="width: 200px;"
             @on-enter="onFiltering">
           </Input>
@@ -49,7 +49,7 @@
         :columns="columns"
         :data="submissions"
         @on-sort-change="handleSortBy"
-        @on-cell-click="showSubmissionDetail"></Table>
+        @on-cell-click="onTableClick"></Table>
       <div class="pages">
         <Page 
           size="small" show-elevator show-sizer
@@ -73,7 +73,11 @@ export default {
       columns: [
         { title: '#', key: 'submissionId', minWidth: 80 },
         { title: '用户', key: 'username' },
-        { title: '题目', key: 'problemCode' },
+        { 
+          title: '题目',
+          key: 'problemCode',
+          render: (h, params) => h('span', { class: 'hover' }, params.row.problemCode)
+        },
         { 
           title: '评测结果', 
           key: 'judgeResult',
@@ -145,17 +149,27 @@ export default {
       }
       this.onFiltering();
     },
-    showSubmissionDetail: function(row, col, data, event) {
+    onTableClick: function(row, col, data, event) {
       if (col.key === 'judgeResult') {
-        this.$router.push('/submission/' + row.submissionId);
+        this.$router.push({
+          name: 'submission-detail',
+          params: {
+            submissionId: row.submissionId
+          }
+        });
+      }
+      if (col.key === 'problemCode') {
+        this.$router.push({
+          name: 'problem-detail',
+          params: {
+            problemCode: row.problemCode
+          }
+        })
       }
     }
   },
   mounted: function() {
-    this.filterOption.username = this.$route.query.username || '';
-    this.filterOption.problemCode = this.$route.query.problemCode || '';
-    this.filterOption.judgeResult = this.$route.query.judgeResult || '';
-    this.filterOption.language = this.$route.query.language || '';
+    this.filterOption = Object.assign(this.$route.params);
     this.onFiltering();
   }
 }

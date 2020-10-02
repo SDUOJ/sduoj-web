@@ -70,7 +70,7 @@
     <div class="container activation hover" v-else>
       <Tooltip  content="Return to Home" placement="bottom">
         <Icon type="md-checkmark-circle-outline" size="30"/>
-        <h1 style="display: inline" @click="$router.replace('/')">&nbsp; You have activated</h1>
+        <h1 style="display: inline" @click="$router.replace({ name: 'home' })">&nbsp; You have activated</h1>
       </Tooltip>
     </div>
 </template>

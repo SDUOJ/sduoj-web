@@ -301,7 +301,12 @@ export default {
     },
     handleProblemClick: function(row, col) {
       if (col.key === 'problemTitle') {
-        this.$router.push('/problem/' + row.problemCode);
+        this.$router.push({
+          name: 'problem-detail',
+          params: {
+            problemCode: row.problemCode
+          }
+        });
       }
     },
     handleProblemSort: function({ column, key, order }) {

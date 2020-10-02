@@ -132,7 +132,10 @@ export default {
       this.$copyText(content).then(e => this.$Message.success('已复制到剪切板'), e => console.log(e));
     },
     showSubmissionDetail: function(submissionId) {
-      this.$router.push('/submission/' + submissionId);
+      this.$router.push({
+        name: 'submission-detail',
+        params: { submissionId }
+      });
     },
     onChangeLanguage: function(newLanguage) {
       this.language = newLanguage;
@@ -150,10 +153,13 @@ export default {
           problemCode: this.problem.problemCode,
           language: this.language,
           code: this.code
-        }).then(ret => {
+        }).then(submissionId => {
           this.submitColdDown = true;
           setTimeout(() => { this.submitColdDown = false }, 5000);
-          this.$router.push('/submission/' + ret);
+          this.$router.push({
+            name: 'submission-detail',
+            params: { submissionId }
+          });
         }).catch(err => {
           this.$Messag.error(err);
         }).finally(() => {
@@ -162,7 +168,13 @@ export default {
       }
     },
     handleShowSubmission: function() {
-      this.$router.push('/submission?username=' + this.username + '&pid=' + this.problemInfo.problemId)
+      this.$router.push({
+        name: 'submission',
+        params: {
+          username: this.username,
+          problemCode: this.problem.problemCode
+        }
+      });
     }
   },
   computed: {
