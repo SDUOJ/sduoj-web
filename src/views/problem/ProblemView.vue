@@ -329,8 +329,6 @@ export default {
         this.problemTableData = ret.rows;
         this.totalPage = parseInt(ret.totalPage);
         this.totalProblemNum = parseInt(ret.total);
-      }).catch(err => {
-        console.log(err);
       })
     }
   },

@@ -7,12 +7,12 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    footerInfo: '2020-2020 &copy; Shandong University',
+    copyright: '',
     pathComponents: []
   },
   mutations: {
-    updateFooterInfo(state, info) {
-      state.footerInfo = info;
+    updateCopyright(state, copyright) {
+      state.copyright = copyright;
     },
     updatePathComponents(state, route) {
       let matched = route.matched;

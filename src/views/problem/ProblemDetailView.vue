@@ -72,22 +72,13 @@
         </Card>
         <!--  -->
         <!-- 近期提交记录 -->
-        <Card class="box" v-if="isLogin" title="Recent Submissions">
-          <table border="0" cellpadding="0" cellspacing="0" style="margin: 5px 0; width: 100%;">
-            <tr style="height: 30px;">
-              <th>结果</th>
-              <th>时间</th>
-            </tr>
-            <tr class="judge-result" v-for="sb in submissions" :key="sb.submissionId">
-              <td width="70%" style="text-align: center;" @click="showSubmissionDetail(sb.submissionId)">
-                <JudgeResult :result="sb.judgeResult" />
-              </td>
-              <td width="30%" style="text-align: center;">
-                <Time :time="sb.gmtCreate | parseInt" />
-              </td>
-            </tr>
-          </table>
-          <Button type="text" style="width: 100%; margin: 5px auto;" @click="handleShowSubmission">查看所有提交</Button>
+        <Card class="box" v-if="isLogin" title="Recent Submissions" :padding="0" dis-hover>
+          <Table
+            size="small"
+            :columns="columns"
+            :data="submissions"
+            @on-cell-click="onTableClick"></Table>
+          <Button type="text" style="width: 100%; margin: 5px auto;" @click="handleShowSubmission">Show all submissions</Button>
         </Card>
         </Col>
       </Row>
@@ -109,14 +100,22 @@ import { mapGetters } from 'vuex';
 export default {
   components: { 
     MarkdownItVueLight,
-    CodeEditor,
-    JudgeResult
-  },
-  filters: {
-    parseInt: str => parseInt(str)
+    CodeEditor
   },
   data: function() {
     return {
+      columns: [
+        {
+          title: 'Result',
+          key: 'judgeResult',
+          render: (h, params) => h(JudgeResult, { props: { result: params.row.judgeResult } })
+        },
+        {
+          title: 'Submit time',
+          key: 'gmtCreate',
+          render: (h, params) => h('Time', { props: { time: parseInt(params.row.gmtCreate) } })
+        }
+      ],
       problem: {},
       submissions: [],
       descriptionIndex: -1,
@@ -128,6 +127,9 @@ export default {
       showTags: true
     }
   },
+  filters: {
+    parseInt: str => parseInt(str)
+  },
   methods: {
     copyToClipboard: function(content) {
       this.$copyText(content).then(e => this.$Message.success('已复制到剪切板'), e => console.log(e));
@@ -137,6 +139,17 @@ export default {
         name: 'submission-detail',
         params: { submissionId }
       });
+    },
+    onTableClick: function(row, col) {
+      if (col.key === 'judgeResult') {
+        this.$router.push({
+          name: 'submission',
+          params: {
+            username: this.username,
+            problemCode: row.problemCode
+          }
+        });
+      }
     },
     onChangeLanguage: function(newLanguage) {
       this.language = newLanguage;
@@ -194,7 +207,7 @@ export default {
       this.language = this.problem.languages[0] || '';
       api.getSubmissionList({
         pageNow: 1,
-        pageSize: 10,
+        pageSize: 5,
         username: this.username,
         problemCode: this.problem.problemCode
       }).then(ret => {
@@ -212,9 +225,6 @@ export default {
 <style lang="less" scoped>
 .box {
   margin: 20px 10px; 
-  .box-header {
-    margin-left: 8px;
-  }
 }
 
 .problem-title::after {

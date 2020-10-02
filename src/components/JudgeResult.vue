@@ -41,4 +41,38 @@ export default {
 .judge-result {
   display: inline;
 }
+.verdict-accepted {
+  color: #5cb85c;
+  font-weight: 500;
+}
+.verdict-accepted:hover {
+  cursor: pointer;
+}
+
+// judge failed
+.verdict-failed {
+  color: #d9534f;
+  font-weight: 500;
+}
+.verdict-failed:hover {
+  cursor: pointer;
+}
+
+// judge pending
+.verdict-pending {
+  color: grey;
+  font-weight: 500;
+}
+.verdict-pending:hover {
+  cursor: pointer;
+}
+
+// judge 
+.verdict-compile-error {
+  color: orange;
+  font-weight: 500;
+}
+.verdict-compile-error:hover {
+  cursor: pointer;
+}
 </style>
