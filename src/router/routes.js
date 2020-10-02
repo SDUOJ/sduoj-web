@@ -1,21 +1,3 @@
-// general
-import HomeView from '@/views/HomeView';
-import NotFoundView from '@/views/404View';
-
-// problem
-import ProblemView from '@/views/problem/ProblemView';
-import ProblemDetailView from '@/views/problem/ProblemDetailView';
-
-// submission
-import SubmissionView from '@/views/submission/SubmissionView';
-import SubmissionDetailView from '@/views/submission/SubmissionDetailView';
-
-// user
-import LoginView from '@/views/user/Login';
-import RegisterView from '@/views/user/Register';
-import ResetPassView from '@/views/user/ResetPass';
-import UserHomeView from '@/views/user/UserHome'
-
 const routes = [
   {
     path: '/',
@@ -23,47 +5,56 @@ const routes = [
   },
   {
     path: '/login',
-    component: LoginView
+    name: 'login',
+    component: () => import('@/views/user/Login')
   },
   {
     path: '/register',
-    component: RegisterView
+    name: 'register',
+    component: () => import('@/views/user/Register')
   },
   {
     path: '/resetpass',
-    component: ResetPassView
+    name: 'reset-password',
+    component: () => import('@/views/user/ResetPass')
   },
   {
     path: '/home',
     name: 'home',
-    component: HomeView,
+    component: () => import('@/views/HomeView'),
     meta: { title: '首页' }
   },
   {
     path: '/problem',
     name: 'problem',
-    component: ProblemView,
+    component: () => import('@/views/problem/ProblemView'),
     meta: { title: '题库' }
   },
   {
     path: '/problem/:problemCode',
-    component: ProblemDetailView
+    name: 'problem-detail',
+    component: () => import('@/views/problem/ProblemDetailView')
   },
   {
     path: '/user',
-    component: UserHomeView
+    name: 'user',
+    meta: { login: true },
+    component: () => import('@/views/user/UserHome')
   },
   {
     path: '/submission',
-    component: SubmissionView
+    name: 'submission',
+    component: () => import('@/views/submission/SubmissionView')
   },
   {
     path: '/submission/:submissionId',
-    component: SubmissionDetailView
+    name: 'submission-detail',
+    component: () => import('@/views/submission/SubmissionDetailView')
   },
   {
     path: '*',
-    component: NotFoundView
+    name: '404',
+    component: () => import('@/views/404View')
   }
 ]
 

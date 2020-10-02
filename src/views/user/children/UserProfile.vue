@@ -83,7 +83,7 @@ export default {
       this.$refs[name].validate(valid => {
         if (valid) {
           api.updateProfile(this.profileForm).then(ret => {
-            api.getProfile().then(ret => this.$store.dispatch('user/setProfile', ret)).catch(_ => _);
+            api.getProfile();
             this.$Message.success('Updated');
           }).catch(err => {
             this.$Message.error(err.message);
@@ -106,11 +106,10 @@ export default {
     ...mapGetters('user', ['isVerified', 'username'])
   },
   mounted: function() {
-    api.getProfile().then(ret => {
-      this.$store.dispatch('user/setProfile', ret);
+    api.getProfile(ret => {
       this.profileForm = Object.assign({}, ret);
       this.profileForm.gender = this.profileForm.gender.toString();
-    }).catch(_ => this.$Message.error(_.message));
+    });
   }
 }
 </script>

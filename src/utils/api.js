@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import axios from 'axios';
+import store from '@/store';
 
 const ver1 = '/api';
 // axios.defaults.baseURL = 'http://api.oj.xrvitd.com:8080' + ver1;
@@ -67,8 +68,25 @@ export default {
   verifyEmail: function(token) {
     return get('/user/verifyEmail', { token });
   },
-  getProfile: function() {
-    return get('/user/getProfile');
+  getProfile: function(success, error) {
+    axios.get('/user/getProfile')
+      .then(response => {
+        if (response.data.code === 0) {
+          store.dispatch('user/setProfile', response.data.data)
+          if (success) {
+            success(response.data.data);
+          }
+        } else {
+          Vue.prototype.$Message.error(response.data.message);
+        }
+      }, err => {
+        if (err.response.status === 401) {
+          store.dispatch('user/clearProfile');
+          if (error) {
+            error(err.response.data);
+          }
+        } 
+      });
   },
   getCaptcha: function() {
     return get('/user/getCaptcha');
