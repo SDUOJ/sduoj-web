@@ -82,7 +82,9 @@
               <td width="70%" style="text-align: center;" @click="showSubmissionDetail(sb.submissionId)">
                 <JudgeResult :result="sb.judgeResult" />
               </td>
-              <td width="30%" style="text-align: center;">{{ sb.gmtModified | timeago }}</td>
+              <td width="30%" style="text-align: center;">
+                <Time :time="sb.gmtCreate | parseInt" />
+              </td>
             </tr>
           </table>
           <Button type="text" style="width: 100%; margin: 5px auto;" @click="handleShowSubmission">查看所有提交</Button>
@@ -99,7 +101,6 @@ import 'markdown-it-vue/dist/markdown-it-vue-light.css'
 import CodeEditor from '@/components/CodeEditor';
 import JudgeResult from '@/components/JudgeResult';
 
-import { format } from 'timeago.js';
 import utils from '@/utils';
 import api from '@/utils/api';
 
@@ -112,7 +113,7 @@ export default {
     JudgeResult
   },
   filters: {
-    timeago: timestamp => format(new Date(timestamp), 'zh_CN')
+    parseInt: str => parseInt(str)
   },
   data: function() {
     return {

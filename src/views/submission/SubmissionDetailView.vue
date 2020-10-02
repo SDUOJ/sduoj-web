@@ -40,8 +40,13 @@
                 <Divider size="small"/>
                 <div style="margin-bottom: 24px;">
                   <Cell title="Submission ID" :extra="submission.submissionId" />
-                  <Cell title="Create Time" :extra="submission.gmtCreate | dateFormat('yyyy-MM-dd hh:mm:ss')" />
-                  <Cell title="Judge Time" :extra="submission.gmtModified | dateFormat('yyyy-MM-dd hh:mm:ss')" />
+
+                  <Cell title="Create Time">
+                    <Time slot="extra" :time="submission.gmtCreate | parseInt" type="datetime" />
+                  </Cell>
+                  <Cell title="Judge Time">
+                    <Time slot="extra" :time="submission.gmtModified | parseInt" type="datetime" />
+                  </Cell>
                   <Cell title="Username" :extra="submission.username" />
                   <Cell title="Judge Result">
                     <JudgeResult slot="extra" :result="submission.judgeResult" />
@@ -71,7 +76,6 @@
 import JudgeResult from '@/components/JudgeResult';
 import { mapGetters } from 'vuex';
 import { sendWebsocket, closeWebsocket } from '@/utils/socket';
-import utils from '@/utils';
 import api from '@/utils/api';
 
 export default {
@@ -93,7 +97,7 @@ export default {
     }
   },
   filters: {
-    dateFormat: (timestamp, format) => utils.dateFormat(timestamp, format)
+    parseInt: str => parseInt(str)
   },
   methods: {
     wsSuccess: function(data) {

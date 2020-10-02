@@ -64,7 +64,6 @@
 
 <script>
 import JudgeResult from '@/components/JudgeResult';
-import utils from '@/utils';
 import api from '@/utils/api';
 
 export default {
@@ -92,7 +91,7 @@ export default {
           key: 'gmtCreate',
           minWidth: 55,
           render: (h, params) => {
-            return h('span', utils.dateFormat(params.row.gmtCreate, 'yyyy-MM-dd hh:mm:ss'))
+            return h('Time', { props: { time: parseInt(params.row.gmtCreate), type: 'datetime' } })
           }
         }
       ],
