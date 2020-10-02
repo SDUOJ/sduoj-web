@@ -1,96 +1,95 @@
 <template>
    <div>
-       <!-- <NavPath></NavPath> -->
-       <div class="container">
-        <h2 style="text-align: center;">{{ problem.problemCode }}. &nbsp; {{ problem.problemTitle }}</h2>
-        <Row class="main">
-          <Col span="17" class="main-lf">
-          <!-- 题面描述 -->
-            <Card class="box" title="Description" dis-hover :padding="0">
-              <div class="problem-markdown">
-                <markdown-it-vue-light :content="problemDescription.markdownDescription || ''"></markdown-it-vue-light>
-              </div>
-            </Card>
-          <!--  -->
-          <!-- 样例输入输出 -->
-            <!-- <Card class="box" v-for="ex in problemDescription.examples" :key="ex.id">
-              <div slot="header" class="box-header">
-                Example {{ ex.id }}
-              </div>
-                <div class="problem-example">
-                  <Tooltip content="Copy" placement="right">
-                    <h3 class="clip" @click="copyToClipboard(ex.input)"> Input </h3>
-                  </Tooltip>
-                  <markdown-it-vue-light :content="'```text\n' + ex.input + '\n```'"></markdown-it-vue-light>
-                </div>
-                <div class="problem-example">
-                  <Tooltip content="Copy" placement="right">
-                    <h3 class="clip" @click="copyToClipboard(ex.output)"> Output </h3>
-                  </Tooltip>
-                  <markdown-it-vue-light :content="'```text\n' + ex.output + '\n```'"></markdown-it-vue-light>
-                </div>
-            </Card> -->
-          <!--  -->
-          <!-- 代码编辑器 -->
-            <Card class="box clearfix" dis-hover :padding="0">
-              <div style="padding-right: 15px;">
-                <CodeEditor 
-                  :code.sync="code"
-                  :file.sync="file"
-                  :language="language"
-                  :languageSet="problem.languages"
-                  @changeLanguage="onChangeLanguage">
-                </CodeEditor>
-                <Button 
-                  style="float: right; margin: 5px 0;" 
-                  :loading="submitBtnLoading"
-                  :disabled="submitColdDown"
-                  @click="onSubmit">提交</Button>
-              </div>
-            </Card>
-          <!--  -->
-          </Col>
-          <Col span="7">
-          <!-- 题目基本信息 -->
-            <Card class="box" title="Details" dis-hover :padding="0">
-              <CellGroup>
-                <Cell title="Problem Code" :extra="problem.problemCode" />
-                <Cell title="Problem ID" :extra="problem.problemId" />
-                <Cell title="Time Limit">
-                  <span class="time" slot="extra">{{ problem.timeLimit }}</span>
-                </Cell>
-                <Cell title="Memory Limit">
-                  <span class="mem" slot="extra">{{ problem.memoryLimit }}</span>
-                </Cell>
-                <Cell title="Languages">
-                  <div slot="label">
-                    <span v-for="lang in problem.languages" :key="lang" class="language">{{ lang }}</span>
-                  </div>
-                </Cell>
-                <Cell title="Source" :extra="problem.source" />
-                <Cell title="Remote" :extra="problem.problemCode" v-if="problem.remoteOj" :to="problem.remoteUrl" />
-              </CellGroup>
+      <div class="container">
+      <h2 style="text-align: center;">{{ problem.problemCode }}. &nbsp; {{ problem.problemTitle }}</h2>
+      <Row class="main">
+        <Col span="17" class="main-lf">
+        <!-- 题面描述 -->
+          <Card class="box" title="Description" dis-hover :padding="0">
+            <div class="problem-markdown">
+              <markdown-it-vue-light :content="problemDescription.markdownDescription || ''"></markdown-it-vue-light>
+            </div>
           </Card>
-          <!--  -->
-          <!-- 近期提交记录 -->
-          <Card class="box" v-if="isLogin" title="Recent Submissions">
-            <table border="0" cellpadding="0" cellspacing="0" style="margin: 5px 0; width: 100%;">
-              <tr style="height: 30px;">
-                <th>结果</th>
-                <th>时间</th>
-              </tr>
-              <tr class="judge-result" v-for="sb in submissions" :key="sb.submissionId">
-                <td width="70%" style="text-align: center;" @click="showSubmissionDetail(sb.submissionId)">
-                  <JudgeResult :result="sb.judgeResult" />
-                </td>
-                <td width="30%" style="text-align: center;">{{ sb.gmtModified | timeago }}</td>
-              </tr>
-            </table>
-            <Button type="text" style="width: 100%; margin: 5px auto;" @click="handleShowSubmission">查看所有提交</Button>
+        <!--  -->
+        <!-- 样例输入输出 -->
+          <!-- <Card class="box" v-for="ex in problemDescription.examples" :key="ex.id">
+            <div slot="header" class="box-header">
+              Example {{ ex.id }}
+            </div>
+              <div class="problem-example">
+                <Tooltip content="Copy" placement="right">
+                  <h3 class="clip" @click="copyToClipboard(ex.input)"> Input </h3>
+                </Tooltip>
+                <markdown-it-vue-light :content="'```text\n' + ex.input + '\n```'"></markdown-it-vue-light>
+              </div>
+              <div class="problem-example">
+                <Tooltip content="Copy" placement="right">
+                  <h3 class="clip" @click="copyToClipboard(ex.output)"> Output </h3>
+                </Tooltip>
+                <markdown-it-vue-light :content="'```text\n' + ex.output + '\n```'"></markdown-it-vue-light>
+              </div>
+          </Card> -->
+        <!--  -->
+        <!-- 代码编辑器 -->
+          <Card class="box clearfix" dis-hover :padding="0">
+            <div style="padding-right: 15px;">
+              <CodeEditor 
+                :code.sync="code"
+                :file.sync="file"
+                :language="language"
+                :languageSet="problem.languages"
+                @changeLanguage="onChangeLanguage">
+              </CodeEditor>
+              <Button 
+                style="float: right; margin: 5px 0;" 
+                :loading="submitBtnLoading"
+                :disabled="submitColdDown"
+                @click="onSubmit">提交</Button>
+            </div>
           </Card>
-          </Col>
-        </Row>
-       </div>
+        <!--  -->
+        </Col>
+        <Col span="7">
+        <!-- 题目基本信息 -->
+          <Card class="box" title="Details" dis-hover :padding="0">
+            <CellGroup>
+              <Cell title="Problem Code" :extra="problem.problemCode" />
+              <Cell title="Problem ID" :extra="problem.problemId" />
+              <Cell title="Time Limit">
+                <span class="time" slot="extra">{{ problem.timeLimit }}</span>
+              </Cell>
+              <Cell title="Memory Limit">
+                <span class="mem" slot="extra">{{ problem.memoryLimit }}</span>
+              </Cell>
+              <Cell title="Languages">
+                <div slot="label">
+                  <span v-for="lang in problem.languages" :key="lang" class="language">{{ lang }}</span>
+                </div>
+              </Cell>
+              <Cell title="Source" :extra="problem.source" />
+              <Cell title="Remote" :extra="problem.problemCode" v-if="problem.remoteOj" :to="problem.remoteUrl" />
+            </CellGroup>
+        </Card>
+        <!--  -->
+        <!-- 近期提交记录 -->
+        <Card class="box" v-if="isLogin" title="Recent Submissions">
+          <table border="0" cellpadding="0" cellspacing="0" style="margin: 5px 0; width: 100%;">
+            <tr style="height: 30px;">
+              <th>结果</th>
+              <th>时间</th>
+            </tr>
+            <tr class="judge-result" v-for="sb in submissions" :key="sb.submissionId">
+              <td width="70%" style="text-align: center;" @click="showSubmissionDetail(sb.submissionId)">
+                <JudgeResult :result="sb.judgeResult" />
+              </td>
+              <td width="30%" style="text-align: center;">{{ sb.gmtModified | timeago }}</td>
+            </tr>
+          </table>
+          <Button type="text" style="width: 100%; margin: 5px auto;" @click="handleShowSubmission">查看所有提交</Button>
+        </Card>
+        </Col>
+      </Row>
+      </div>
     </div> 
 </template>
 
