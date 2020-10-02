@@ -145,7 +145,7 @@ export default {
           api.resetPassword(dataForm).then(ret => {
             this.$Message.success({
               content: 'Password resetted, please login',
-              onClose: () => this.$router.replace('/login')
+              onClose: () => this.$router.replace({ name: 'login' })
             })
           }).catch(err => {
             this.$Message.error(err.message);

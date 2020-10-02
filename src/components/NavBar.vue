@@ -54,10 +54,14 @@ export default {
   // components: { Gravatar },
   methods: {
     toLogin: function() {
-      this.$router.push('/login');
+      this.$router.push({
+        name: 'login'
+      });
     },
     toRegist: function() {
-      this.$router.push('/register');
+      this.$router.push({
+        name: 'register'
+      });
     },
     onClick: function(name) {
       if (name === 'logout') {
@@ -70,7 +74,9 @@ export default {
       api.logout().then(_ => this.$store.dispatch('user/clearProfile'));
     },
     toHome: function() {
-      this.$router.push('/user');
+      this.$router.push({
+        name: 'user'
+      });
     }
   },
   computed: {

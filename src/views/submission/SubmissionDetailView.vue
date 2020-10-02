@@ -31,7 +31,10 @@
                   <Cell title="Public" v-if="submission.username === username">
                       <i-switch v-model="submission.isPublic" slot="extra" true-color="#19be6b"/>
                   </Cell>
-                  <Cell title="Problem Code" :extra="submission.problemCode" :to="'/problem/' + submission.problemCode" />
+                  <Cell 
+                    title="Problem Code" 
+                    :extra="submission.problemCode" 
+                    :to="{ name: 'problem-detail', params: { problemCode: submission.problemCode }}" />
                   <Cell title="Problem ID" :extra="submission.problemId" />
                 </div>
                 <Divider size="small"/>
@@ -106,8 +109,11 @@ export default {
     wsRequest: function() {
       sendWebsocket('/ws/submission', { id: this.submission.submissionId }, this.wsSuccess, this.wsError);
     },
-    gotoProblem: function(problemId) {
-      this.$router.push('/problem/' + problemId);
+    gotoProblem: function(problemCode) {
+      this.$router.push({
+        name: 'problem-detail',
+        params: { problemCode }
+      });
     }
   },
   computed: {

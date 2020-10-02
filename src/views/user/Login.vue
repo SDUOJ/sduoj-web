@@ -59,7 +59,7 @@ export default {
           const dataForm = Object.assign({}, this.loginForm);
           api.login(dataForm).then(ret => {
             this.setProfile(ret);
-            this.$router.replace({ path: '/' });
+            this.$router.replace({ name: 'home' });
           }).catch(err => {
             this.$Message.error(err.message);
           });
