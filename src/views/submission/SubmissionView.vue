@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <Card class="filter" dis-hover>
+    <Card class="filter" dis-hover :padding="0">
       <div slot="title">
         <h3 style="display: inline">过滤</h3>
         <div class="btns">
@@ -11,7 +11,7 @@
       <div class="clearfix filter-sets">
         <div>
           <div class="filter-title">由用户</div>
-          <Input v-model="filterOpetions.username" 
+          <Input v-model="filterOption.username" 
             placeholder="Username" 
             style="width: 200px;"
             @on-enter="onFiltering">
@@ -19,7 +19,7 @@
         </div>
         <div>
           <div class="filter-title">由题目</div>
-          <Input v-model="filterOpetions.problemId" 
+          <Input v-model="filterOption.problemId" 
             placeholder="Problem ID" 
             style="width: 200px;"
             @on-enter="onFiltering">
@@ -27,7 +27,7 @@
         </div>
         <div>
           <div class="filter-title">由评测结果</div>
-          <Input v-model="filterOpetions.judgeResult" 
+          <Input v-model="filterOption.judgeResult" 
             placeholder="Status" 
             style="width: 200px;"
             @on-enter="onFiltering">
@@ -35,7 +35,7 @@
         </div>
         <div>
           <div class="filter-title">由语言</div>
-          <Input v-model="filterOpetions.lang" 
+          <Input v-model="filterOption.lang" 
             placeholder="Language" 
             style="width: 200px;"
             @on-enter="onFiltering">
@@ -44,12 +44,17 @@
       </div>
     </Card>
     <Card class="clearfix" dis-hover :padding="0">
-      <Table :columns="columns" :data="submissionFilted" class="data-table" @on-cell-click="showSubmissionDetail"></Table>
+      <Table 
+        class="data-table" 
+        :columns="columns"
+        :data="submissions"
+        @on-sort-change="handleSortBy"
+        @on-cell-click="showSubmissionDetail"></Table>
       <div class="pages">
         <Page 
           size="small" show-elevator show-sizer
-          :total="totalPage" 
-          :current.sync="curPage"
+          :total="totalPage"
+          :current.sync="pageNow"
           @on-change="onPageChange"
           @on-page-size-change="onPageSizeChange"/>
       </div>
@@ -58,73 +63,87 @@
 </template>
 
 <script>
-// import Card from '@/components/Card';
+import JudgeResult from '@/components/JudgeResult';
 import utils from '@/utils';
+import api from '@/utils/api';
 
 export default {
-  // components: { Card },
   data: function() {
     return {
       columns: [
-        { title: '#', key: 'submissionId', sortable: true, maxWidth: 80 },
+        { title: '#', key: 'submissionId', minWidth: 80 },
         { title: '用户', key: 'username' },
-        { title: '题目', key: 'problemId' },
+        { title: '题目', key: 'problemCode' },
         { 
           title: '评测结果', 
           key: 'judgeResult',
           minWidth: 50,
-          render: (h, params) => h('span', {  class: utils.status2Class(params.row.judgeResult) }, utils.judgeResultMap[params.row.judgeResult])
+          render: (h, params) => h(JudgeResult, { props: { result: params.row.judgeResult } })
         },
-        { title: '用时', key: 'time', sortable: true, maxWidth: 90 },
-        { title: '内存', key: 'memory', sortable: true, maxWidth: 90 },
-        { title: '语言', key: 'lang' },
+        { title: '用时', key: 'usedTime', sortable: true, maxWidth: 90 },
+        { title: '内存', key: 'usedMemory', sortable: true, maxWidth: 90 },
+        { title: '语言', key: 'language' },
         { 
           title: '提交时间',
-          key: 'when',
+          key: 'gmtCreate',
           minWidth: 55,
-          render: (h, params) => h('span', utils.dateFormat(params.row.when, 'yyyy-MM-dd hh:mm:ss'))
+          render: (h, params) => {
+            return h('span', utils.dateFormat(params.row.gmtCreate, 'yyyy-MM-dd hh:mm:ss'))
+          }
         }
       ],
       submissions: [],
-      submissionFilted: [],
-      filterOpetions: {
+      filterOption: {
         username: '',
-        problemId: '',
+        problemCode: '',
         judgeResult: '',
-        lang: ''
+        language: ''
       },
       totalPage: 1,
-      curPage: 1,
-      pageSize: 10
+      pageNow: 1,
+      pageSize: 10,
+      sortBy: '',
+      ascending: false
     }
   },
   methods: {
     onFiltering: function() {
-      let matched = this.submissions;
-      matched = matched.filter(item => item.username.toLowerCase().indexOf(this.filterOpetions.username.toLowerCase()) !== -1);
-      matched = matched.filter(item => item.problemId.toLowerCase().startsWith(this.filterOpetions.problemId));
-      if (this.filterOpetions.judgeResult) {
-        matched = matched.filter(item => item.judgeResult === utils.result2Status(this.filterOpetions.judgeResult));
-      }
-      matched = matched.filter(item => item.lang.toLowerCase().indexOf(this.filterOpetions.lang.toLowerCase()) !== -1);
-      this.submissionFilted = matched;
+      api.getSubmissionList({
+        ...(this.filterOption),
+        sortBy: this.sortBy,
+        ascending: this.ascending,
+        pageNow: this.pageNow,
+        pageSize: this.pageSize
+      }).then(ret => {
+        this.submissions = ret.rows;
+      }).catch(err => {
+        this.$Message.error(err);
+      });
     },
     clearFilterOptions: function() {
-      for (const key in this.filterOpetions) {
-        this.filterOpetions[key] = '';
+      for (const key in this.filterOption) {
+        this.filterOption[key] = '';
       }
     },
     onReset: function() {
       this.clearFilterOptions();
-      this.submissionFilted = this.submissions;
+      this.onFiltering();
     },
     onPageChange: function(curPage) {
-      this.curPage = curPage;
-      console.log(this.curPage);
+      this.pageNow = curPage;
     },
     onPageSizeChange: function(pageSize) {
       this.pageSize = pageSize;
-      console.log(this.pageSize);
+    },
+    handleSortBy: function({ column, key, order }) {
+      if (order === 'normal') {
+        this.sortBy = '';
+        this.ascending = false
+      } else {
+        this.sortBy = key;
+        this.ascending = order === 'asc';
+      }
+      this.onFiltering();
     },
     showSubmissionDetail: function(row, col, data, event) {
       if (col.key === 'judgeResult') {
@@ -133,16 +152,10 @@ export default {
     }
   },
   mounted: function() {
-    this.curPage = 1;
-    this.totalPage = 1;
-    this.submissions = [
-      { submissionId: 1, username: 'Gene_Liu', problemId: '1001', judgeResult: 0, time: 0, memory: 0, lang: 'C++', when: 1601176071000 },
-      { submissionId: 2, username: 'Gene_Liu', problemId: '1001', judgeResult: 1, time: 5, memory: 100, lang: 'C++', when: 1601176071000 },
-      { submissionId: 3, username: 'TTTT', problemId: '1001', judgeResult: 2, time: 5, memory: 100, lang: 'C++', when: 1601176051000 },
-      { submissionId: 4, username: 'jeshrz', problemId: '1001', judgeResult: 8, time: 0, memory: 0, lang: 'C++', when: 1601176001000 }
-    ];
-    this.filterOpetions.username = this.$route.query.username || '';
-    this.filterOpetions.problemId = this.$route.query.pid || '';
+    this.filterOption.username = this.$route.query.username || '';
+    this.filterOption.problemCode = this.$route.query.problemCode || '';
+    this.filterOption.judgeResult = this.$route.query.judgeResult || '';
+    this.filterOption.language = this.$route.query.language || '';
     this.onFiltering();
   }
 }
@@ -154,7 +167,7 @@ export default {
 }
 
 .filter-sets {
-  margin: 10px 0;
+  margin: 10px 20px;
   display: flex;
   justify-content: space-between;
 }

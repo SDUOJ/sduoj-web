@@ -9,7 +9,7 @@
         </div>
       </Col>
       <Col span="8">
-        <Card class="profile clearfix">
+        <Card class="profile clearfix" :padding="20" dis-hover>
           <div class="avatar-box">
             <img :src="avatar" />
           </div>
@@ -35,13 +35,12 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex';
-import Card from '@/components/Card';
 import UserProfile from '@/views/user/children/UserProfile';
 import UserPassword from '@/views/user/children/UserPassword';
 import UserEmail from '@/views/user/children/UserEmail';
 
 export default {
-  components: { Card, UserProfile, UserPassword, UserEmail },
+  components: { UserProfile, UserPassword, UserEmail },
   computed: {
     ...mapState('user', ['profile']),
     ...mapGetters('user', ['avatar', 'isVerified'])

@@ -1,36 +1,54 @@
 <template>
-  <Card>
-    <div slot="header">Change Your Email</div>
+  <Card title="Change Your Email" :padding="0" dis-hover>
     <div class="form">
     <Form ref="emailForm" :model="emailForm" :rules="emailRules" label-position="right" :label-width="105">
-      <FormItem label="New Email" prop="newEmail">
-        <Input type="email" v-model="emailForm.newEmail" style="width: 200px;">
-          <Icon type="ios-mail-outline" slot="prepend"/>
-        </Input>
-      </FormItem>
-      <FormItem>
-        <Button type="text" @click="handleEmailUpdate('emailForm')">Update</Button>
-      </FormItem>
+      <Row>
+          <Col span="12">
+            <FormItem label="Password" prop="password">
+              <Input type="password" v-model="emailForm.password" style="width: 200px;">
+                <Icon type="ios-lock-outline" slot="prepend"></Icon>
+              </Input>
+            </FormItem>
+            <FormItem>
+              <Button @click="handleEmailUpdate('emailForm')">Update</Button>
+            </FormItem>
+          </Col>
+          <Col span="12">
+            <FormItem label="New Email" prop="newEmail">
+              <Input type="email" v-model="emailForm.newEmail" style="width: 200px;">
+                <Icon type="ios-mail-outline" slot="prepend"/>
+              </Input>
+            </FormItem>
+          </Col>
+        </Row>
+      
     </Form>
     </div>
   </Card>
 </template>
 
 <script>
-import Card from '@/components/Card';
+import api from '@/utils/api';
 
 export default {
-  components: { Card },
   data: function() {
     const validateEmail = (rule, value, callback) => {
-      // vcheck email is valid
-      callback();
-    }
+      // 检查邮箱是否已被使用
+      api.isExist({ email: value }).then(ret => {
+        callback();
+      }, _ => {
+        callback(new Error('already exists'));
+      });
+    };
     return {
       emailForm: {
+        password: '',
         newEmail: ''
       },
       emailRules: {
+        password: [
+          { required: true, trigger: 'blur', min: 6, max: 32 }
+        ],
         newEmail: [
           { required: true, type: 'email', trigger: 'blur' },
           { validator: validateEmail, trigger: 'blur' }
@@ -43,6 +61,14 @@ export default {
       this.$refs[name].validate(valid => {
         if (valid) {
           console.log(this.emailForm);
+          api.updateProfile(this.emailForm).then(ret => {
+            api.getProfile().then(ret => this.$store.dispatch('user/setProfile', ret)).catch(_ => _);
+            this.$Message.success('Updated');
+          }).catch(err => {
+            this.$Message.error(err.message);
+          }).finally(() => {
+            this.$refs[name].resetFields();
+          })
         }
       })
     }

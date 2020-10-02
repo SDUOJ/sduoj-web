@@ -1,7 +1,6 @@
 <template>
-  <Card>
-    <div slot="header">Change Your Password</div>
-        <div class="form">
+  <Card title="Change Your Password" :padding="0" dis-hover>
+      <div class="form">
       <Form ref="passwordForm" :model="passwordForm" :rules="passwordRules" label-position="right" :label-width="105">
         <Row>
           <Col span="12">
@@ -11,7 +10,7 @@
               </Input>
             </FormItem>
             <FormItem>
-              <Button type="text" @click="handlePasswordUpdate('passwordForm')">Update</Button>
+              <Button @click="handlePasswordUpdate('passwordForm')">Update</Button>
             </FormItem>
           </Col>
           <Col span="12">
@@ -33,10 +32,9 @@
 </template>
 
 <script>
-import Card from '@/components/Card';
+import api from '@/utils/api';
 
 export default {
-  components: { Card },
   data: function() {
     const validateNewPass = (rule, value, callback) => {
       if (value !== '') {
@@ -75,9 +73,19 @@ export default {
     handlePasswordUpdate: function(name) {
       this.$refs[name].validate(valid => {
         if (valid) {
-          console.log(this.passwordForm);
+          const dataForm = {
+            password: this.passwordForm.oldPassword,
+            newPassword: this.passwordForm.newPassword
+          };
+          api.updateProfile(dataForm).then(ret => {
+            this.$Message.success('Updated');
+          }).catch(err => {
+            this.$Message.error(err.message);
+          }).finally(() => {
+            this.$refs[name].resetFields();
+          })
         }
-      })
+      });
     }
   }
 }

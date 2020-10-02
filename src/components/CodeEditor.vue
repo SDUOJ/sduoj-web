@@ -3,7 +3,7 @@
     <div class="utils clearfix">
       <div class="lang">
         <span>Languages: </span>
-        <Select :value="language" @on-change="onLangChange" class="adjust">
+        <Select :value="language" @on-change="onLanguageChange" class="adjust">
           <Option v-for="item in languageSet" :key="item" :value="item">
             {{item}}
           </Option>
@@ -21,13 +21,22 @@
 </template>
 <script>
 // Thanks for @QingdaoU
-// import utils from '@/utils/utils'
 import { codemirror } from 'vue-codemirror-lite'
 // mode
 import 'codemirror/mode/clike/clike.js'
 import 'codemirror/mode/python/python.js'
 // active-line.js
 import 'codemirror/addon/selection/active-line.js'
+
+const modeMap = {
+  'c++': 'text/x-c++src',
+  cpp: 'text/x-c++src',
+  cc: 'text/x-c++src',
+  c: 'text/x-csrc',
+  py: 'text/x-python',
+  java: 'text/x-java'
+};
+
 export default {
   name: 'CodeMirror',
   components: {
@@ -44,9 +53,7 @@ export default {
     },
     languageSet: {
       type: Array,
-      default: () => {
-        return ['C', 'C++', 'Java', 'Python2', 'Python3']
-      }
+      default: () => ['C', 'C++', 'Java', 'Python2', 'Python3']
     },
     language: {
       type: String,
@@ -57,51 +64,44 @@ export default {
     return {
       options: {
         // codemirror options
-        tabSize: 4,
+        tabSize: 2,
         mode: 'text/x-csrc',
         theme: 'default',
         lineNumbers: true,
         line: true,
         // 选中文本自动高亮，及高亮方式
+        matchBrackets: true,
         styleSelectedText: true,
         lineWrapping: true,
         highlightSelectionMatches: { showToken: /\w/, annotateScrollbar: true }
       },
-      mode: {
-        'C++': 'text/x-csrc'
-      },
+      mode: {},
       filename: ''
     }
   },
   mounted () {
-    // utils.getLanguages().then(languages => {
-    //   const mode = {}
-    //   languages.forEach(lang => {
-    //     mode[lang.name] = lang.content_type
-    //   })
-    //   this.mode = mode
-    //   this.editor.setOption('mode', this.mode[this.language])
-    // })
-    this.editor.focus()
+    for (const lang in this.languageSet) {
+      for (const key in modeMap) {
+        if (lang.toLowerCase().indexOf(key) !== -1) {
+          this.mode[lang] = modeMap[key];
+        }
+      }
+    }
+    this.$refs.myEditor.editor.setOption('mode', this.mode[this.language]);
+    this.$refs.myEditor.editor.focus()
   },
   methods: {
     onEditorCodeChange: function(newCode) {
       this.$emit('update:code', newCode)
     },
-    onLangChange: function(newVal) {
-      this.editor.setOption('mode', this.mode[newVal])
-      this.$emit('changeLang', newVal)
+    onLanguageChange: function(newVal) {
+      this.$refs.myEditor.editor.setOption('mode', this.mode[newVal])
+      this.$emit('changeLanguage', newVal)
     },
     onFileUpload: function(newFile) {
       this.filename = newFile.name;
       this.$emit('update:file', newFile);
       return false;
-    }
-  },
-  computed: {
-    editor () {
-      // get current editor object
-      return this.$refs.myEditor.editor
     }
   }
 }

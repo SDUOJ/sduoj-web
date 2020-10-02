@@ -37,8 +37,8 @@ export default {
   data: function() {
     return {
       loginForm: {
-        username: 'jeshrz',
-        password: '123456'
+        username: '',
+        password: ''
       },
       loginRules: {
         username: [
@@ -60,6 +60,8 @@ export default {
           api.login(dataForm).then(ret => {
             this.setProfile(ret);
             this.$router.replace({ path: '/' });
+          }).catch(err => {
+            this.$Message.error(err.message);
           });
         }
       })

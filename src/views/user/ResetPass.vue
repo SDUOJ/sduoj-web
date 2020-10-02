@@ -61,6 +61,8 @@
 </template>
 
 <script>
+import api from '@/utils/api';
+
 export default {
   data: function() {
     const validatePass = (rule, value, callback) => {
@@ -110,18 +112,45 @@ export default {
         if (!valid) {
           return;
         }
-
-        const dataForm = Object.assign({}, this.resetForm);
-        delete dataForm.confirmPassword;
         if (this.apply) {
-          delete dataForm.password;
-          // TODO: 发送重置链接
+          const dataForm = {
+            username: this.resetForm.handler,
+            email: this.resetForm.handler,
+            captcha: this.resetForm.captcha,
+            captchaId: this.captchaId
+          }
+          if (this.resetForm.handler.indexOf('@') !== -1) {
+            // 邮件
+            delete dataForm.username;
+          } else {
+            // 用户名
+            delete dataForm.email;
+          }
+          api.forgetPassword(dataForm).then(ret => {
+            this.$Message.success('重置密码链接已发送到 ' + ret);
+          }).catch(err => {
+            this.$Message.error(err.message);
+            this.getCaptcha();
+          }).finally(() => {
+            this.resetForm.handler = '';
+            this.resetForm.captcha = '';
+          })
         } else {
-          delete dataForm.handler;
-          dataForm.token = this.token;
-          // TODO: 重置密码
+          const dataForm = {
+            token: this.token,
+            password: this.resetForm.password,
+            captcha: this.resetForm.captcha,
+            captchaId: this.captchaId
+          }
+          api.resetPassword(dataForm).then(ret => {
+            this.$Message.success({
+              content: 'Password resetted, please login',
+              onClose: () => this.$router.replace('/login')
+            })
+          }).catch(err => {
+            this.$Message.error(err.message);
+          });
         }
-        console.log(dataForm);
       })
     },
     onCaptchaInputFocus: function() {
@@ -130,16 +159,15 @@ export default {
       }
     },
     getCaptcha: function() {
-      // TODO: 索取图形验证码
-      // 模拟获得图形验证码
-      this.captchaId = 1;
-      this.captchaImg = 'data:image/png;base64,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';
+      api.getCaptcha().then(ret => {
+        this.captchaId = ret.captchaId;
+        this.captchaImg = ret.captcha;
+      })
     }
   },
   mounted: function() {
     if (this.$route.query.token) {
       this.token = this.$route.query.token;
-      // TODO: validate token and set `apply` to false if valid
       this.apply = false;
       this.$Message.success('Reset your password');
     }

@@ -55,7 +55,7 @@
                 <img :src="captchaImg" @click="getCaptcha"/>
               </Tooltip>
             </div>
-         </FormItem>
+        </FormItem>
         </Form>
       </div>
       <div class="bottom">
@@ -67,19 +67,35 @@
         </div>
       </div>
     </div>
+    <div class="container activation hover" v-else>
+      <Tooltip  content="Return to Home" placement="bottom">
+        <Icon type="md-checkmark-circle-outline" size="30"/>
+        <h1 style="display: inline" @click="$router.replace('/')">&nbsp; You have activated</h1>
+      </Tooltip>
+    </div>
 </template>
 
 <script>
+import api from '@/utils/api';
+
 export default {
   // 打开 register 页面的时候，默认调我的接口 "get验证码"，然后我把一个验证码ID，和验证码图片Base64 给你
   data: function () {
     const validateUsername = (rule, value, callback) => {
       // 检查用户名是否存在
-      callback();
+      api.isExist({ username: value }).then(ret => {
+        callback();
+      }, _ => {
+        callback(new Error('already exists'));
+      });
     };
     const validateEmail = (rule, value, callback) => {
       // 检查邮箱是否已被使用
-      callback();
+      api.isExist({ email: value }).then(ret => {
+        callback();
+      }, _ => {
+        callback(new Error('already exists'));
+      });
     };
     const validatePass = (rule, value, callback) => {
       if (value !== '') {
@@ -129,8 +145,10 @@ export default {
   methods: {
     getCaptcha: function() {
       // 模拟获得图形验证码
-      this.captchaId = 1;
-      this.captchaImg = 'data:image/png;base64,R0lGODdhWgAeAIcAAMrt3cns3Mnr28jr2sfq2sfp2cbo2MXo18Tn1sTm1cPl1cLl1MLk08Hj0sDi0cDi0L3fzr3fzbzezLvcyrrcyrnbybjZx7bYxbPUwbLTwLLTv7HSv67Pu63NuqvLt6rKtqnKtajJtajItKbHsqbGsaXFsKTEr6PDrqLCraHBq5+/qp++qZ6+qJ29p5q5o5m4opi4oZi3oJa1n5a1npSym5OympKxmpGwmZGvmJCvl4+tlY2rk4yqkoupkYqokIajioSiiYOgh4KfhoGehICdhH+cg36bgX2Zf3yZf3uYfnqXfXqWfHiVeneTeXaTeHaSd3SQdXSPdHGNcnCMcG+Kb22JbWyIbGyHa2uHamqGaWmEaGiEZ2WBZGWAY2N+YGJ9X2F8X196XF14WVx3WVp1Vlp0VVlzVFhyU1ZwUVVvUFRuT1NtTlNsTVJrTFFqSlBpSU9oSU5oSE1mRkxlREhhQEdgP0dfPkZfPkVdPERcO0NcOkNbOUJaOUFZOEBZN0BYNj5WNDxUMjtTMDpSLzpRLjlQLjhQLTdPLDZNKjVMKTNKJzJJJTBHJDBHIy5FIS5EICxDHitBHSpBHClAGyk/Gig+GSc9GCY8FyU7FSQ6FCM5EyI4EyI4EiA1Dx81Dh40Dh4zDRwyCxsxChswCRovCRkvCBkuBxgtBgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAAWgAeAEAI/wABCBxIsKDBgwgTKlzIsKHDhxAjSowY6FQYAADwnJoEoKPHjyBDfpR06lSoBgBSAshxqmUIADBhwjl1KhCAmzhz6tzJs6dPnEBMnTrliACAo0iTojjF1AyAp1ChJshixQCAq1gBLADAtavXr2DDih1LtqzZs2jTqlVr4dSpOzk06DlFd0WHLKVOzRBgxZSnEAAC7zh1igqAw4gTK17MOLECUKe0NClS55SgEy4AaJ5w6tQbAAAKFLoBoLTp0xBInTqFCIDr13JOnSICoDaAGadOnQkAoLfv38CDCx9OHACgU2QuQGBzygmA59Cf9zlFvTr1CACya9/Ovbv37+DDi/8fT768+fPo06tfz769++0MiuDJ9MmQEgIA8uvfz7+/f4AABA70csogBwAaTp1iAsDhQ4gRIbIRAsAijlMZyQDgaCLPi1KnKBkAUBLAjVMpFwBg2dLlS5gxXQY5NcrBgUGnTvEA0LNnAimKPjH6ooQLAKRJlQKAcsqpEQBRoxY6dYoNAKxYbZw6lUkCALBhxY4lW1YshUWWmgQAUIdTmQUA5AIgEOnUKVE0AOzl25fvmVOBUwAgXBgAnFOYVDCI0aiTEgCRJU+mXNnyZcyTn5QA0BnNqVMzAIwmTdoApFOpMQBg3RqAEFOnZM+e7YgEANy5de/m3dv3b+DBhQ8nXtz/+HHkyZUvZ97c+XPo0aVPp14duaFT2bVv184FAIAblTD5YLDh0Ck+BwCsZ9/e/Xv47hXI8NLoCAAAjE7ZAdDfP0AAAgcSHPhjVA8AABqIOnXKkgAAALiIWjDl1KklADYCSHHqFCUAIkeSLGnyZEkBbE49AgCgyKlTHwDQrGnzZs0BagDwBCDmFNAcAIZeiNLo1CkqAJYuPXLq1CcAUqdSrWr1atUKpk7dAODi1CkyAMaSLWv2LFkRp9bSAeDWrZlTpyQBqFv3QKdTp5QA6Ov3L+DAggHPObUHgBU0p0xJAODYcZpThChkcHOKCYDMmjcD8HPqMwYAokUrOnVKCoDU7KnxnDo1BADs2LJn0649O8Wp3GAAaDoFaQyA4AA8nDpVSgcAAE88AGju/HmPU9KxAKhufcepU1cAcL8w6dSaAgDGky9v/jz69OrLwyB16hQoFADm068PQMClU6cuCQDgHyAAgQAIOElk6hOhKhQANHT4EGJEiRMpUkxyCiMLABs5dqRyCuQOACNJjmzBiNOmToGywJCAYEQXDgBo1rR5E2dOnTvLtAHws8apUBMAFDUKoMCGM6eYnjLyAEBUqR4wKACBJI6kUJX+KHEAAGxYsWPJljV7FiycFlseefqDA0BcuXPp1rV7F29evAEBADs=';
+      api.getCaptcha().then(ret => { 
+        this.captchaId = ret.captchaId;
+        this.captchaImg = ret.captcha;
+      });
     },
     onCaptchaInputFocus: function() {
       if (!this.captchaId) {
@@ -139,37 +157,35 @@ export default {
     },
     handleRegister: function (name) {
       this.$refs[name].validate((valid) => {
-        if (!valid) {
-          this.registerForm.captcha = '';
-          this.btnRegisterLoading = false;
+        if (valid) {
+          const dataForm = Object.assign({}, this.registerForm);
+          delete dataForm.confirmPassword;
+          dataForm.captchaId = this.captchaId;
+          this.btnRegisterLoading = true;
+          api.register(dataForm).then(ret => {
+            this.$Message.success('Success, check your email for activation');
+            this.btnRegisterLoading = false;
+          }).catch(err => {
+            this.$Message.error(err.message);
+            this.btnRegisterLoading = false;
+          }).finally(() => {
+            this.registerForm.captcha = '';
+            this.registerForm.confirmPassword = '';
+            this.getCaptcha();
+          })
           return;
         }
-
-        const dataForm = Object.assign({}, this.registerForm);
-        delete dataForm.confirmPassword;
-        dataForm.captchaId = this.captchaId;
-        this.btnRegisterLoading = true;
-        // 假装在发包
-        setTimeout(() => {
-          console.log(dataForm);
-          this.$Message.success(
-            'Thanks for registering, check your email please'
-          );
-          this.btnRegisterLoading = false;
-        }, 1000);
+        this.registerForm.captcha = '';
+        this.registerForm.confirmPassword = '';
       });
     }
   },
   mounted: function() {
     if (this.$route.query.token) {
-      this.token = this.$route.query.token;
-      // TODO: 验证token是否有效
-      // 如果有效 则提示3秒钟后跳转到首页
       this.apply = false;
-      this.$Message.success({
-        content: 'Activated, redirect to home in 3 seconds',
-        duration: 3,
-        onClose: () => this.$router.push('/')
+      api.verifyEmail(this.$route.query.token).catch(err => {
+        this.$Message.error(err.data);
+        this.apply = true;
       })
     }
   }
@@ -219,10 +235,17 @@ export default {
 
 .captcha-img {
   margin-top: 5px;
+  :hover {
+    cursor: pointer;
+  }
 }
 
 .bottom {
   border-top: 1px solid rgb(185, 185, 185);
   padding-right: 10px;
+}
+
+.activation {
+  text-align: center;
 }
 </style>

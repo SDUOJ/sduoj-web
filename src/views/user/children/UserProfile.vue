@@ -1,14 +1,11 @@
 <template>
-  <Card>
-    <div slot="header">Your Profile</div>
+  <Card title="Your Profile" :padding="0" dis-hover>
     <div class="form">
-      <Form ref="profileForm" :model="profileForm" label-position="right" :label-width="100">
+      <Form ref="profileForm" :model="profileForm" :rules="profileRules" label-position="right" :label-width="100">
         <Row>
           <Col span="12">
             <FormItem label="Username">
-              <Input type="text" v-model="profileForm.username" style="width: 200px;">
-                <Icon type="ios-person-outline" slot="prepend" />
-              </Input>
+                <span>{{ profile.username }}</span>
             </FormItem>
             <FormItem label="Nickname">
               <Input type="text" v-model="profileForm.nickname" style="width: 200px;">
@@ -17,22 +14,28 @@
             </FormItem>
             <FormItem label="Student ID">
               <Input type="text" v-model="profileForm.studentId" style="width: 200px;">
+                <Icon type="ios-person-outline" slot="prepend"></Icon>
+              </Input>
+            </FormItem>
+            <FormItem label="Confirm Password" prop="password">
+              <Input type="password" v-model="profileForm.password" style="width: 200px;">
                 <Icon type="ios-lock-outline" slot="prepend"></Icon>
               </Input>
             </FormItem>
             <FormItem>
-              <Button type="text" @click="handleProfileUpdate('profileForm')" :disabled="!isVerified">Update</Button>
+              <Button @click="handleProfileUpdate('profileForm')" :disabled="!isVerified">Update</Button>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="Gender">
               <RadioGroup v-model="profileForm.gender" border>
-                <Radio label="1"><Icon type="ios-male" /></Radio>
-                <Radio label="0"><Icon type="ios-female" /></Radio>
+                <Radio label=2><Icon type="md-help" /></Radio>
+                <Radio label=1><Icon type="md-male" /></Radio>
+                <Radio label=0><Icon type="md-female" /></Radio>
               </RadioGroup>
             </FormItem>
             <FormItem label="Phone">
-              <Input type="text" v-model="profileForm.ehone" style="width: 200px;">
+              <Input type="text" v-model="profileForm.phone" style="width: 200px;">
                 <Icon type="ios-call-outline" slot="prepend" />
               </Input>
             </FormItem>
@@ -56,33 +59,51 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
-import Card from '@/components/Card';
+import api from '@/utils/api';
 
 export default {
-  components: { Card },
   data: function() {
     return {
       profileForm: {
-        username: '',
         nickname: '',
         studentId: '',
         gender: '',
         phone: '',
-        email: ''
+        password: ''
+      },
+      profileRules: {
+        password: [
+          { required: true, trigger: 'blur', min: 6, max: 32 }
+        ]
       }
     }
   },
   methods: {
     handleProfileUpdate: function(name) {
-      console.log(this.profileForm);
+      this.$refs[name].validate(valid => {
+        if (valid) {
+          api.updateProfile(this.profileForm).then(ret => {
+            api.getProfile().then(ret => this.$store.dispatch('user/setProfile', ret)).catch(_ => _);
+            this.$Message.success('Updated');
+          }).catch(err => {
+            this.$Message.error(err.message);
+          })
+        }
+      })
     },
     sendEmail: function() {
-      console.log('resend email to' + this.profile.email);
+      if (!this.isVerified) {
+        api.sendVerificationEmail(this.username).then(ret => {
+          this.$Message.success('An verification email has sent to ' + ret.data);
+        }).catch(err => {
+          this.$Message.error(err.message);
+        })
+      }
     }
   },
   computed: {
     ...mapState('user', ['profile']),
-    ...mapGetters('user', ['isVerified'])
+    ...mapGetters('user', ['isVerified', 'username'])
   },
   mounted: function() {
     const profile = this.$store.state.user.profile
@@ -91,6 +112,7 @@ export default {
         this.profileForm[element] = profile[element]
       }
     })
+    this.profileForm.gender = this.profileForm.gender.toString();
   }
 }
 </script>

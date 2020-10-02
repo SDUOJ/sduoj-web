@@ -46,7 +46,7 @@ const routes = [
     meta: { title: '题库' }
   },
   {
-    path: '/problem/:id',
+    path: '/problem/:problemCode',
     component: ProblemDetailView
   },
   {
