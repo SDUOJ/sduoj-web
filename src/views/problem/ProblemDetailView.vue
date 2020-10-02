@@ -135,7 +135,6 @@ export default {
       this.$router.push('/submission/' + submissionId);
     },
     onChangeLanguage: function(newLanguage) {
-      console.log(newLanguage);
       this.language = newLanguage;
     },
     onSubmit: function() {

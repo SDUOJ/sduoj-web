@@ -60,9 +60,8 @@ export default {
     handleEmailUpdate: function(name) {
       this.$refs[name].validate(valid => {
         if (valid) {
-          console.log(this.emailForm);
           api.updateProfile(this.emailForm).then(ret => {
-            api.getProfile().then(ret => this.$store.dispatch('user/setProfile', ret)).catch(_ => _);
+            api.getProfile();
             this.$Message.success('Updated');
           }).catch(err => {
             this.$Message.error(err.message);
