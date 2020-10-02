@@ -5,22 +5,28 @@
         <Row>
           <!-- 页面左边部分 -->
           <Col span="19" class="main-lf">
-            <div class="problem-set">
+            <Card class="problem-set" :padding="0" dis-hover>
               <!-- 题库 header -->
-              <div class="problem-set-header">
+              <div class="problem-set-header clearfix" slot="title">
                 <span class="problem-set-header-name">题库</span>
-                <div class="problem-set-header-switch">
+                <!-- <div class="problem-set-header-switch">
                   <i-switch size="large" @on-change="switchTag">
                     <span slot="open">标签</span>
                     <span slot="close">标签</span>
                   </i-switch>
-                </div>
+                </div> -->
+              </div>
+              <div slot="extra">
+                <i-switch size="large" @on-change="switchTag">
+                  <span slot="open">标签</span>
+                  <span slot="close">标签</span>
+                </i-switch> 
               </div>
               <!-- 题库 header -->
 
               <!-- 题库 content -->
               <div class="problem-set-content">
-                  <Table 
+                  <Table
                     :columns="problemTableColumns" 
                     :data="problemTableData" 
                     class="problem-set-content-table" 
@@ -36,7 +42,7 @@
                     @on-page-size-change="onPageSizeChange"/>
               </div>
               <!-- 题库 content -->
-            </div>
+            </Card>
           </Col>
           <!-- 页面左边部分 -->
 
@@ -294,8 +300,8 @@ export default {
       this.getProblemList();
     },
     handleProblemClick: function(row, col) {
-      if (col.key === 'problemInfo') {
-        this.$router.push('/problem/' + row.ojProblemId);
+      if (col.key === 'problemTitle') {
+        this.$router.push('/problem/' + row.problemCode);
       }
     },
     handleProblemSort: function({ column, key, order }) {
@@ -334,24 +340,24 @@ export default {
   border-radius: 4px;
   // 题库表头
   .problem-set-header {
-    height: 45px;
-    margin-right: 20px;
-    background-color: #f7f7f8;
-    border: 1px solid #d4d4d5;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
+    // height: 45px;
+    // margin-right: 20px;
+    // background-color: #f7f7f8;
+    // border: 1px solid #d4d4d5;
+    // border-top-left-radius: 4px;
+    // border-top-right-radius: 4px;
 
     .problem-set-header-name {
-      padding-left: 15px;
-      line-height: 45px;
+      // padding-left: 15px;
+      line-height: 20px;
       font-size: 1.2em;
       font-weight: bold;
     }
     
     .problem-set-header-switch {
       float: right;
-      padding-right: 30px;
-      padding-top: 10px;
+      // padding-right: 30px;
+      // padding-top: 10px;
     }
   }
 }
@@ -364,12 +370,13 @@ li {
 
 .problem-set {
   // 题库内容
+  margin-right: 20px;
   .problem-set-content {
-    margin-right: 20px;
-    border-left: 1px solid #d4d4d5;
+    // margin-right: 20px;
+    // border-left: 1px solid #d4d4d5;
 
     .problem-set-content-table {
-      border-right: 1px solid #d4d4d5;
+      // border-right: 1px solid #d4d4d5;
       // ivu 表格头部
       .ivu-table-header {
         padding-right: 0;
@@ -405,7 +412,7 @@ li {
 
     // 题库分页栏
     .problem-set-content-page {
-      margin-top: 15px;
+      margin: 20px 15px;
       float: right;
     }
   }

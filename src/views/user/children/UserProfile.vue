@@ -106,13 +106,11 @@ export default {
     ...mapGetters('user', ['isVerified', 'username'])
   },
   mounted: function() {
-    const profile = this.$store.state.user.profile
-    Object.keys(this.profileForm).forEach(element => {
-      if (profile[element] !== undefined) {
-        this.profileForm[element] = profile[element]
-      }
-    })
-    this.profileForm.gender = this.profileForm.gender.toString();
+    api.getProfile().then(ret => {
+      this.$store.dispatch('user/setProfile', ret);
+      this.profileForm = Object.assign({}, ret);
+      this.profileForm.gender = this.profileForm.gender.toString();
+    }).catch(_ => this.$Message.error(_.message));
   }
 }
 </script>

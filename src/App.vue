@@ -1,7 +1,9 @@
 <template>
   <div class="layout">
     <NavBar></NavBar>
-    <router-view></router-view>
+    <transition name="fade" mode="out-in">
+      <router-view></router-view>
+    </transition>
     <div class="footer" v-once v-html='footerInfo'></div>
   </div>
 </template>
@@ -25,15 +27,17 @@ export default {
 };
 </script>
 
-<style lang="less">
-.container {
-  max-width: 1300px;
-  margin: 0 auto;
+<style lang="less" scoped>
+.fade-leave-active,
+.fade-enter-active {
+    transition: all 0.23s;
 }
-
-.clearfix:after {
-  content: '';
-  clear:both;
-  display: table;
+.fade-enter {
+    opacity: 0;
+    transform: translateY(30px);
+}
+.fade-leave-to {
+    opacity: 0;
+    transform: translateY(-30px);
 }
 </style>
