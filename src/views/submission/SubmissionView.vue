@@ -9,32 +9,32 @@
       <div class="clearfix filter-sets">
         <div>
           <div class="filter-title">由用户</div>
-          <Input v-model="filterOption.username" 
-            placeholder="Username" 
+          <Input v-model="filterOption.username"
+            placeholder="Username"
             style="width: 200px;"
             @on-enter="onFiltering">
           </Input>
         </div>
         <div>
           <div class="filter-title">由题目</div>
-          <Input v-model="filterOption.problemCode" 
-            placeholder="Problem Code" 
+          <Input v-model="filterOption.problemCode"
+            placeholder="Problem Code"
             style="width: 200px;"
             @on-enter="onFiltering">
           </Input>
         </div>
         <div>
           <div class="filter-title">由评测结果</div>
-          <Input v-model="filterOption.judgeResult" 
-            placeholder="Status" 
+          <Input v-model="filterOption.judgeResult"
+            placeholder="Status"
             style="width: 200px;"
             @on-enter="onFiltering">
           </Input>
         </div>
         <div>
           <div class="filter-title">由语言</div>
-          <Input v-model="filterOption.lang" 
-            placeholder="Language" 
+          <Input v-model="filterOption.lang"
+            placeholder="Language"
             style="width: 200px;"
             @on-enter="onFiltering">
           </Input>
@@ -42,15 +42,15 @@
       </div>
     </Card>
     <Card class="clearfix" dis-hover :padding="0">
-      <Table 
-        class="data-table" 
+      <Table
+        class="data-table"
         :columns="columns"
         :data="submissions"
         :loading="loading"
         @on-sort-change="handleSortBy"
         @on-cell-click="onTableClick"></Table>
       <div class="pages">
-        <Page 
+        <Page
           size="small" show-elevator show-sizer
           :total="totalPage"
           :current.sync="pageNow"
@@ -62,6 +62,7 @@
 </template>
 
 <script>
+import ProblemCode from '@/components/ProblemCode';
 import JudgeResult from '@/components/JudgeResult';
 import api from '@/utils/api';
 
@@ -71,21 +72,55 @@ export default {
       columns: [
         { title: '#', key: 'submissionId', minWidth: 80 },
         { title: '用户', key: 'username' },
-        { 
+        {
           title: '题目',
           key: 'problemCode',
-          render: (h, params) => h('span', { class: 'hover' }, params.row.problemCode)
+          minWidth: 15,
+          render: (h, params) => {
+            if (params.row.problemCode !== undefined) {
+              if (params.row.problemCode.length > 20) {
+                const texts = params.row.problemCode.substring(0, 20) + '...';
+                return h('Tooltip', {
+                  props: {
+                    placement: 'top',
+                    maxWidth: '180'
+                  }
+                }, [
+                  h(ProblemCode, {
+                    class: 'hover',
+                    props: {
+                      problemCode: texts
+                    }
+                  }),
+                  h('span', {
+                    slot: 'content',
+                    style: {
+                      whiteSpace: 'normal',
+                      wordBreak: 'break-all'
+                    }
+                  }, params.row.problemCode)
+                ]);
+              } else {
+                return h(ProblemCode, {
+                  class: 'hover',
+                  props: {
+                    problemCode: params.row.problemCode
+                  }
+                });
+              }
+            }
+          }
         },
-        { 
-          title: '评测结果', 
+        {
+          title: '评测结果',
           key: 'judgeResult',
-          minWidth: 50,
+          minWidth: 30,
           render: (h, params) => h(JudgeResult, { props: { result: params.row.judgeResult } })
         },
         { title: '用时', key: 'usedTime', sortable: true, maxWidth: 90 },
         { title: '内存', key: 'usedMemory', sortable: true, maxWidth: 90 },
         { title: '语言', key: 'language' },
-        { 
+        {
           title: '提交时间',
           key: 'gmtCreate',
           minWidth: 55,

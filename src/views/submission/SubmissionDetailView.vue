@@ -6,14 +6,14 @@
           <!-- websocket -->
           <Card class="box" dis-hover :padding="0">
             <JudgeResult class="title" slot="title" :result="submission.judgeResult" />
-            <!-- <Table 
+            <!-- <Table
               disabled-hover
               v-if="submission.checkpointResults.length !== 0"
               :show-header="false"
               no-data-text=""
               size="small"
-              :columns="columns" 
-              :data="submission.checkpointResults" 
+              :columns="columns"
+              :data="submission.checkpointResults"
               class="data-table" ></Table> -->
           </Card>
           <Card v-if="showJudgerLog" class="box" :title="compilerLogTitle" dis-hover>
@@ -31,10 +31,11 @@
                   <Cell title="Public" v-if="submission.username === username">
                       <i-switch v-model="submission.isPublic" slot="extra" true-color="#19be6b"/>
                   </Cell>
-                  <Cell 
-                    title="Problem Code" 
-                    :extra="submission.problemCode" 
-                    :to="{ name: 'problem-detail', params: { problemCode: submission.problemCode }}" />
+                  <Cell
+                    title="Problem Code"
+                    :to="{ name: 'problem-detail', params: { problemCode: submission.problemCode }}">
+                    <ProblemCode slot="extra" :problemCode="submission.problemCode"></ProblemCode>
+                  </Cell>
                   <Cell title="Problem ID" :extra="submission.problemId" />
                 </div>
                 <Divider size="small"/>
@@ -73,20 +74,21 @@
 </template>
 
 <script>
+import ProblemCode from '@/components/ProblemCode';
 import JudgeResult from '@/components/JudgeResult';
 import { mapGetters } from 'vuex';
 import { sendWebsocket, closeWebsocket } from '@/utils/socket';
 import api from '@/utils/api';
 
 export default {
-  components: { JudgeResult },
+  components: { JudgeResult, ProblemCode },
   data: function() {
     return {
       submission: {},
       columns: [
         { title: '#', key: 'submissionId' },
-        { 
-          title: '评测结果', 
+        {
+          title: '评测结果',
           key: 'judgeResult',
           minWidth: 50,
           render: (h, params) => h(JudgeResult, {  props: { result: params.row.judgeResult } })
@@ -158,7 +160,7 @@ export default {
   width: 100%;
 }
 .submission-box {
-  margin: 5px 0 20px 0; 
+  margin: 5px 0 20px 0;
   .problem-box-header {
     margin-left: 8px;
   }
@@ -166,11 +168,11 @@ export default {
 
 .time::after {
     content:" ms\0A";
-    white-space:pre; 
+    white-space:pre;
   }
 .mem::after {
   content:" KB\0A";
-  white-space:pre; 
+  white-space:pre;
 }
 
 .box {
