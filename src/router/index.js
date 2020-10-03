@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import routes from './routes';
-import api from '@/utils/api';
+import api from '_u/api';
 
 Vue.use(VueRouter);
 const originalPush = VueRouter.prototype.push;

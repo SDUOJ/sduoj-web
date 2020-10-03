@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import api from '@/utils/api';
+import api from '_u/api';
 
 export default {
   data: function() {

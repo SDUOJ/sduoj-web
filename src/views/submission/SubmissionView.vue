@@ -62,9 +62,9 @@
 </template>
 
 <script>
-import ProblemCode from '@/components/ProblemCode';
-import JudgeResult from '@/components/JudgeResult';
-import api from '@/utils/api';
+import ProblemCode from '_c/ProblemCode';
+import JudgeResult from '_c/JudgeResult';
+import api from '_u/api';
 
 export default {
   data: function() {

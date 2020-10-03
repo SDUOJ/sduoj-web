@@ -102,8 +102,8 @@
 </template>
 
 <script>
-import ProblemCode from '@/components/ProblemCode';
-import api from '@/utils/api';
+import ProblemCode from '_c/ProblemCode';
+import api from '_u/api';
 
 export default {
   data () {

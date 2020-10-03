@@ -89,7 +89,7 @@ export default {
           if (error) {
             error(err.response.data);
           }
-        } 
+        }
       });
   },
   getCaptcha: function() {
@@ -125,6 +125,13 @@ export default {
         { contestId: 4, contestTitle: '浙江省第十二届大学生程序设计竞赛（重现赛） [Cloned]', description: '222222222222222222222222222222222222222222222222222', start: 1601648316000, end: 1601648516000, mode: 'ioi', attends: 800 },
         { contestId: 5, contestTitle: '浙江省第十二届大学生程序设计竞赛（重现赛） [Cloned]', description: '222222222222222222222222222222222222222222222222222', start: 1601628115000, end: 1601629115000, mode: 'ioi', attends: 800 }
       ])
+    })
+  },
+  getContest: function(contestId) {
+    return new Promise((resolve, reject) => {
+      resolve(
+        { contestId: 4, contestTitle: '浙江省第十二届大学生程序设计竞赛（重现赛） [Cloned]', description: '222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222', start: 1601713224000, end: 1601713225000, mode: 'ioi', attends: 800 }
+      )
     })
   }
 }

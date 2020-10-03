@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import utils from '@/utils';
+import utils from '_u';
 
 export default {
   props: {
@@ -67,7 +67,7 @@ export default {
   cursor: pointer;
 }
 
-// judge 
+// judge
 .verdict-compile-error {
   color: orange;
   font-weight: bold;

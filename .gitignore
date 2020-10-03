@@ -1,3 +1,6 @@
+# idea
+alias.config.js
+
 .DS_Store
 node_modules
 /dist

@@ -1,60 +1,88 @@
 const routes = [
   {
-    path: '/',
-    redirect: '/home'
+    redirect: '/home',
+    path: '/'
   },
   {
-    path: '/login',
     name: 'login',
+    path: '/login',
     component: () => import('@/views/user/Login')
   },
   {
-    path: '/register',
     name: 'register',
+    path: '/register',
     component: () => import('@/views/user/Register')
   },
   {
-    path: '/resetpass',
     name: 'reset-password',
+    path: '/resetpass',
     component: () => import('@/views/user/ResetPass')
   },
   {
-    path: '/home',
     name: 'home',
+    path: '/home',
     component: () => import('@/views/HomeView'),
     meta: { title: '首页' }
   },
   {
-    path: '/user',
     name: 'user',
+    path: '/user',
     meta: { login: true },
     component: () => import('@/views/user/UserHome')
   },
   {
-    path: '/problem',
     name: 'problem',
+    path: '/problem',
     component: () => import('@/views/problem/ProblemView'),
     meta: { title: '题库' }
   },
   {
-    path: '/problem/:problemCode',
     name: 'problem-detail',
+    path: '/problem/:problemCode',
     component: () => import('@/views/problem/ProblemDetailView')
   },
   {
-    path: '/submission',
     name: 'submission',
+    path: '/submission',
     component: () => import('@/views/submission/SubmissionView')
   },
   {
-    path: '/submission/:submissionId',
     name: 'submission-detail',
+    path: '/submission/:submissionId',
     component: () => import('@/views/submission/SubmissionDetailView')
   },
   {
-    path: '/contest',
     name: 'contest',
-    component: () => import('@/views/contest/ContestView.vue')
+    path: '/contest',
+    component: () => import('@/views/contest/ContestView')
+  },
+  {
+    name: 'contest-detail',
+    path: '/contest/:contestId',
+    redirect: '/contest/:contestId/overview',
+    component: () => import('@/views/contest/ContestDetailView'),
+    children: [
+      {
+        name: 'contest-overview',
+        path: 'overview',
+        component: () => import('@/views/contest/children/ContestOverviewView')
+      },
+      {
+        name: 'contest-problem',
+        path: 'problem',
+        component: () => import('@/views/problem/ProblemDetailView')
+      },
+      {
+        name: 'contest-submission',
+        path: 'submission',
+        component: () => import('@/views/submission/SubmissionView')
+      },
+      {
+        name: 'contest-rank',
+        path: 'rank',
+        component: () => import('@/views/contest/children/ContestRank')
+      }
+    ]
   },
   {
     path: '*',

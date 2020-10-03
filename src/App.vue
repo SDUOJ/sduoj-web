@@ -8,9 +8,9 @@
   </div>
 </template>
 <script>
-import NavBar from '@/components/NavBar';
+import NavBar from '_c/NavBar';
 import { mapState } from 'vuex';
-import api from '@/utils/api';
+import api from '_u/api';
 
 export default {
   components: { NavBar },

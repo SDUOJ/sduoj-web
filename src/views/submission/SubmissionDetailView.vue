@@ -74,11 +74,11 @@
 </template>
 
 <script>
-import ProblemCode from '@/components/ProblemCode';
-import JudgeResult from '@/components/JudgeResult';
+import ProblemCode from '_c/ProblemCode';
+import JudgeResult from '_c/JudgeResult';
 import { mapGetters } from 'vuex';
-import { sendWebsocket, closeWebsocket } from '@/utils/socket';
-import api from '@/utils/api';
+import { sendWebsocket, closeWebsocket } from '_u/socket';
+import api from '_u/api';
 
 export default {
   components: { JudgeResult, ProblemCode },
