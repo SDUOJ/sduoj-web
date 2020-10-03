@@ -2,14 +2,14 @@
   <div class="layout">
     <NavBar></NavBar>
     <transition name="fade" mode="out-in">
-      <router-view></router-view>
+      <router-view />
     </transition>
     <div class="footer" v-html='copyright'></div>
   </div>
 </template>
 <script>
-import NavBar from '_c/NavBar';
 import { mapState } from 'vuex';
+import NavBar from '_c/NavBar';
 import api from '_u/api';
 
 export default {

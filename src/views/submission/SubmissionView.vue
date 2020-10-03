@@ -52,7 +52,7 @@
       <div class="pages">
         <Page
           size="small" show-elevator show-sizer
-          :total="totalPage"
+          :total="total"
           :current.sync="pageNow"
           @on-change="onPageChange"
           @on-page-size-change="onPageSizeChange"/>
@@ -136,7 +136,7 @@ export default {
         judgeResult: '',
         language: ''
       },
-      totalPage: 1,
+      total: 1,
       pageNow: 1,
       pageSize: 10,
       sortBy: '',
@@ -155,7 +155,7 @@ export default {
         pageSize: this.pageSize
       }).then(ret => {
         this.submissions = ret.rows;
-        this.totalPage = parseInt(ret.totalPage);
+        this.total = parseInt(ret.total);
       }).finally(() => { this.loading = false });
     },
     clearFilterOptions: function() {
@@ -166,8 +166,8 @@ export default {
     onReset: function() {
       this.clearFilterOptions();
     },
-    onPageChange: function(curPage) {
-      this.pageNow = curPage;
+    onPageChange: function(pageNow) {
+      this.pageNow = pageNow;
     },
     onPageSizeChange: function(pageSize) {
       this.pageSize = pageSize;
@@ -202,9 +202,6 @@ export default {
     }
   },
   watch: {
-    filterOption: function() {
-      this.onFiltering();
-    },
     pageNow: function() {
       this.onFiltering();
     },

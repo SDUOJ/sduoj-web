@@ -1,27 +1,34 @@
 <template>
-  <div class="container">
+  <div class="container" v-if="contestLoaded">
     <div class="contest__header clearfix">
       <div class="contest__title">
-        <span class="title">{{ contest.contestTitle }}</span>
-        <ul class="ivu-list-item-action contest__float">
-          <li>
-            <Icon type="ios-time-outline"/>
-            {{ contest.start | timeformat('hh:mm:ss') }}
-          </li>
-          <li>{{ (contest.end - contest.start) | time2hour }}</li>
-          <li>
-            <Icon type="ios-people-outline"/>
-            {{ contest.attends }}
-          </li>
-          <li>
-            <div :class="'contest-type--' + contest.mode">
-              <Icon type="md-bulb" color="#fff"/>&nbsp;
-              <span>{{ contest.mode.toUpperCase() }}</span>
-            </div>
-          </li>
-        </ul>
-        <div class="contest__subtitle">
-          {{ contest.description }}
+        <div style="margin-bottom: 15px">
+          <span class="title">
+            {{ contest.contestTitle }}
+          </span>
+          <span class="contest__subtitle">{{ contest.source }}</span>
+          <Icon type="md-lock" color="#d9534f" size="19" v-if="contest.features.openness === 'private'"/>
+          <Icon type="md-lock" color="orange" size="19" v-else-if="contest.features.openness === 'protected'"/>
+          <ul class="ivu-list-item-action contest__float">
+            <li>
+              <div :class="'contest-type--' + contest.features.mode">
+                <Icon type="md-bulb" color="#fff"/>&nbsp;
+                <span>{{ contest.features.mode.toUpperCase() }}</span>
+              </div>
+            </li>
+            <li>
+              <Icon type="ios-time-outline"/>
+              {{ contest.gmtStart | timeformat('hh:mm:ss') }}
+            </li>
+            <li>{{ (contest.gmtEnd - contest.gmtStart) | time2hour }}</li>
+            <li>
+              <Icon type="ios-people-outline"/>
+              {{ contest.participantNum }}
+            </li>
+          </ul>
+        </div>
+        <div>
+          <markdown-it-vue-light :content="contest.markdownDescription"></markdown-it-vue-light>
         </div>
       </div>
       <Menu mode="horizontal" theme="light" :active-name="$route.path" class="contest__menu">
@@ -56,6 +63,32 @@
         }">
           <span class="span__menu">Rank</span>
         </MenuItem>
+        <div class="contest__countdown">
+          <template v-if="start">
+            <template v-if="end">
+              <span>Finished</span>
+            </template>
+            <template v-else>
+              <span>Running&nbsp;</span>
+              <Countdown
+                :time="countdown"
+                style="display: inline"
+                format="hh:mm:ss">
+                <template slot-scope="{ time }">{{ time }}</template>
+              </Countdown>
+            </template>
+          </template>
+          <template v-else>
+            <span>Before the contest&nbsp;</span>
+            <Countdown
+              :time="countdown"
+              @on-end="$router.go(0)"
+              style="display: inline"
+              format="hh:mm:ss">
+              <template slot-scope="{ time }">{{ time }}</template>
+            </Countdown>
+          </template>
+        </div>
       </Menu>
     </div>
     <router-view></router-view>
@@ -63,28 +96,25 @@
 </template>
 
 <script>
-import api from '_u/api';
-import timeformat from '_u/time';
+import MarkdownItVueLight from 'markdown-it-vue/dist/markdown-it-vue-light.umd.min.js'
+import 'markdown-it-vue/dist/markdown-it-vue-light.css'
+import Countdown from '@choujiaojiao/vue2-countdown';
+import timeFormat from '_u/time';
 
-import { mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 
 export default {
   name: 'ContestDetailView',
-  data: function () {
+  components: { MarkdownItVueLight, Countdown },
+  data: function() {
     return {
-      contest: {
-        contestId: '',
-        contestTitle: '',
-        description: '',
-        start: 0,
-        end: 0,
-        mode: '',
-        attends: 0
-      }
+      countdown: 0,
+      start: false,
+      end: false
     }
   },
   filters: {
-    timeformat: (timestamp, format) => timeformat(timestamp, format),
+    timeformat: (timestamp, format) => timeFormat(timestamp, format),
     time2hour: timediff => {
       timediff /= 1000;
       let h = parseInt(timediff / 3600);
@@ -99,12 +129,27 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('user', ['username'])
+    ...mapGetters('user', ['username']),
+    ...mapGetters('contest', ['startTime', 'endTime', 'contestLoaded']),
+    ...mapState('contest', ['contest'])
   },
-  mounted: function () {
-    api.getContest(this.$route.params.contestId).then(ret => {
-      this.contest = ret;
-    })
+  mounted: function() {
+    this.$store.dispatch('contest/getContest', this.$route.params.contestId).then(ret => {
+      const currentTime = new Date();
+      if (this.startTime <= currentTime) {
+        this.start = true;
+        if (this.endTime < currentTime) {
+          this.end = true;
+        } else {
+          this.countdown = parseInt((this.endTime - currentTime) / 1000);
+        }
+      } else {
+        this.countdown = parseInt((this.startTime - currentTime) / 1000);
+      }
+    });
+  },
+  beforeDestroy: function () {
+    this.$store.commit('contest/clearContest');
   }
 }
 </script>
@@ -119,7 +164,7 @@ export default {
     font-size: 20px;
     font-weight: 600;
     padding: 15px 15px;
-    padding-bottom: 0;
+    /*padding-bottom: 0;*/
   }
 
   .contest__float {
@@ -138,5 +183,12 @@ export default {
   }
   .contest__menu {
     background-color: @bgc;
+    .contest__countdown {
+      margin: 0;
+      margin-right: 10px;
+      float: right;
+      font-size: 20px;
+      font-weight: bold;
+    }
   }
 </style>

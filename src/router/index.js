@@ -20,7 +20,12 @@ router.beforeEach((to, from, next) => {
       next();
     }, _ => {
       Vue.prototype.$Message.error('Please login first');
-      next('/login');
+      next({
+        name: 'login',
+        query: {
+          to: to.path
+        }
+      });
     })
   } else {
     next();
