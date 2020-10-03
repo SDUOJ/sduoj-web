@@ -33,15 +33,15 @@
         <!-- 代码编辑器 -->
           <Card class="box clearfix" dis-hover :padding="0">
             <div style="padding-right: 15px;">
-              <CodeEditor 
+              <CodeEditor
                 :code.sync="code"
                 :file.sync="file"
                 :language="language"
                 :languageSet="problem.languages"
                 @changeLanguage="onChangeLanguage">
               </CodeEditor>
-              <Button 
-                style="float: right; margin: 5px 0;" 
+              <Button
+                style="float: right; margin: 5px 0;"
                 :loading="submitBtnLoading"
                 :disabled="submitColdDown"
                 @click="onSubmit">提交</Button>
@@ -53,7 +53,9 @@
         <!-- 题目基本信息 -->
           <Card class="box" title="Details" dis-hover :padding="0">
             <CellGroup>
-              <Cell title="Problem Code" :extra="problem.problemCode" />
+              <Cell title="Problem Code">
+               <ProblemCode slot="extra" :problemCode="problem.problemCode" />
+              </Cell>
               <Cell title="Problem ID" :extra="problem.problemId" />
               <Cell title="Time Limit">
                 <span class="time" slot="extra">{{ problem.timeLimit }}</span>
@@ -83,12 +85,13 @@
         </Col>
       </Row>
       </div>
-    </div> 
+    </div>
 </template>
 
 <script>
 import MarkdownItVueLight from 'markdown-it-vue/dist/markdown-it-vue-light.umd.min.js'
 import 'markdown-it-vue/dist/markdown-it-vue-light.css'
+import ProblemCode from '@/components/ProblemCode';
 import CodeEditor from '@/components/CodeEditor';
 import JudgeResult from '@/components/JudgeResult';
 
@@ -98,9 +101,10 @@ import api from '@/utils/api';
 import { mapGetters } from 'vuex';
 
 export default {
-  components: { 
+  components: {
     MarkdownItVueLight,
-    CodeEditor
+    CodeEditor,
+    ProblemCode
   },
   data: function() {
     return {
@@ -224,7 +228,7 @@ export default {
 
 <style lang="less" scoped>
 .box {
-  margin: 20px 10px; 
+  margin: 20px 10px;
 }
 
 .problem-title::after {
@@ -246,7 +250,7 @@ export default {
   color: red;
   &:after {
     content:" ms\0A";
-    white-space:pre; 
+    white-space:pre;
   }
 }
 
@@ -254,7 +258,7 @@ export default {
   color: red;
   &:after {
     content:" KB\0A";
-    white-space:pre; 
+    white-space:pre;
   }
 }
 

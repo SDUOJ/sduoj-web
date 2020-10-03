@@ -2,9 +2,11 @@ import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
 import store from './store';
-import './plugins/iviewui';
-import './plugins/clipboard2';
+import ViewUI from 'view-design'
 import VueHighlightJS from 'vue-highlightjs';
+import './styles/global.less';
+import './plugins/clipboard2';
+Vue.use(ViewUI);
 Vue.use(VueHighlightJS);
 
 Vue.config.productionTip = false;

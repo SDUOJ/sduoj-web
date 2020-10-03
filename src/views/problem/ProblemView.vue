@@ -20,20 +20,20 @@
                 <i-switch size="large" @on-change="switchTag">
                   <span slot="open">标签</span>
                   <span slot="close">标签</span>
-                </i-switch> 
+                </i-switch>
               </div>
               <!-- 题库 header -->
 
               <!-- 题库 content -->
               <div class="problem-set-content">
                   <Table
-                    :columns="problemTableColumns" 
-                    :data="problemTableData" 
-                    class="problem-set-content-table" 
+                    :columns="problemTableColumns"
+                    :data="problemTableData"
+                    class="problem-set-content-table"
                     @on-cell-click="handleProblemClick"
                     @on-sort-change="handleProblemSort">
                   </Table>
-                  <Page 
+                  <Page
                     class="problem-set-content-page"
                     size="small" show-elevator show-sizer
                     :total="totalPage"
@@ -63,8 +63,8 @@
               <!-- header -->
               <!-- 标签内容 -->
               <div class="problem-tags-content">
-                <Row> 
-                  <Col span="12" class="problem-tags-content-col"> 
+                <Row>
+                  <Col span="12" class="problem-tags-content-col">
                     <template v-for="(ptag, index) in tags">
                       <div class="problem-tags-content-line" v-if="index % 2 === 0" :key="ptag.name">
                         <Poptip trigger="hover" placement="left" :disabled="(ptag.children || []).length === 0" word-wrap width="300">
@@ -72,11 +72,11 @@
                           <div slot="content" class="problem-tags-content-poptip">
                             <span v-for="tag in (ptag.children || [])" :key="tag"> {{ tag }}</span>
                           </div>
-                        </Poptip>  
+                        </Poptip>
                       </div>
                     </template>
                   </Col>
-                  <Col span="12" class="problem-tags-content-col"> 
+                  <Col span="12" class="problem-tags-content-col">
                     <template v-for="(ptag, index) in tags">
                       <div class="problem-tags-content-line" v-if="index % 2 === 1" :key="ptag.name">
                         <Poptip trigger="hover" placement="right" :disabled="(ptag.children || []).length === 0" word-wrap width="300">
@@ -84,7 +84,7 @@
                           <div slot="content" class="problem-tags-content-poptip">
                             <span v-for="tag in (ptag.children || [])" :key="tag"> {{ tag }}</span>
                           </div>
-                        </Poptip>  
+                        </Poptip>
                       </div>
                     </template>
                   </Col>
@@ -102,6 +102,7 @@
 </template>
 
 <script>
+import ProblemCode from '@/components/ProblemCode';
 import api from '@/utils/api';
 
 export default {
@@ -113,20 +114,20 @@ export default {
           key: 'problemCode',
           width: 210,
           render: (h, params) => {
-            let texts = '';
-            if (params.row.problemCode !== null) {
+            if (params.row.problemCode !== undefined) {
               if (params.row.problemCode.length > 20) {
-                texts = params.row.problemCode.substring(0, 20) + '...';
-                const strs = texts.split('-');
-                strs[1] = ' ' + strs[1]
+                const texts = params.row.problemCode.substring(0, 20) + '...';
                 return h('Tooltip', {
                   props: {
                     placement: 'top',
                     maxWidth: '180'
                   }
                 }, [
-                  h('strong', strs[0]),
-                  strs[1],
+                  h(ProblemCode, {
+                    props: {
+                      problemCode: texts
+                    }
+                  }),
                   h('span', {
                     slot: 'content',
                     style: {
@@ -136,13 +137,11 @@ export default {
                   }, params.row.problemCode)
                 ]);
               } else {
-                texts = params.row.problemCode;
-                const strs = texts.split('-');
-                strs[1] = ' ' + strs[1]
-                return h('span', [
-                  h('strong', strs[0]),
-                  strs[1]
-                ]);
+                return h(ProblemCode, {
+                  props: {
+                    problemCode: params.row.problemCode
+                  }
+                });
               }
             }
           }
@@ -169,7 +168,7 @@ export default {
           //           verticalAlign: 'middle'
           //         }
           //       })]);
-          //   } 
+          //   }
           // }
         },
         {
@@ -269,7 +268,7 @@ export default {
     switchTag: function(open) {
       if (open) {
         this.problemTableColumns = [
-          ...this.problemTableColumns.slice(0, 2), 
+          ...this.problemTableColumns.slice(0, 2),
           {
             title: '标签',
             key: 'problemTagDTOList',
@@ -356,7 +355,7 @@ export default {
       font-size: 1.2em;
       font-weight: bold;
     }
-    
+
     .problem-set-header-switch {
       float: right;
       // padding-right: 30px;
