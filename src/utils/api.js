@@ -43,6 +43,10 @@ function get(url, params) {
 }
 
 export default {
+  // 配置相关
+  getCopyright: function() {
+    return get('/site/getCopyright');
+  },
   // 用户相关
   login: function(data) {
     return post('/user/login', data);
@@ -110,5 +114,17 @@ export default {
   },
   getProblemList: function(params) {
     return get('/problem/list', params);
+  },
+  // 比赛相关
+  getContestList: function() {
+    return new Promise((resolve) => {
+      resolve([
+        { contestId: 1, contestTitle: '排位赛 1', description: '1111111111111111111', start: 1601628815000, end: 1601646815000, mode: 'acm', attends: 100 },
+        { contestId: 2, contestTitle: 'Contest 2', description: '222222222222222222222222222222222222222222222222222', start: 1601628115000, end: 1601646115000, mode: 'oi', attends: 800 },
+        { contestId: 3, contestTitle: 'Contest 3', description: '222222222222222222222222222222222222222222222222222', start: 1601628115000, end: 1601646115000, mode: 'oi', attends: 800 },
+        { contestId: 4, contestTitle: '浙江省第十二届大学生程序设计竞赛（重现赛） [Cloned]', description: '222222222222222222222222222222222222222222222222222', start: 1601648316000, end: 1601648516000, mode: 'ioi', attends: 800 },
+        { contestId: 5, contestTitle: '浙江省第十二届大学生程序设计竞赛（重现赛） [Cloned]', description: '222222222222222222222222222222222222222222222222222', start: 1601628115000, end: 1601629115000, mode: 'ioi', attends: 800 }
+      ])
+    })
   }
 }

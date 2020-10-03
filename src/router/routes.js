@@ -25,6 +25,12 @@ const routes = [
     meta: { title: '首页' }
   },
   {
+    path: '/user',
+    name: 'user',
+    meta: { login: true },
+    component: () => import('@/views/user/UserHome')
+  },
+  {
     path: '/problem',
     name: 'problem',
     component: () => import('@/views/problem/ProblemView'),
@@ -36,12 +42,6 @@ const routes = [
     component: () => import('@/views/problem/ProblemDetailView')
   },
   {
-    path: '/user',
-    name: 'user',
-    meta: { login: true },
-    component: () => import('@/views/user/UserHome')
-  },
-  {
     path: '/submission',
     name: 'submission',
     component: () => import('@/views/submission/SubmissionView')
@@ -50,6 +50,11 @@ const routes = [
     path: '/submission/:submissionId',
     name: 'submission-detail',
     component: () => import('@/views/submission/SubmissionDetailView')
+  },
+  {
+    path: '/contest',
+    name: 'contest',
+    component: () => import('@/views/contest/ContestView.vue')
   },
   {
     path: '*',

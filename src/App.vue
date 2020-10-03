@@ -4,19 +4,21 @@
     <transition name="fade" mode="out-in">
       <router-view></router-view>
     </transition>
-    <div class="footer" v-once v-html='footerInfo'></div>
+    <div class="footer" v-html='copyright'></div>
   </div>
 </template>
 <script>
 import NavBar from '@/components/NavBar';
 import { mapState } from 'vuex';
+import api from '@/utils/api';
 
 export default {
   components: { NavBar },
   computed: {
-    ...mapState(['footerInfo'])
+    ...mapState(['copyright'])
   },
-  created() {
+  async created() {
+    this.$store.commit('updateCopyright', await api.getCopyright());
     if (sessionStorage.getItem('store')) {
       this.$store.replaceState(Object.assign({}, this.$store.state, JSON.parse(sessionStorage.getItem('store'))))
     }

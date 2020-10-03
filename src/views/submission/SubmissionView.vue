@@ -1,13 +1,11 @@
 <template>
   <div class="container">
     <Card class="filter" dis-hover :padding="0">
-      <div slot="title">
-        <h3 style="display: inline">过滤</h3>
-        <div class="btns">
+        <h3 slot="title" style="display: inline">过滤</h3>
+        <div slot="extra" class="btns card-extra">
           <Button type="text" @click="onFiltering">过滤</Button>
           <Button type="text" @click="onReset">重置</Button>
         </div>
-      </div>
       <div class="clearfix filter-sets">
         <div>
           <div class="filter-title">由用户</div>
@@ -48,6 +46,7 @@
         class="data-table" 
         :columns="columns"
         :data="submissions"
+        :loading="loading"
         @on-sort-change="handleSortBy"
         @on-cell-click="onTableClick"></Table>
       <div class="pages">
@@ -106,11 +105,13 @@ export default {
       pageNow: 1,
       pageSize: 10,
       sortBy: '',
-      ascending: false
+      ascending: false,
+      loading: false
     }
   },
   methods: {
     onFiltering: function() {
+      this.loading = true;
       api.getSubmissionList({
         ...(this.filterOption),
         sortBy: this.sortBy,
@@ -119,9 +120,8 @@ export default {
         pageSize: this.pageSize
       }).then(ret => {
         this.submissions = ret.rows;
-      }).catch(err => {
-        this.$Message.error(err);
-      });
+        this.totalPage = parseInt(ret.totalPage);
+      }).finally(() => { this.loading = false });
     },
     clearFilterOptions: function() {
       for (const key in this.filterOption) {
@@ -130,7 +130,6 @@ export default {
     },
     onReset: function() {
       this.clearFilterOptions();
-      this.onFiltering();
     },
     onPageChange: function(curPage) {
       this.pageNow = curPage;
@@ -148,7 +147,7 @@ export default {
       }
       this.onFiltering();
     },
-    onTableClick: function(row, col, data, event) {
+    onTableClick: function(row, col) {
       if (col.key === 'judgeResult') {
         this.$router.push({
           name: 'submission-detail',
@@ -165,6 +164,17 @@ export default {
           }
         })
       }
+    }
+  },
+  watch: {
+    filterOption: function() {
+      this.onFiltering();
+    },
+    pageNow: function() {
+      this.onFiltering();
+    },
+    pageSize: function() {
+      this.onFiltering();
     }
   },
   mounted: function() {
@@ -191,9 +201,8 @@ export default {
 }
 
 .btns {
-  float: right;
-  position: relative;
-  top: -5px;
+  // position: relative;
+  // top: -7px;
   .ivu-btn:hover {
     background: rgba(0, 0, 0, .05);
   }
