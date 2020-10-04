@@ -31,38 +31,40 @@
           <markdown-it-vue-light :content="contest.markdownDescription"></markdown-it-vue-light>
         </div>
       </div>
-      <Menu mode="horizontal" theme="light" :active-name="$route.path" class="contest__menu">
+      <Menu mode="horizontal" theme="light" :active-name="$route.path.split('/')[3]" class="contest__menu">
         <MenuItem name="overview" :to="{
           name: 'contest-overview'
         }">
           <span class="span__menu">Overview</span>
         </MenuItem>
-        <MenuItem name="Problem" :to="{
-          name: 'contest-problem',
-          params: {
-            problemCode: '1',
-            contestId: contest.contestId
-          }
-        }">
-          <span class="span__menu">Problem</span>
-        </MenuItem>
-        <MenuItem name="Status" :to="{
-          name: 'contest-submission',
-          params: {
-            username,
-            contestId: contest.contestId
-          }
-        }">
-          <span class="span__menu">Status</span>
-        </MenuItem>
-        <MenuItem name="Rank" :to="{
-          name: 'contest-rank',
-          params: {
-            contestId: contest.contestId
-          }
-        }">
-          <span class="span__menu">Rank</span>
-        </MenuItem>
+        <template v-if="start && !$store.getters['contest/needPassword']">
+          <MenuItem name="problem" :to="{
+            name: 'contest-problem',
+            params: {
+              problemCode: '1',
+              contestId: contest.contestId
+            }
+          }">
+            <span class="span__menu">Problem</span>
+          </MenuItem>
+          <MenuItem name="submission" :to="{
+            name: 'contest-submission',
+            params: {
+              username,
+              contestId: contest.contestId
+            }
+          }">
+            <span class="span__menu">Status</span>
+          </MenuItem>
+          <MenuItem name="rank" :to="{
+            name: 'contest-rank',
+            params: {
+              contestId: contest.contestId
+            }
+          }">
+            <span class="span__menu">Rank</span>
+          </MenuItem>
+        </template>
         <div class="contest__countdown">
           <template v-if="start">
             <template v-if="end">
@@ -70,23 +72,27 @@
             </template>
             <template v-else>
               <span>Running&nbsp;</span>
-              <Countdown
+              <VueCountdown
                 :time="countdown"
-                style="display: inline"
-                format="hh:mm:ss">
-                <template slot-scope="{ time }">{{ time }}</template>
-              </Countdown>
+                @end="reload"
+                style="display: inline">
+                <template slot-scope="props">
+                  <span v-if="props.days > 0">{{ props.days + props.days > 1 ? ' days' : ' day' }}</span>
+                  <span v-else>{{ props.hours }}:{{ props.minutes }}:{{ props.seconds }}</span>
+                </template>
+              </VueCountdown>
             </template>
           </template>
           <template v-else>
             <span>Before the contest&nbsp;</span>
-            <Countdown
+            <VueCountdown
               :time="countdown"
-              @on-end="reload"
-              style="display: inline"
-              format="hh:mm:ss">
-              <template slot-scope="{ time }">{{ time }}</template>
-            </Countdown>
+              style="display: inline">
+              <template slot-scope="props">
+                <span v-if="props.days > 0">{{ props.days + (props.days > 1 ? ' days' : ' day') }}</span>
+                <span v-else>{{ props.hours }}:{{ props.minutes }}:{{ props.seconds }}</span>
+              </template>
+            </VueCountdown>
           </template>
         </div>
       </Menu>
@@ -98,14 +104,14 @@
 <script>
 import MarkdownItVueLight from 'markdown-it-vue/dist/markdown-it-vue-light.umd.min.js'
 import 'markdown-it-vue/dist/markdown-it-vue-light.css'
-import Countdown from '@choujiaojiao/vue2-countdown';
+import VueCountdown from '@chenfengyuan/vue-countdown';
 import timeFormat from '_u/time';
 
 import { mapGetters, mapState } from 'vuex';
 
 export default {
   name: 'ContestDetailView',
-  components: { MarkdownItVueLight, Countdown },
+  components: { MarkdownItVueLight, VueCountdown },
   inject: ['reload'],
   data: function() {
     return {
@@ -142,10 +148,10 @@ export default {
         if (this.endTime < currentTime) {
           this.end = true;
         } else {
-          this.countdown = parseInt((this.endTime - currentTime) / 1000);
+          this.countdown = parseInt((this.endTime - currentTime));
         }
       } else {
-        this.countdown = parseInt((this.startTime - currentTime) / 1000);
+        this.countdown = parseInt((this.startTime - currentTime));
       }
     });
   },

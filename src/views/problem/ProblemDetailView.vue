@@ -57,7 +57,7 @@
             <Input
               style="float: right; width: 200px; margin: 8px 0;"
               placeholder="Contest Password"
-              v-if="contestId && $store.getters['contest/needPasswordBeforeSubmit']"
+              v-if="contestId && $store.getters['contest/needPassword']"
               size="small"
               v-model="contestPassword" />
           </div>
@@ -147,6 +147,7 @@ import CodeEditor from '_c/CodeEditor';
 import JudgeResult from '_c/JudgeResult';
 
 import api from '_u/api';
+import utils from '_u';
 
 import { mapGetters } from 'vuex';
 
@@ -184,20 +185,7 @@ export default {
   },
   filters: {
     parseInt: str => parseInt(str),
-    contestProblemId: problemCode => {
-      problemCode = parseInt(problemCode) - 1;
-      const str = []
-      do {
-        const ch = problemCode % 26;
-        if (str.length === 0) {
-          str.push(String.fromCharCode(65 + ch));
-        } else {
-          str.push(String.fromCharCode(64 + ch));
-        }
-        problemCode = parseInt(problemCode / 26);
-      } while (problemCode > 0)
-      return str.reverse().join('');
-    }
+    contestProblemId: problemCode => utils.contestProblemId(problemCode)
   },
   methods: {
     copyToClipboard: function (content) {
@@ -247,7 +235,7 @@ export default {
         };
         if (this.contestId) {
           dataForm.contestId = this.contestId;
-          if (this.$store.getters['contest/needPasswordBeforeSubmit']) {
+          if (this.$store.getters['contest/needPassword']) {
             try {
               await api.participateIn({
                 contestId: this.contestId,

@@ -3,7 +3,7 @@
     <Icon type="md-information" color="grey" v-if="result === 0"/>
     <Icon type="md-checkmark" color="#5cb85c" v-else-if="result === 1"/>
     <Icon type="md-close" color="orange" v-else-if="result === 8"/>
-    <Icon type="md-close" color="#d9534f" v-else/>
+    <Icon type="md-close" color="#d9534f" v-else-if="result !== -1"/>
     &nbsp;
     <span :class="judgeResult2Class(result)">{{ judgeResult2Text(result) }}</span>
   </div>
@@ -16,12 +16,20 @@ export default {
   props: {
     result: {
       type: Number,
-      default: 0
+      default: -1
     }
   },
   methods: {
-    judgeResult2Text: judgeResult => utils.judgeResultMap[judgeResult],
+    judgeResult2Text: judgeResult => {
+      if (judgeResult === -1) {
+        return '';
+      }
+      return utils.judgeResultMap[judgeResult];
+    },
     judgeResult2Class: judgeResult => {
+      if (judgeResult === -1) {
+        return '';
+      }
       if (judgeResult === 0) {
         return 'verdict-pending';
       } else if (judgeResult === 1) {

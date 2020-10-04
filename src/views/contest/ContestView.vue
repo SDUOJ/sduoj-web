@@ -59,10 +59,20 @@
         :padding="0"
         dis-hover
         v-if="!!upcomingContest.contestId">
-        <div class="upcoming-title">{{ upcomingContest.contestTitle }}</div>
-        <Countdown class="upcoming-countdown" :time="countdown" format="hh:mm:ss">
-          <template slot-scope="{ time }">{{ time }}</template>
-        </Countdown>
+        <div class="upcoming-title" @click="$router.push({
+          name: 'contest-detail',
+          params: { contestId: upcomingContest.contestId }
+        })">{{ upcomingContest.contestTitle }}</div>
+        <div class="upcoming-countdown">
+          <VueCountdown
+            :time="countdown"
+            class="upcoming-countdown">
+            <template slot-scope="props">
+              <span v-if="props.days > 0">{{ props.days + (props.days > 1 ? ' days' : ' day') }}</span>
+              <span v-else>{{ props.hours }}:{{ props.minutes }}:{{ props.seconds }}</span>
+            </template>
+          </VueCountdown>
+        </div>
       </Card>
       <Card title="My participation" :padding="0" dis-hover>
       </Card>
@@ -71,17 +81,16 @@
 </template>
 
 <script>
-import Countdown from '@choujiaojiao/vue2-countdown'
+import VueCountdown from '@chenfengyuan/vue-countdown';
 import timeformat from '_u/time';
 import api from '_u/api';
 
 export default {
-  components: { Countdown },
+  components: { VueCountdown },
   data: function () {
     return {
       contestList: [],
       upcomingContest: {},
-      countdown: 0,
       selectContestMode: 'All',
       pageNow: 1,
       pageSize: 10,
@@ -104,7 +113,9 @@ export default {
     }
   },
   computed: {
-
+    countdown: function() {
+      return parseInt((this.upcomingContest.gmtStart - new Date()));
+    }
   },
   methods: {
     onPageChange: function (pageNow) {
@@ -180,11 +191,13 @@ export default {
 
   .upcoming-countdown {
     margin: 10px 0;
-    color: rgba(0, 0, 0, 0.85);
-    font-size: 20px;
-    font-weight: bold;
     text-align: center;
-    line-height: 24px;
+    span {
+      color: rgba(0, 0, 0, 0.85);
+      font-size: 20px;
+      font-weight: bold;
+      line-height: 24px;
+    }
   }
 
   .pages {
