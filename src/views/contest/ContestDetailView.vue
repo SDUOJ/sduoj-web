@@ -40,7 +40,7 @@
         <MenuItem name="Problem" :to="{
           name: 'contest-problem',
           params: {
-            problemCode: 1,
+            problemCode: '1',
             contestId: contest.contestId
           }
         }">
@@ -82,7 +82,7 @@
             <span>Before the contest&nbsp;</span>
             <Countdown
               :time="countdown"
-              @on-end="$router.go(0)"
+              @on-end="reload"
               style="display: inline"
               format="hh:mm:ss">
               <template slot-scope="{ time }">{{ time }}</template>
@@ -106,6 +106,7 @@ import { mapGetters, mapState } from 'vuex';
 export default {
   name: 'ContestDetailView',
   components: { MarkdownItVueLight, Countdown },
+  inject: ['reload'],
   data: function() {
     return {
       countdown: 0,
@@ -182,10 +183,11 @@ export default {
     color: #aaa;
   }
   .contest__menu {
+    z-index: inherit;
     background-color: @bgc;
     .contest__countdown {
       margin: 0;
-      margin-right: 10px;
+      margin-right: 15px;
       float: right;
       font-size: 20px;
       font-weight: bold;

@@ -119,14 +119,18 @@ export default {
   },
   submit: function(data) {
     if (data.contestId) {
-      return post('/contest/createSubmission', data);
+      return this.createContestSubmission(data);
     } else {
       return post('/submit/create', data);
     }
   },
   // 题目相关
-  problemQuery: function(problemCode) {
-    return get('/problem/query', { problemCode });
+  problemQuery: function(params) {
+    if (params.contestId) {
+      return this.getContestProblem(params);
+    } else {
+      return get('/problem/query', params);
+    }
   },
   getProblemList: function(params) {
     return get('/problem/list', params);
@@ -141,10 +145,13 @@ export default {
   getUpcomingContest: function() {
     return get('/contest/queryUpcomingContest');
   },
-  getProblemOfContest: function(params) {
+  getContestProblem: function(params) {
     return get('/contest/queryProblem', params);
   },
   participateIn: function(data) {
     return post('/contest/participate', data);
+  },
+  createContestSubmission: function(data) {
+    return post('/contest/createSubmission', data);
   }
 }

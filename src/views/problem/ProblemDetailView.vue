@@ -3,12 +3,18 @@
     <Row class="main">
       <Col span="17" class="main-lf">
         <div class="problem-title">
-          <ProblemCode :problemCode="problem.problemCode" />:&nbsp;{{ problem.problemTitle }}
+          <ProblemCode v-if="!contestId" :problemCode="problem.problemCode" />
+          <strong v-else>{{ problem.problemCode | contestProblemId }}</strong>
+          :&nbsp;{{ problem.problemTitle }}
         </div>
+        <div v-if="problemDescription">
         <!-- 题面描述 -->
         <Card class="box" title="Description" dis-hover :padding="0">
           <div class="problem-markdown">
-            <markdown-it-vue-light :content="problemDescription.markdownDescription || ''"></markdown-it-vue-light>
+            <markdown-it-vue-light
+              v-if="problemDescription.markdownDescription"
+              :content="problemDescription.markdownDescription" />
+            <div v-else v-html="problemDescription.htmlDescription || ''"></div>
           </div>
         </Card>
         <!--  -->
@@ -30,6 +36,7 @@
               <markdown-it-vue-light :content="'```text\n' + ex.output + '\n```'"></markdown-it-vue-light>
             </div>
         </Card> -->
+        </div>
         <!--  -->
         <!-- 代码编辑器 -->
         <Card class="box clearfix" dis-hover :padding="0">
@@ -42,50 +49,91 @@
               @changeLanguage="onChangeLanguage">
             </CodeEditor>
             <Button
-              style="float: right; margin: 5px 0;"
+              style="float: right; margin: 5px 0 5px 10px;"
               :loading="submitBtnLoading"
               :disabled="submitColdDown"
               @click="onSubmit">提交
             </Button>
+            <Input
+              style="float: right; width: 200px; margin: 8px 0;"
+              placeholder="Contest Password"
+              v-if="contestId && $store.getters['contest/needPasswordBeforeSubmit']"
+              size="small"
+              v-model="contestPassword" />
           </div>
         </Card>
         <!--  -->
       </Col>
       <Col span="7">
-        <!-- 题目基本信息 -->
-        <Card class="box" title="Details" dis-hover :padding="0">
-          <CellGroup>
-            <Cell title="Problem Code">
-              <ProblemCode slot="extra" :problemCode="problem.problemCode"/>
-            </Cell>
-            <Cell title="Problem ID" :extra="problem.problemId"/>
-            <Cell title="Time Limit">
-              <span class="time" slot="extra">{{ problem.timeLimit }}</span>
-            </Cell>
-            <Cell title="Memory Limit">
-              <span class="mem" slot="extra">{{ problem.memoryLimit }}</span>
-            </Cell>
-            <Cell title="Languages">
-              <div slot="label">
-                <span v-for="lang in problem.languages" :key="lang" class="language">{{ lang }}</span>
-              </div>
-            </Cell>
-            <Cell title="Source" :extra="problem.source"/>
-            <Cell title="Remote" :extra="problem.problemCode" v-if="problem.remoteOj" :to="problem.remoteUrl"/>
-          </CellGroup>
-        </Card>
-        <!--  -->
-        <!-- 近期提交记录 -->
-        <Card class="box" v-if="isLogin" title="Recent Submissions" :padding="0" dis-hover>
-          <Table
-            size="small"
-            :columns="columns"
-            :data="submissions"
-            @on-cell-click="onTableClick"></Table>
-          <Button type="text" style="width: 100%; margin: 5px auto;" @click="handleShowSubmission">Show all
-            submissions
-          </Button>
-        </Card>
+<!--        比赛的题目导航-->
+        <div class="box">
+          <div class="contest__problems" v-if="contestId">
+            <span
+              v-for="pb in $store.state.contest.contest.problems"
+              :key="pb.problemCode"
+              :class="pb.problemCode === problem.problemCode ? 'active' : ''"
+              @click="switchContestProblem(pb.problemCode)">
+              {{ pb.problemCode | contestProblemId }}
+            </span>
+          </div>
+          <!-- 题目基本信息 -->
+          <Card class="display__card" title="Details" dis-hover :padding="0">
+            <CellGroup>
+              <Cell title="Contest ID" :extra="contestId" v-if="contestId"></Cell>
+              <Cell title="Problem Code">
+                <ProblemCode v-if="!contestId" slot="extra" :problemCode="problem.problemCode"/>
+                <span v-else slot="extra">{{ problem.problemCode | contestProblemId }}</span>
+              </Cell>
+              <Cell title="Problem ID" v-if="!contestId" :extra="problem.problemId"/>
+              <Cell title="Time Limit">
+                <span class="time" slot="extra">{{ problem.timeLimit }}</span>
+              </Cell>
+              <Cell title="Memory Limit">
+                <span class="mem" slot="extra">{{ problem.memoryLimit }}</span>
+              </Cell>
+              <Cell title="Languages">
+                <div slot="label">
+                  <span v-for="lang in problem.languages" :key="lang" class="language">{{ lang }}</span>
+                </div>
+              </Cell>
+              <Cell title="Source" :extra="problem.source"/>
+              <Cell title="Remote" :extra="problem.problemCode" v-if="problem.remoteOj" :to="problem.remoteUrl"/>
+            </CellGroup>
+          </Card>
+          <!--  -->
+          <Card class="display__card"
+                title="Descriptions"
+                v-if="problem.problemDescriptionListDTOList"
+                dis-hover :padding="0">
+            <CellGroup>
+              <Cell
+                v-for="pd in problem.problemDescriptionListDTOList"
+                :key="pd.id"
+                :title="pd.username"
+                :extra="pd.voteNum.toString()"
+                :selected="pd.id === problemDescription.id"
+                :to="{
+                  name: $route.name,
+                  params: { ...$route.pararms },
+                  query: { descriptionId: pd.id }
+                }"/>
+            </CellGroup>
+          </Card>
+          <!-- 近期提交记录 -->
+          <Card class="display__card"
+                title="Recent Submissions"
+                v-if="isLogin && submissions"
+                dis-hover :padding="0">
+            <Table
+              size="small"
+              :columns="columns"
+              :data="submissions"
+              @on-cell-click="onTableClick"></Table>
+            <Button type="text" style="width: 100%; margin: 5px auto;" @click="handleShowSubmission">Show all
+              submissions
+            </Button>
+          </Card>
+        </div>
       </Col>
     </Row>
   </div>
@@ -98,7 +146,6 @@ import ProblemCode from '_c/ProblemCode';
 import CodeEditor from '_c/CodeEditor';
 import JudgeResult from '_c/JudgeResult';
 
-import utils from '_u';
 import api from '_u/api';
 
 import { mapGetters } from 'vuex';
@@ -109,6 +156,7 @@ export default {
     CodeEditor,
     ProblemCode
   },
+  inject: ['reload'],
   data: function () {
     return {
       columns: [
@@ -124,8 +172,8 @@ export default {
         }
       ],
       problem: {},
-      submissions: [],
-      descriptionIndex: -1,
+      contestPassword: '',
+      submissions: null,
       code: '',
       file: null,
       language: '',
@@ -135,7 +183,21 @@ export default {
     }
   },
   filters: {
-    parseInt: str => parseInt(str)
+    parseInt: str => parseInt(str),
+    contestProblemId: problemCode => {
+      problemCode = parseInt(problemCode) - 1;
+      const str = []
+      do {
+        const ch = problemCode % 26;
+        if (str.length === 0) {
+          str.push(String.fromCharCode(65 + ch));
+        } else {
+          str.push(String.fromCharCode(64 + ch));
+        }
+        problemCode = parseInt(problemCode / 26);
+      } while (problemCode > 0)
+      return str.reverse().join('');
+    }
   },
   methods: {
     copyToClipboard: function (content) {
@@ -161,30 +223,46 @@ export default {
     onChangeLanguage: function (newLanguage) {
       this.language = newLanguage;
     },
-    onSubmit: function () {
+    switchContestProblem: function(problemCode) {
+      this.$router.push({
+        name: 'contest-problem',
+        params: {
+          contestId: this.contestId,
+          problemCode
+        }
+      });
+    },
+    onSubmit: async function () {
       if (this.language === '') {
         this.$Message.error('Choose your language');
         return;
       }
-      this.submitBtnLoading = true;
       if (this.file) {
         // 交文件
       } else {
-        api.submit({
+        const dataForm = {
           problemCode: this.problem.problemCode,
           language: this.language,
           code: this.code
-        }).then(submissionId => {
+        };
+        if (this.contestId) {
+          dataForm.contestId = this.contestId;
+          if (this.$store.getters['contest/needPasswordBeforeSubmit']) {
+            try {
+              await api.participateIn({
+                contestId: this.contestId,
+                password: this.contestPassword
+              });
+            } catch (_) {}
+          }
+        }
+        this.submitBtnLoading = true;
+        api.submit(dataForm).then(submissionId => {
           this.submitColdDown = true;
           setTimeout(() => {
             this.submitColdDown = false
           }, 5000);
-          this.$router.push({
-            name: 'submission-detail',
-            params: { submissionId }
-          });
-        }).catch(err => {
-          this.$Messag.error(err);
+          this.reload();
         }).finally(() => {
           this.submitBtnLoading = false;
         })
@@ -198,40 +276,49 @@ export default {
           problemCode: this.problem.problemCode
         }
       });
+    },
+    getProblem: function(params) {
+      api.problemQuery({
+        ...this.$route.params,
+        ...this.$route.query,
+        ...params
+      }).then(ret => {
+        this.problem = ret;
+        this.language = this.problem.languages[0] || '';
+        // 查最多5个提交记录
+        // api.getSubmissionList({
+        //   pageNow: 1,
+        //   pageSize: 5,
+        //   username: this.username,
+        //   problemCode: this.problem.problemCode
+        // }).then(ret => {
+        //   this.submissions = ret.rows;
+        // });
+      });
     }
   },
   computed: {
     ...mapGetters('user', ['username', 'isLogin']),
-    utils: () => utils,
     problemDescription: function () {
-      if (!this.problem.problemDescriptionDTO) {
-        return {};
-      }
-      return this.descriptionIndex === -1 ? this.problem.problemDescriptionDTO : this.problem.problemDescriptionDTOList[this.descriptionIndex];
+      return this.problem.problemDescriptionDTO;
+    },
+    contestId: function() {
+      return this.$route.params.contestId;
+    }
+  },
+  watch: {
+    $route: function(to, from) {
+      this.getProblem();
     }
   },
   mounted: function () {
-    api.problemQuery(this.$route.params.problemCode).then(ret => {
-      this.problem = ret;
-      this.language = this.problem.languages[0] || '';
-      api.getSubmissionList({
-        pageNow: 1,
-        pageSize: 5,
-        username: this.username,
-        problemCode: this.problem.problemCode
-      }).then(ret => {
-        this.submissions = ret.rows;
-      }).catch(err => {
-        this.$Message.error(err.message);
-      });
-    }).catch(err => {
-      this.$Message.error(err.message);
-    });
+    this.getProblem();
   }
 }
 </script>
 
 <style lang="less" scoped>
+  @sdu-red                : #9e0a11;
   .box {
     margin: 20px 10px;
   }
@@ -254,7 +341,7 @@ export default {
   }
 
   .time {
-    color: red;
+    color: @sdu-red;
 
     &:after {
       content: " ms\0A";
@@ -263,7 +350,7 @@ export default {
   }
 
   .mem {
-    color: red;
+    color: @sdu-red;
 
     &:after {
       content: " KB\0A";
@@ -281,11 +368,29 @@ export default {
     }
   }
 
-  .judge-result {
-    height: 30px;
+  .display__card {
+    margin: 20px 0;
   }
 
-  th, td {
-    border-bottom: 1px solid #d4d4d5;
+  .contest__problems {
+    margin-bottom: 5px;
+    span {
+      border-radius: 5px;
+      display: inline-block;
+      text-align: center;
+      width: 30px;
+      margin: 0 4px;
+      font-size: 16px;
+    }
+    span:hover {
+      cursor: pointer;
+      color: @sdu-red;
+      background-color: rgba(0, 0, 0, .15);
+    }
+    .active {
+      font-weight: bold;
+      color: @sdu-red;
+      background-color: rgba(0, 0, 0, .15);
+    }
   }
 </style>

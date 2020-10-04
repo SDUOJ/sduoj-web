@@ -12,6 +12,9 @@ const state = {
 const getters = {
   contestLoaded: state => !!state.contest.contestId,
   openness: state => state.contest.features.openness,
+  needPasswordBeforeSubmit: (state, getters, rootState, rootGetters) => {
+    return !state.contest.participants.includes(rootGetters['user/username']);
+  },
   startTime: state => new Date(parseInt(state.contest.gmtStart)),
   endTime: state => new Date(parseInt(state.contest.gmtEnd))
 }

@@ -58,7 +58,7 @@
         title="Upcoming"
         :padding="0"
         dis-hover
-        v-if="upcomingContest">
+        v-if="!!upcomingContest.contestId">
         <div class="upcoming-title">{{ upcomingContest.contestTitle }}</div>
         <Countdown class="upcoming-countdown" :time="countdown" format="hh:mm:ss">
           <template slot-scope="{ time }">{{ time }}</template>
@@ -80,7 +80,7 @@ export default {
   data: function () {
     return {
       contestList: [],
-      upcomingContest: undefined,
+      upcomingContest: {},
       countdown: 0,
       selectContestMode: 'All',
       pageNow: 1,
@@ -139,6 +139,7 @@ export default {
   },
   mounted: function () {
     this.getContestList();
+    api.getUpcomingContest().then(ret => (this.upcomingContest = { ...ret }));
   }
 }
 </script>

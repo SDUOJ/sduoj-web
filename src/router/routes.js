@@ -60,6 +60,7 @@ const routes = [
     name: 'contest-detail',
     path: '/contest/:contestId',
     redirect: '/contest/:contestId/overview',
+    meta: { login: true },
     component: () => import('@/views/contest/ContestDetailView'),
     children: [
       {
@@ -69,7 +70,7 @@ const routes = [
       },
       {
         name: 'contest-problem',
-        path: 'problem',
+        path: 'problem/:problemCode',
         component: () => import('@/views/problem/ProblemDetailView')
       },
       {

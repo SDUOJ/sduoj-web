@@ -2,7 +2,7 @@
   <div class="layout">
     <NavBar></NavBar>
     <transition name="fade" mode="out-in">
-      <router-view />
+      <router-view v-if="isRouterAlive" />
     </transition>
     <div class="footer" v-html='copyright'></div>
   </div>
@@ -14,6 +14,22 @@ import api from '_u/api';
 
 export default {
   components: { NavBar },
+  provide: function() {
+    return {
+      reload: this.reload
+    }
+  },
+  data: function() {
+    return {
+      isRouterAlive: true
+    }
+  },
+  methods: {
+    reload: function() {
+      this.isRouterAlive = false;
+      this.$nextTick(() => (this.isRouterAlive = true));
+    }
+  },
   computed: {
     ...mapState(['copyright'])
   },
