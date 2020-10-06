@@ -134,7 +134,17 @@ export default {
   // 题目相关
   problemQuery: function(params) {
     if (params.contestId) {
-      return this.getContestProblem(params);
+      const index = parseInt(params.problemCode) - 1;
+      return new Promise((resolve, reject) => {
+        if (!store.state.contest.problems[index]._valid) {
+          this.getContestProblem(params).then(ret => {
+            store.commit('contest/setProblemDetail', { problem: ret });
+            resolve(ret);
+          }, _ => reject(_));
+        } else {
+          resolve(store.state.contest.problems[index]);
+        }
+      })
     } else {
       return get('/problem/query', params);
     }
