@@ -4,11 +4,11 @@
           <span>Reset your password</span>
       </div>
       <div class="body">
-        <Form ref="resetForm" 
-          :model="resetForm" 
-          :rules="resetRules" 
-          label-position="right" 
-          :label-width="150" 
+        <Form ref="resetForm"
+          :model="resetForm"
+          :rules="resetRules"
+          label-position="right"
+          :label-width="150"
           label-colo>
           <template v-if="apply">
             <FormItem prop="handler" label="Username or Email">
@@ -52,8 +52,8 @@
       </div>
       <div class="bottom">
         <div class="btns">
-          <Button type="text" 
-            @click="handleReset('resetForm')" 
+          <Button type="text"
+            @click="handleReset('resetForm')"
             :loading="btnResetLoading">Reset</Button>
         </div>
       </div>
@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import api from '@/utils/api';
+import api from '_u/api';
 
 export default {
   data: function() {

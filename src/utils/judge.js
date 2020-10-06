@@ -10,6 +10,18 @@ const judgeResultMap = {
   8: 'Compile Error'
 };
 
+const judgeResultMapAbbr = {
+  0: 'PD',
+  1: 'AC',
+  2: 'TLE',
+  3: 'MLE',
+  4: 'RE',
+  5: 'SE',
+  6: 'WA',
+  7: 'PEr',
+  8: 'CE'
+}
+
 const status2Class = function(status) {
   if (status === 0) {
     return 'verdict-pending';
@@ -48,6 +60,7 @@ const result2Status = function(result) {
 
 export default {
   judgeResultMap,
+  judgeResultMapAbbr,
   status2Class,
   result2Status
 }

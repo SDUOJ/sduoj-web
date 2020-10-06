@@ -4,11 +4,11 @@
           <span>Welcome to SDUOJ</span>
       </div>
       <div class="body">
-        <Form ref="loginForm" 
-          :model="loginForm" 
-          :rules="loginRules" 
-          label-position="right" 
-          :label-width="150" 
+        <Form ref="loginForm"
+          :model="loginForm"
+          :rules="loginRules"
+          label-position="right"
+          :label-width="150"
           label-colo>
           <FormItem prop="username" label="Username">
             <Input v-model="loginForm.username" placeholder="Username" style="width: 220px" />
@@ -21,8 +21,8 @@
       <div class="bottom">
         <div class="btns">
           <a href="/#/resetpass">Forgot your password?</a>
-          <Button type="text" 
-            @click="handleLogin('loginForm')" 
+          <Button type="text"
+            @click="handleLogin('loginForm')"
             :loading="btnLoginLoading">Login</Button>
         </div>
       </div>
@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import api from '@/utils/api';
+import api from '_u/api';
 import { mapActions } from 'vuex';
 
 export default {
@@ -59,7 +59,7 @@ export default {
           const dataForm = Object.assign({}, this.loginForm);
           api.login(dataForm).then(ret => {
             this.setProfile(ret);
-            this.$router.replace({ name: 'home' });
+            this.$router.replace(this.$route.query.to || '/');
           }).catch(err => {
             this.$Message.error(err.message);
           });

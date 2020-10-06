@@ -20,6 +20,12 @@ function post(url, data) {
           reject(response.data);
         }
       }, err => {
+        if (err.response.data.message) {
+          Vue.prototype.$Message.error(err.response.data.message);
+        } else {
+          Vue.prototype.$Message.error(err.toString());
+        }
+        Vue.prototype.$Loading.finish();
         reject(err.response.data);
       })
   });
@@ -37,6 +43,12 @@ function get(url, params) {
           reject(response.data);
         }
       }, err => {
+        if (err.response.data.message) {
+          Vue.prototype.$Message.error(err.response.data.message);
+        } else {
+          Vue.prototype.$Message.error(err.toString());
+        }
+        Vue.prototype.$Loading.finish();
         reject(err.response.data);
       })
   })
@@ -89,7 +101,7 @@ export default {
           if (error) {
             error(err.response.data);
           }
-        } 
+        }
       });
   },
   getCaptcha: function() {
@@ -99,32 +111,70 @@ export default {
     return get('/user/isExist', params);
   },
   // 提交相关
-  getSubmissionDetail: function(submissionId) {
-    return get('/submit/query', { submissionId });
+  getSubmissionDetail: function(params) {
+    if (params.contestId) {
+      return this.getContestSubmissionDetail(params);
+    }
+    return get('/submit/query', params);
   },
   getSubmissionList: function(params) {
-    return get('/submit/list', params);
+    if (params.contestId) {
+      return this.getContestSubmissionList(params);
+    } else {
+      return get('/submit/list', params);
+    }
   },
   submit: function(data) {
-    return post('/submit/create', data);
+    if (data.contestId) {
+      return this.createContestSubmission(data);
+    } else {
+      return post('/submit/create', data);
+    }
   },
   // 题目相关
-  problemQuery: function(problemCode) {
-    return get('/problem/query', { problemCode });
+  problemQuery: function(params) {
+    if (params.contestId) {
+      const index = parseInt(params.problemCode) - 1;
+      return new Promise((resolve, reject) => {
+        if (!store.state.contest.problems[index]._valid) {
+          this.getContestProblem(params).then(ret => {
+            store.commit('contest/setProblemDetail', { problem: ret });
+            resolve(ret);
+          }, _ => reject(_));
+        } else {
+          resolve(store.state.contest.problems[index]);
+        }
+      })
+    } else {
+      return get('/problem/query', params);
+    }
   },
   getProblemList: function(params) {
     return get('/problem/list', params);
   },
   // 比赛相关
-  getContestList: function() {
-    return new Promise((resolve) => {
-      resolve([
-        { contestId: 1, contestTitle: '排位赛 1', description: '1111111111111111111', start: 1601628815000, end: 1601646815000, mode: 'acm', attends: 100 },
-        { contestId: 2, contestTitle: 'Contest 2', description: '222222222222222222222222222222222222222222222222222', start: 1601628115000, end: 1601646115000, mode: 'oi', attends: 800 },
-        { contestId: 3, contestTitle: 'Contest 3', description: '222222222222222222222222222222222222222222222222222', start: 1601628115000, end: 1601646115000, mode: 'oi', attends: 800 },
-        { contestId: 4, contestTitle: '浙江省第十二届大学生程序设计竞赛（重现赛） [Cloned]', description: '222222222222222222222222222222222222222222222222222', start: 1601648316000, end: 1601648516000, mode: 'ioi', attends: 800 },
-        { contestId: 5, contestTitle: '浙江省第十二届大学生程序设计竞赛（重现赛） [Cloned]', description: '222222222222222222222222222222222222222222222222222', start: 1601628115000, end: 1601629115000, mode: 'ioi', attends: 800 }
-      ])
-    })
+  getContestList: function(params) {
+    return get('/contest/list', params);
+  },
+  getContest: function(contestId) {
+    return get('/contest/query', { contestId });
+  },
+  getUpcomingContest: function() {
+    return get('/contest/queryUpcomingContest');
+  },
+  getContestProblem: function(params) {
+    return get('/contest/queryProblem', params);
+  },
+  participateIn: function(data) {
+    return post('/contest/participate', data);
+  },
+  createContestSubmission: function(data) {
+    return post('/contest/createSubmission', data);
+  },
+  getContestSubmissionList: function(params) {
+    return get('/contest/listSubmission', params);
+  },
+  getContestSubmissionDetail: function(params) {
+    return get('/contest/querySubmission', params);
   }
 }

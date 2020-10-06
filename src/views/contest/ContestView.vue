@@ -2,69 +2,51 @@
   <Row class="container">
     <Col span="18">
       <div style="margin-right: 20px">
-        <Card title="Recent Contests" :padding="0" dis-hover>
-          <Select size="small" v-model="selectRecent" style="width: 100px" slot="extra">
+        <Card title="Contest List" :padding="0" dis-hover>
+          <Select size="small" v-model="selectContestMode" style="width: 100px" slot="extra">
             <Option value="All">All</Option>
             <Option value="ACM">ACM</Option>
             <Option value="OI">OI</Option>
             <Option value="IOI">IOI</Option>
           </Select>
           <List size="large" item-layout="vertical">
-            <ListItem v-for="contest in recentContestList" :key="contest.contestId">
-              <ListItemMeta >
+            <ListItem v-for="contest in contestList" :key="contest.contestId">
+              <ListItemMeta>
                 <div slot="avatar" class="contest__date numbox">
-                  <div class="numbox__num__large">{{ contest.start | timeformat('dd') }}</div>
-                  <div class="numbox__text">{{ contest.start | timeformat('yyyy-MM') }}</div>
+                  <div class="numbox__num__large">{{ contest.gmtStart | timeformat('dd') }}</div>
+                  <div class="numbox__text">{{ contest.gmtStart | timeformat('yyyy-MM') }}</div>
                 </div>
-                <div class="ivu-list-item-meta-title" slot="title">{{ contest.contestTitle }}</div>
+                <div class="ivu-list-item-meta-title" slot="title" @click="toContestDetail(contest.contestId)">
+                  <span>{{ contest.contestTitle }}</span>
+                  <Icon type="md-lock" color="#d9534f" size="19" v-if="contest.features.openness === 'private'"/>
+                  <Icon type="md-lock" color="orange" size="19" v-else-if="contest.features.openness === 'protected'"/>
+                </div>
                 <ul slot="description" class="ivu-list-item-action">
-                  <li><Icon type="ios-time-outline" />{{ contest.start | timeformat('hh:mm:ss') }}</li>
-                  <li>{{ (contest.end - contest.start) | time2hour }}</li>
-                  <li><Icon type="ios-people-outline" />{{ contest.attends }}</li>
                   <li>
-                    <div :class="'contest-type--' + contest.mode">
+                    <div :class="'contest-type--' + contest.features.mode">
                       <Icon type="md-bulb" color="#fff"/>&nbsp;
-                    <span >{{ contest.mode.toUpperCase() }}</span>
+                      <span>{{ contest.features.mode.toUpperCase() }}</span>
                     </div>
                   </li>
-                </ul>
-              </ListItemMeta>
-            </ListItem>
-          </List>
-        </Card>
-        <Card title="Contest History" :padding="0" dis-hover style="margin-top: 30px">
-          <Select size="small" v-model="selectHistory" style="width: 100px" slot="extra">
-            <Option value="All">All</Option>
-            <Option value="ACM">ACM</Option>
-            <Option value="OI">OI</Option>
-            <Option value="IOI">IOI</Option>
-          </Select>
-          <List size="large" item-layout="vertical">
-            <ListItem v-for="contest in historyContestList" :key="contest.contestId">
-              <ListItemMeta >
-                <div slot="avatar" class="contest__date numbox">
-                  <div class="numbox__num__large">{{ contest.start | timeformat('dd') }}</div>
-                  <div class="numbox__text">{{ contest.start | timeformat('yyyy-MM') }}</div>
-                </div>
-                <div class="ivu-list-item-meta-title" slot="title">{{ contest.contestTitle }}</div>
-                <ul slot="description" class="ivu-list-item-action">
-                  <li><Icon type="ios-time-outline" />{{ contest.start | timeformat('hh:mm:ss') }}</li>
-                  <li>{{ (contest.end - contest.start) | time2hour }}</li>
-                  <li><Icon type="ios-people-outline" />{{ contest.attends }}</li>
                   <li>
-                    <div :class="'contest-type--' + contest.mode">
-                      <Icon type="md-bulb" color="#fff"/>&nbsp;
-                      <span >{{ contest.mode.toUpperCase() }}</span>
-                    </div>
+                    {{ contest.gmtStart | timeformat('hh:mm:ss') }}
+                  </li>
+                  <li>
+                    <Icon type="ios-time-outline"/>
+                    {{ (contest.gmtEnd - contest.gmtStart) | time2hour }}
+                  </li>
+                  <li>
+                    <Icon type="ios-people-outline"/>
+                    {{ contest.participantNum }}
                   </li>
                 </ul>
               </ListItemMeta>
             </ListItem>
           </List>
           <div class="pages">
-            <Page 
+            <Page
               size="small" show-elevator show-sizer
-              :total="totalPage"
+              :total="total"
               :current.sync="pageNow"
               @on-change="onPageChange"
               @on-page-size-change="onPageSizeChange"/>
@@ -73,35 +55,48 @@
       </div>
     </Col>
     <Col span="6">
-      <Card title="Upcoming" :padding="0" dis-hover v-if="!!upcomingContest">
-        <div class="upcoming-title">{{ upcomingContest.contestTitle }}</div>
-        <Countdown class="upcoming-countdown" :time="countdown" format="hh:mm:ss">
-          <template slot-scope="{ time }">{{ time }}</template>
-        </Countdown>
+      <Card
+        style="margin-bottom: 30px"
+        title="Upcoming"
+        :padding="0"
+        dis-hover
+        v-if="!!upcomingContest.contestId">
+        <div class="upcoming-title" @click="$router.push({
+          name: 'contest-detail',
+          params: { contestId: upcomingContest.contestId }
+        })">{{ upcomingContest.contestTitle }}</div>
+        <div class="upcoming-countdown">
+          <VueCountdown
+            :time="countdown"
+            class="upcoming-countdown">
+            <template slot-scope="props">
+              <span v-if="props.days > 0">{{ props.days + (props.days > 1 ? ' days' : ' day') }}</span>
+              <span v-else>{{ props.hours }}:{{ props.minutes }}:{{ props.seconds }}</span>
+            </template>
+          </VueCountdown>
+        </div>
       </Card>
-      <Card title="My participation" :padding="0" dis-hover style="margin-top: 30px">
+      <Card title="My participation" :padding="0" dis-hover>
       </Card>
     </Col>
   </Row>
 </template>
 
 <script>
-import Countdown from '@choujiaojiao/vue2-countdown'
-import timeformat from '@/utils/time';
-import api from '@/utils/api';
+import VueCountdown from '@chenfengyuan/vue-countdown';
+import timeformat from '_u/time';
+import api from '_u/api';
 
 export default {
-  components: { Countdown },
-  data: function() {
+  components: { VueCountdown },
+  data: function () {
     return {
       contestList: [],
       upcomingContest: {},
-      countdown: 0,
-      selectRecent: 'All',
-      selectHistory: 'All',
+      selectContestMode: 'All',
       pageNow: 1,
       pageSize: 10,
-      totalPage: 1
+      total: 0
     }
   },
   filters: {
@@ -120,136 +115,127 @@ export default {
     }
   },
   computed: {
-    recentContestList: function() {
-      const now = new Date().getTime();
-      return this.contestList.filter(contest => contest.end > now);
-    },
-    historyContestList: function() {
-      const now = new Date().getTime();
-      return this.contestList.filter(contest => contest.end <= now);
+    countdown: function() {
+      return parseInt((this.upcomingContest.gmtStart - new Date()));
     }
   },
   methods: {
-    onPageChange: function(curPage) {
-      this.pageNow = curPage;
+    onPageChange: function (pageNow) {
+      this.pageNow = pageNow;
     },
-    onPageSizeChange: function(pageSize) {
+    onPageSizeChange: function (pageSize) {
       this.pageSize = pageSize;
+    },
+    toContestDetail: function(contestId) {
+      this.$router.push({
+        name: 'contest-detail',
+        params: { contestId }
+      });
+    },
+    getContestList: function() {
+      api.getContestList({
+        pageNow: this.pageNow,
+        pageSize: this.pageSize
+      }).then(ret => {
+        this.total = parseInt(ret.total);
+        this.contestList = ret.rows;
+      });
     }
   },
   watch: {
-    pageNow: function() {
-      // 
+    pageNow: function () {
+      this.getContestList();
     },
-    pageSize: function() {
-      //
+    pageSize: function () {
+      this.getContestList();
     }
   },
-  mounted: function() {
-    api.getContestList().then(ret => {
-      this.contestList = ret.sort((a, b) => b.start - a.start);
-      const now = new Date().getTime();
-      for (let i = 0; i < this.contestList.length; ++i) {
-        if (this.contestList[i].start > now) {
-          this.upcomingContest = Object.assign({}, this.contestList[i]);
-          this.countdown = parseInt((this.upcomingContest.start - now) / 1000);
-          break;
-        }
-      }
-    });
+  mounted: function () {
+    this.getContestList();
+    api.getUpcomingContest().then(ret => (this.upcomingContest = { ...ret }));
   }
 }
 </script>
 
 <style lang="less" scoped>
-// Number Box Object
-.numbox {
-  font-size: 16px;
-  text-align: center;
-}
-
-.numbox__num__large {
-  font-size: 1.7rem;
-}
-
-.numbox__text {
-  font-size: 14px;
-  color: #AAA;
-}
-
-.contest__date {
-  margin: 0 10px 0 15px;
-  white-space: nowrap;
-}
-
-.contest-type--acm {
-  padding: 0 10px;
-  color: #fff;
-  background-color: #3676B6;
-  border-radius: .75rem;
-}
-
-.contest-type--oi {
-  padding: 0 10px;
-  color: #fff;
-  background-color: #f8df72;
-  border-radius: .75rem;
-}
-
-.contest-type--ioi {
-  padding: 0 10px;
-  color: #fff;
-  background-color: #ea517f;
-  border-radius: .75rem;
-}
-
-.upcoming-title {
-  margin: 10px 0;
-  font-size: 14px;
-  line-height: 24px;
-  color: #0000cc;
-  text-decoration: underline;
-  text-align: center;
-}
-.upcoming-title:hover {
-  cursor: pointer;
-}
-.upcoming-countdown {
-  margin: 10px 0;
-  color: rgba(0, 0, 0, 0.85);
-  font-size: 20px;
-  font-weight: bold;
-  text-align: center;
-  line-height: 24px;
-}
-
-.pages {
-  float: right;
-  margin: 20px auto;
-  padding-right: 15px;
-}
-
-/deep/.ivu-list-item {
-  padding: 10px 0;
-}
-/deep/.ivu-list-vertical {
-  .ivu-list-item-meta{
-    margin-bottom: 0;
+  // Number Box Object
+  .numbox {
+    font-size: 16px;
+    text-align: center;
   }
-  .ivu-list-item-action {
-    margin-top: 6px;
+
+  .numbox__num__large {
+    font-size: 1.7rem;
   }
-  .ivu-list-item-meta-title {
-    margin-bottom: 4px;
-    margin-top: 4px;
-    :hover {
-      cursor: pointer;
-      text-decoration: underline;
+
+  .numbox__text {
+    font-size: 14px;
+    color: #AAA;
+  }
+
+  .contest__date {
+    margin: 0 10px 0 15px;
+    white-space: nowrap;
+  }
+
+  .upcoming-title {
+    margin: 10px 0;
+    font-size: 14px;
+    line-height: 24px;
+    color: #0000cc;
+    text-decoration: underline;
+    text-align: center;
+  }
+
+  .upcoming-title:hover {
+    cursor: pointer;
+  }
+
+  .upcoming-countdown {
+    margin: 10px 0;
+    text-align: center;
+    span {
+      color: rgba(0, 0, 0, 0.85);
+      font-size: 20px;
+      font-weight: bold;
+      line-height: 24px;
     }
   }
-}
-/deep/.ivu-list-item-meta-avatar {
-  margin-right: 0px;
-  margin-top: -4px;
-}
+
+  .pages {
+    float: right;
+    margin: 20px auto;
+    padding-right: 15px;
+  }
+
+  /deep/ .ivu-list-item {
+    padding: 10px 0;
+  }
+
+  /deep/ .ivu-list-vertical {
+    .ivu-list-item-meta {
+      margin-bottom: 0;
+    }
+
+    .ivu-list-item-action {
+      margin-top: 6px;
+    }
+
+    .ivu-list-item-meta-title {
+      margin-bottom: 4px;
+      margin-top: 4px;
+
+      :hover {
+        span {
+          cursor: pointer;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+
+  /deep/ .ivu-list-item-meta-avatar {
+    margin-right: 0px;
+    margin-top: -4px;
+  }
 </style>

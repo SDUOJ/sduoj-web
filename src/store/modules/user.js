@@ -1,4 +1,4 @@
-import md5 from '@/utils/md5';
+import md5 from '_u/md5';
 
 const state = {
   profile: {}
@@ -28,7 +28,7 @@ const actions = {
     commit('setProfile', profile);
   },
   clearProfile({ commit }) {
-    commit('clearProfile'); 
+    commit('clearProfile');
   }
 }
 

@@ -52,7 +52,7 @@
       <div class="pages">
         <Page
           size="small" show-elevator show-sizer
-          :total="totalPage"
+          :total="total"
           :current.sync="pageNow"
           @on-change="onPageChange"
           @on-page-size-change="onPageSizeChange"/>
@@ -62,66 +62,71 @@
 </template>
 
 <script>
-import ProblemCode from '@/components/ProblemCode';
-import JudgeResult from '@/components/JudgeResult';
-import api from '@/utils/api';
+import ProblemCode from '_c/ProblemCode';
+import JudgeResult from '_c/JudgeResult';
+import api from '_u/api';
+import utils from '_u';
 
 export default {
   data: function() {
     return {
       columns: [
-        { title: '#', key: 'submissionId', minWidth: 80 },
-        { title: '用户', key: 'username' },
+        { title: '#', key: 'submissionId', minWidth: 70 },
+        { title: 'Username', key: 'username' },
         {
-          title: '题目',
+          title: 'Problem Code',
           key: 'problemCode',
           minWidth: 15,
           render: (h, params) => {
-            if (params.row.problemCode !== undefined) {
-              if (params.row.problemCode.length > 20) {
-                const texts = params.row.problemCode.substring(0, 20) + '...';
-                return h('Tooltip', {
-                  props: {
-                    placement: 'top',
-                    maxWidth: '180'
-                  }
-                }, [
-                  h(ProblemCode, {
+            if (this.contestId) {
+              return h('strong', utils.contestProblemId(params.row.problemCode));
+            } else {
+              if (params.row.problemCode !== undefined) {
+                if (params.row.problemCode.length > 20) {
+                  const texts = params.row.problemCode.substring(0, 20) + '...';
+                  return h('Tooltip', {
+                    props: {
+                      placement: 'top',
+                      maxWidth: '180'
+                    }
+                  }, [
+                    h(ProblemCode, {
+                      class: 'hover',
+                      props: {
+                        problemCode: texts
+                      }
+                    }),
+                    h('span', {
+                      slot: 'content',
+                      style: {
+                        whiteSpace: 'normal',
+                        wordBreak: 'break-all'
+                      }
+                    }, params.row.problemCode)
+                  ]);
+                } else {
+                  return h(ProblemCode, {
                     class: 'hover',
                     props: {
-                      problemCode: texts
+                      problemCode: params.row.problemCode
                     }
-                  }),
-                  h('span', {
-                    slot: 'content',
-                    style: {
-                      whiteSpace: 'normal',
-                      wordBreak: 'break-all'
-                    }
-                  }, params.row.problemCode)
-                ]);
-              } else {
-                return h(ProblemCode, {
-                  class: 'hover',
-                  props: {
-                    problemCode: params.row.problemCode
-                  }
-                });
+                  });
+                }
               }
             }
           }
         },
         {
-          title: '评测结果',
+          title: 'Judge Result',
           key: 'judgeResult',
-          minWidth: 30,
+          minWidth: 100,
           render: (h, params) => h(JudgeResult, { props: { result: params.row.judgeResult } })
         },
-        { title: '用时', key: 'usedTime', sortable: true, maxWidth: 90 },
-        { title: '内存', key: 'usedMemory', sortable: true, maxWidth: 90 },
-        { title: '语言', key: 'language' },
+        { title: 'Time', key: 'usedTime', sortable: true, maxWidth: 90 },
+        { title: 'Memory', key: 'usedMemory', sortable: true, maxWidth: 120 },
+        { title: 'Language', key: 'language' },
         {
-          title: '提交时间',
+          title: 'Submit Time',
           key: 'gmtCreate',
           minWidth: 55,
           render: (h, params) => {
@@ -136,7 +141,7 @@ export default {
         judgeResult: '',
         language: ''
       },
-      totalPage: 1,
+      total: 0,
       pageNow: 1,
       pageSize: 10,
       sortBy: '',
@@ -148,14 +153,15 @@ export default {
     onFiltering: function() {
       this.loading = true;
       api.getSubmissionList({
-        ...(this.filterOption),
+        ...this.filterOption,
+        contestId: this.contestId,
         sortBy: this.sortBy,
         ascending: this.ascending,
         pageNow: this.pageNow,
         pageSize: this.pageSize
       }).then(ret => {
         this.submissions = ret.rows;
-        this.totalPage = parseInt(ret.totalPage);
+        this.total = parseInt(this.pageSize) * parseInt(ret.totalPage);
       }).finally(() => { this.loading = false });
     },
     clearFilterOptions: function() {
@@ -166,8 +172,8 @@ export default {
     onReset: function() {
       this.clearFilterOptions();
     },
-    onPageChange: function(curPage) {
-      this.pageNow = curPage;
+    onPageChange: function(pageNow) {
+      this.pageNow = pageNow;
     },
     onPageSizeChange: function(pageSize) {
       this.pageSize = pageSize;
@@ -183,28 +189,33 @@ export default {
       this.onFiltering();
     },
     onTableClick: function(row, col) {
+      const name = this.contestId ? 'contest-submission-detail' : 'submission-detail';
       if (col.key === 'judgeResult') {
         this.$router.push({
-          name: 'submission-detail',
+          name,
           params: {
-            submissionId: row.submissionId
+            submissionId: row.submissionId,
+            contestId: this.contestId
           }
         });
       }
       if (col.key === 'problemCode') {
         this.$router.push({
-          name: 'problem-detail',
+          name,
           params: {
-            problemCode: row.problemCode
+            problemCode: row.problemCode,
+            contestId: this.contestId
           }
         })
       }
     }
   },
+  computed: {
+    contestId: function() {
+      return this.$route.params.contestId;
+    }
+  },
   watch: {
-    filterOption: function() {
-      this.onFiltering();
-    },
     pageNow: function() {
       this.onFiltering();
     },

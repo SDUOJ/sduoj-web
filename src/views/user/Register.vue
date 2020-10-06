@@ -61,8 +61,8 @@
       <div class="bottom">
         <div class="btns">
           <a href="/#/login">Already registerd?</a>
-          <Button type="text" 
-            @click="handleRegister('registerForm')" 
+          <Button type="text"
+            @click="handleRegister('registerForm')"
             :loading="btnRegisterLoading">Register</Button>
         </div>
       </div>
@@ -76,7 +76,7 @@
 </template>
 
 <script>
-import api from '@/utils/api';
+import api from '_u/api';
 
 export default {
   // 打开 register 页面的时候，默认调我的接口 "get验证码"，然后我把一个验证码ID，和验证码图片Base64 给你
@@ -145,7 +145,7 @@ export default {
   methods: {
     getCaptcha: function() {
       // 模拟获得图形验证码
-      api.getCaptcha().then(ret => { 
+      api.getCaptcha().then(ret => {
         this.captchaId = ret.captchaId;
         this.captchaImg = ret.captcha;
       });

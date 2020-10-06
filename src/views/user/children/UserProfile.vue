@@ -59,7 +59,7 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
-import api from '@/utils/api';
+import api from '_u/api';
 
 export default {
   data: function() {

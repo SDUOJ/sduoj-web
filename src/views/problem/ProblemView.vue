@@ -29,6 +29,7 @@
                   <Table
                     :columns="problemTableColumns"
                     :data="problemTableData"
+                    :loading="loading"
                     class="problem-set-content-table"
                     @on-cell-click="handleProblemClick"
                     @on-sort-change="handleProblemSort">
@@ -36,7 +37,7 @@
                   <Page
                     class="problem-set-content-page"
                     size="small" show-elevator show-sizer
-                    :total="totalPage"
+                    :total="total"
                     :current.sync="pageNow"
                     @on-change="onPageChange"
                     @on-page-size-change="onPageSizeChange"/>
@@ -102,8 +103,8 @@
 </template>
 
 <script>
-import ProblemCode from '@/components/ProblemCode';
-import api from '@/utils/api';
+import ProblemCode from '_c/ProblemCode';
+import api from '_u/api';
 
 export default {
   data () {
@@ -256,12 +257,13 @@ export default {
           name: '其他'
         }
       ],
-      totalPage: 100,
+      total: 0,
       pageNow: 1,
       pageSize: 10,
-      totalProblemNum: 0,
+      pageNum: 1,
       sortBy: '',
-      ascending: false
+      ascending: false,
+      loading: false
     }
   },
   methods: {
@@ -290,13 +292,11 @@ export default {
         this.problemTableColumns = this.problemTableColumns.filter(item => item.key !== 'problemTagDTOList');
       }
     },
-    onPageChange: function(curPage) {
-      this.pageNow = curPage;
-      this.getProblemList();
+    onPageChange: function(pageNow) {
+      this.pageNow = pageNow;
     },
     onPageSizeChange: function(pageSize) {
       this.pageSize = pageSize;
-      this.getProblemList();
     },
     handleProblemClick: function(row, col) {
       if (col.key === 'problemTitle') {
@@ -319,6 +319,7 @@ export default {
       this.getProblemList();
     },
     getProblemList: function() {
+      this.loading = true;
       api.getProblemList({
         pageNow: this.pageNow,
         pageSize: this.pageSize,
@@ -326,9 +327,16 @@ export default {
         ascending: this.ascending
       }).then(ret => {
         this.problemTableData = ret.rows;
-        this.totalPage = parseInt(ret.totalPage);
-        this.totalProblemNum = parseInt(ret.total);
-      })
+        this.pageNum = parseInt(ret.totalPage);
+        this.total = parseInt(ret.total);
+      }).finally(() => { this.loading = false; });
+    }
+  },
+  watch: {
+    pageNow: function() {
+    },
+    pageSize: function() {
+      this.getProblemList();
     }
   },
   mounted: function() {
