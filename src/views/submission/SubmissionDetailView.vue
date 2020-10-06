@@ -5,7 +5,7 @@
         <div style="margin-right: 20px;">
           <!-- websocket -->
           <Card class="box" dis-hover :padding="0">
-            <JudgeResult class="title" slot="title" :result="submission.judgeResult" />
+            <JudgeResult class="title" slot="title" :result="submission.judgeResult"/>
             <Table
               disabled-hover
               v-if="submission.checkpointResults"
@@ -13,77 +13,79 @@
               size="small"
               :columns="columns"
               :data="submission.checkpointResults"
-              class="data-table" ></Table>
+              class="data-table"></Table>
           </Card>
           <Card v-if="showJudgerLog" class="box" :title="compilerLogTitle" dis-hover>
-            <pre v-highlightjs="submission.judgeLog"><code style="font-family: Menlo, Monaco, 'Courier New', monospace;" class="plaintext"/></pre>
+            <pre v-highlightjs="submission.judgeLog"><code style="font-family: Menlo, Monaco, 'Courier New', monospace;"
+                                                           class="plaintext"/></pre>
           </Card>
           <Card v-if="showCode" class="box" title="Your Code" icon="md-code" dis-hover :padding="5">
-              <pre v-highlightjs="submission.code"><code style="font-family: Menlo, Monaco, 'Courier New', monospace;" :class="submission.lang" /></pre>
+            <pre v-highlightjs="submission.code"><code style="font-family: Menlo, Monaco, 'Courier New', monospace;"
+                                                       :class="submission.lang"/></pre>
           </Card>
         </div>
       </Col>
       <Col span="7">
         <Card title="Submission" icon="ios-options" dis-hover :padding="0">
-            <CellGroup>
-                <div style="margin-top: 24px;">
-                  <Cell title="Public" v-if="submission.username === username">
-                      <i-switch v-model="submission.isPublic" slot="extra" true-color="#19be6b"/>
-                  </Cell>
-                  <template v-if="contestId">
-                    <Cell
-                      title="Problem Code"
-                      :extra="submission.problemCode | contestProblemId"
-                      :to="{ name: 'contest-problem', params: {
+          <CellGroup>
+            <div style="margin-top: 24px;">
+              <Cell title="Public" v-if="submission.username === username">
+                <i-switch v-model="submission.isPublic" slot="extra" true-color="#19be6b"/>
+              </Cell>
+              <template v-if="contestId">
+                <Cell
+                  title="Problem Code"
+                  :extra="submission.problemCode | contestProblemId"
+                  :to="{ name: 'contest-problem', params: {
                       problemCode: submission.problemCode,
                       contestId
                     }}"/>
-                    <Cell
-                      title="Contest"
-                      :extra="$store.state.contest.contest.contestTitle"
-                      :to="{
+                <Cell
+                  title="Contest"
+                  :extra="$store.state.contest.contest.contestTitle"
+                  :to="{
                         name: 'contest-overview',
                         params: { contestId }
                       }"/>
-                  </template>
-                  <template v-else>
-                    <Cell
-                      title="Problem Code"
-                      :to="{ name: 'problem-detail', params: { problemCode: submission.problemCode }}">
-                      <ProblemCode slot="extra" :problemCode="submission.problemCode" />
-                    </Cell>
-                    <Cell title="Problem ID" :extra="submission.problemId" />
-                  </template>
-                </div>
-                <Divider size="small"/>
-                <div style="margin-bottom: 24px;">
-                  <Cell title="Submission ID" :extra="submission.submissionId" />
+              </template>
+              <template v-else>
+                <Cell
+                  title="Problem Code"
+                  :to="{ name: 'problem-detail', params: { problemCode: submission.problemCode }}">
+                  <ProblemCode slot="extra" :problemCode="submission.problemCode"/>
+                </Cell>
+                <Cell title="Problem ID" :extra="submission.problemId"/>
+              </template>
+            </div>
+            <Divider size="small"/>
+            <div style="margin-bottom: 24px;">
+              <Cell title="Submission ID" :extra="submission.submissionId"/>
 
-                  <Cell title="Create Time">
-                    <Time slot="extra" :time="submission.gmtCreate | parseInt" type="datetime" />
-                  </Cell>
-                  <Cell title="Judge Time">
-                    <Time slot="extra" :time="submission.gmtModified | parseInt" type="datetime" />
-                  </Cell>
-                  <Cell title="Username" :extra="submission.username" />
-                  <Cell title="Judge Result">
-                    <JudgeResult slot="extra" :result="submission.judgeResult" />
-                  </Cell>
-                  <Cell v-if="submission.judgeScore" title="Score">
-                    <span slot="extra">{{ submission.judgeScore || 0 }}</span>
-                  </Cell>
-                  <Cell title="Language" :extra="submission.language" />
-                  <Cell v-if="submission.codeLength" title="Code Length">
-                    <span slot="extra">{{ submission.codeLength || 0 }}</span>
-                  </Cell>
-                  <Cell v-if="submission.usedTime" title="Total Time">
-                    <span class="time" slot="extra">{{ submission.usedTime || 0 }}</span>
-                  </Cell>
-                  <Cell v-if="submission.usedMemory" title="Total Memory">
-                    <span class="mem" slot="extra">{{ submission.usedMemory || 0 }}</span>
-                  </Cell>
-                </div>
-            </CellGroup>
+              <Cell title="Create Time">
+                <Time slot="extra" :time="submission.gmtCreate | parseInt" type="datetime"/>
+              </Cell>
+              <Cell title="Judge Time">
+                <Time slot="extra" :time="submission.gmtModified | parseInt" type="datetime"/>
+              </Cell>
+              <Cell title="Username" :extra="submission.username"/>
+              <Cell title="Judge Result">
+                <JudgeResult slot="extra" :result="submission.judgeResult"/>
+              </Cell>
+              <Cell v-if="submission.judgeScore" title="Score">
+                <span slot="extra">{{ submission.judgeScore || 0 }}</span>
+              </Cell>
+              <Cell title="Language" :extra="submission.language"/>
+              <Cell v-if="submission.codeLength" title="Code Length">
+                <span slot="extra">{{ submission.codeLength || 0 }}</span>
+              </Cell>
+              <Cell v-if="submission.usedTime" title="Total Time">
+                <span class="time" slot="extra">{{ submission.usedTime || 0 }}</span>
+              </Cell>
+              <Cell v-if="submission.usedMemory" title="Total Memory">
+                <span class="mem" slot="extra">{{ submission.usedMemory || 0 }}</span>
+              </Cell>
+            </div>
+          </CellGroup>
         </Card>
       </Col>
     </Row>
@@ -96,34 +98,50 @@ import JudgeResult from '_c/JudgeResult';
 import { mapGetters } from 'vuex';
 import { sendWebsocket, closeWebsocket } from '_u/socket';
 import api from '_u/api';
+import utils from '_u';
 
 export default {
-  components: { JudgeResult, ProblemCode },
+  components: {
+    JudgeResult,
+    ProblemCode
+  },
   inject: ['reload'],
-  data: function() {
+  data: function () {
     return {
       submission: {
         checkpointResults: []
       },
       columns: [
-        { title: '#', key: 'id' },
+        {
+          title: '#',
+          key: 'id'
+        },
         {
           title: '评测结果',
           key: 'judgeResult',
           minWidth: 50,
-          render: (h, params) => h(JudgeResult, {  props: { result: params.row.judgeResult } })
+          render: (h, params) => h(JudgeResult, { props: { result: params.row.judgeResult } })
         },
-        { title: '用时', key: 'usedTime' },
-        { title: '内存', key: 'usedMemory' }
+        {
+          title: '用时',
+          key: 'usedTime'
+        },
+        {
+          title: '内存',
+          key: 'usedMemory'
+        }
       ]
     }
   },
   filters: {
-    parseInt: str => parseInt(str)
+    parseInt: str => parseInt(str),
+    contestProblemId: problemCode => utils.contestProblemId(problemCode)
   },
   methods: {
-    wsSuccess: function(data) {
-      data = JSON.parse(data);
+    wsSuccess: function (data) {
+      if (typeof data === 'string') {
+        data = JSON.parse(data);
+      }
       for (const item in data) {
         if (Array.isArray(item)) {
           this.fillCheckpointResults(item);
@@ -131,22 +149,23 @@ export default {
           if (data[0] === -1) {
             closeWebsocket();
             this.reload();
+            break;
           }
           this.fillCheckpointResults(data);
           break;
         }
       }
     },
-    wsRequest: function() {
-      sendWebsocket('/ws/submission', { id: this.submission.submissionId }, this.wsSuccess, err => (this.$Message.error(err)));
+    wsRequest: function () {
+      sendWebsocket('/ws/submission', { id: this.submission.submissionId }, this.wsSuccess, _ => (closeWebsocket()));
     },
-    gotoProblem: function(problemCode) {
+    gotoProblem: function (problemCode) {
       this.$router.push({
         name: 'problem-detail',
         params: { problemCode }
       });
     },
-    fillCheckpointResults: function(oneJudge) {
+    fillCheckpointResults: function (oneJudge) {
       this.submission.checkpointResults.splice(oneJudge[0], 1, {
         id: parseInt(oneJudge[0]) + 1,
         judgeResult: parseInt(oneJudge[1]),
@@ -157,13 +176,13 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['username']),
-    showCode: function() {
+    showCode: function () {
       return !!this.submission.code;
     },
-    showJudgerLog: function() {
+    showJudgerLog: function () {
       return !!this.submission.judgeLog || this.submission.judgeResult === 5 || this.submission.judgeResult === 8;
     },
-    compilerLogTitle: function() {
+    compilerLogTitle: function () {
       if (this.submission.judgeResult === 5) {
         // system error
         return 'System Error'
@@ -175,11 +194,11 @@ export default {
       }
       return ''
     },
-    contestId: function() {
+    contestId: function () {
       return this.$route.params.contestId;
     }
   },
-  mounted: function() {
+  mounted: function () {
     api.getSubmissionDetail({
       submissionId: this.$route.params.submissionId,
       contestId: this.contestId
@@ -203,38 +222,41 @@ export default {
       }
     });
   },
-  beforeDestroy: function() {
+  beforeDestroy: function () {
     closeWebsocket();
   }
 }
 </script>
 
 <style lang="less" scoped>
-.btns {
-  width: 100%;
-}
-.submission-box {
-  margin: 5px 0 20px 0;
-  .problem-box-header {
-    margin-left: 8px;
+  .btns {
+    width: 100%;
   }
-}
 
-.time::after {
-    content:" ms\0A";
-    white-space:pre;
+  .submission-box {
+    margin: 5px 0 20px 0;
+
+    .problem-box-header {
+      margin-left: 8px;
+    }
   }
-.mem::after {
-  content:" KB\0A";
-  white-space:pre;
-}
 
-.box {
-  margin-bottom: 20px;
-}
+  .time::after {
+    content: " ms\0A";
+    white-space: pre;
+  }
 
-.title {
-  line-height: 35px;
-  font-size: 1.7rem;
-}
+  .mem::after {
+    content: " KB\0A";
+    white-space: pre;
+  }
+
+  .box {
+    margin-bottom: 20px;
+  }
+
+  .title {
+    line-height: 35px;
+    font-size: 1.7rem;
+  }
 </style>

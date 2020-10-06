@@ -161,7 +161,7 @@ export default {
         pageSize: this.pageSize
       }).then(ret => {
         this.submissions = ret.rows;
-        this.total = parseInt(ret.total) * parseInt(ret.totalPage);
+        this.total = parseInt(this.pageSize) * parseInt(ret.totalPage);
       }).finally(() => { this.loading = false });
     },
     clearFilterOptions: function() {

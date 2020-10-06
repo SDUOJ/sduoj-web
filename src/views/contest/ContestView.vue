@@ -29,10 +29,12 @@
                     </div>
                   </li>
                   <li>
-                    <Icon type="ios-time-outline"/>
                     {{ contest.gmtStart | timeformat('hh:mm:ss') }}
                   </li>
-                  <li>{{ (contest.gmtEnd - contest.gmtStart) | time2hour }}</li>
+                  <li>
+                    <Icon type="ios-time-outline"/>
+                    {{ (contest.gmtEnd - contest.gmtStart) | time2hour }}
+                  </li>
                   <li>
                     <Icon type="ios-people-outline"/>
                     {{ contest.participantNum }}

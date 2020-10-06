@@ -303,7 +303,7 @@ export default {
             this.submitColdDown = false
           }, 5000);
           this.$router.push({
-            name: 'submission-detail',
+            name: this.contestId ? 'contest-submission-detail' : 'submission-detail',
             params: {
               submissionId,
               contestId: this.contestId
