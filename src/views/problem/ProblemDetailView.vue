@@ -125,8 +125,12 @@
                 title="Contest Problems"
                 v-if="contestId"
                 dis-hover :padding="0">
+            <span class="hover" slot="extra" @click="showContestProblems = !showContestProblems">
+              {{ showContestProblems ? 'HIDE' : 'SHOW' }}
+            </span>
             <Table
               size="small"
+              v-if="showContestProblems"
               :show-header="false"
               :columns="problemColumn"
               :data="contest.problems"
@@ -135,14 +139,14 @@
           <!-- 近期提交记录 -->
           <Card class="display__card"
                 title="Recent Submissions"
-                v-if="submissions"
+                v-if="submissions && submissions.length > 0"
                 dis-hover :padding="0">
             <Table
               size="small"
               :columns="submissionColumn"
               :data="submissions"
               @on-cell-click="onSubmissionTableClick"></Table>
-            <Button type="text" style="width: 100%; margin: 5px auto;" @click="handleShowSubmission">Show all submissions</Button>
+            <Button type="text" style="width: 100%; margin: 5px auto;" @click="showAllSubmission">Show all submissions</Button>
           </Card>
         </div>
       </Col>
@@ -187,7 +191,7 @@ export default {
         {
           key: 'problemCode',
           maxWidth: 60,
-          render: (h, params) => h('div', utils.contestProblemId(params.row.problemCode))
+          render: (h, params) => h('strong', utils.contestProblemId(params.row.problemCode))
         },
         {
           key: 'problemTitle',
@@ -222,7 +226,8 @@ export default {
       language: '',
       submitBtnLoading: false,
       submitColdDown: false,
-      showTags: true
+      showTags: true,
+      showContestProblems: false
     }
   },
   filters: {
@@ -233,19 +238,13 @@ export default {
     copyToClipboard: function (content) {
       this.$copyText(content).then(e => this.$Message.success('已复制到剪切板'), e => console.log(e));
     },
-    showSubmissionDetail: function (submissionId) {
-      this.$router.push({
-        name: 'submission-detail',
-        params: { submissionId }
-      });
-    },
     onSubmissionTableClick: function (row, col) {
       if (col.key === 'judgeResult') {
         this.$router.push({
-          name: 'submission',
+          name: this.contestId ? 'contest-submission-detail' : 'submission-detail',
           params: {
-            username: this.username,
-            problemCode: row.problemCode
+            submissionId: row.submissionId,
+            contestId: this.contestId
           }
         });
       }
@@ -316,12 +315,13 @@ export default {
         })
       }
     },
-    handleShowSubmission: function () {
+    showAllSubmission: function () {
       this.$router.push({
-        name: 'submission',
+        name: this.contestId ? 'contest-submission' : 'submission',
         params: {
           username: this.username,
-          problemCode: this.problem.problemCode
+          problemCode: this.problem.problemCode,
+          contestId: this.contestId
         }
       });
     },
@@ -334,14 +334,15 @@ export default {
         this.problem = ret;
         this.language = this.problem.languages[0] || '';
         // 查最多5个提交记录
-        // api.getSubmissionList({
-        //   pageNow: 1,
-        //   pageSize: 5,
-        //   username: this.username,
-        //   problemCode: this.problem.problemCode
-        // }).then(ret => {
-        //   this.submissions = ret.rows;
-        // });
+        api.getSubmissionList({
+          pageNow: 1,
+          pageSize: 5,
+          username: this.username,
+          problemCode: this.problem.problemCode,
+          contestId: this.contestId
+        }).then(ret => {
+          this.submissions = ret.rows;
+        });
       });
     }
   },

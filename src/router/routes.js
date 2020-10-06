@@ -79,6 +79,11 @@ const routes = [
         component: () => import('@/views/submission/SubmissionView')
       },
       {
+        name: 'contest-submission-detail',
+        path: 'submission/:submissionId',
+        component: () => import('@/views/submission/SubmissionDetailView')
+      },
+      {
         name: 'contest-rank',
         path: 'rank',
         component: () => import('@/views/contest/children/ContestRank')

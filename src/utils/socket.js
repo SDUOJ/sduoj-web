@@ -5,7 +5,6 @@ const baseUrl = 'ws://api.oj.sdu.edu.cn:8080';
 let wsUrl = '';
 
 function websocketMessage(ret) {
-  console.log('origin, ', ret);
   successCallback(JSON.parse(ret.data));
 }
 

@@ -30,12 +30,30 @@
                   <Cell title="Public" v-if="submission.username === username">
                       <i-switch v-model="submission.isPublic" slot="extra" true-color="#19be6b"/>
                   </Cell>
-                  <Cell
-                    title="Problem Code"
-                    :to="{ name: 'problem-detail', params: { problemCode: submission.problemCode }}">
-                    <ProblemCode slot="extra" :problemCode="submission.problemCode"></ProblemCode>
-                  </Cell>
-                  <Cell title="Problem ID" :extra="submission.problemId" />
+                  <template v-if="contestId">
+                    <Cell
+                      title="Problem Code"
+                      :extra="submission.problemCode | contestProblemId"
+                      :to="{ name: 'contest-problem', params: {
+                      problemCode: submission.problemCode,
+                      contestId
+                    }}"/>
+                    <Cell
+                      title="Contest"
+                      :extra="$store.state.contest.contest.contestTitle"
+                      :to="{
+                        name: 'contest-overview',
+                        params: { contestId }
+                      }"/>
+                  </template>
+                  <template v-else>
+                    <Cell
+                      title="Problem Code"
+                      :to="{ name: 'problem-detail', params: { problemCode: submission.problemCode }}">
+                      <ProblemCode slot="extra" :problemCode="submission.problemCode" />
+                    </Cell>
+                    <Cell title="Problem ID" :extra="submission.problemId" />
+                  </template>
                 </div>
                 <Divider size="small"/>
                 <div style="margin-bottom: 24px;">
@@ -51,17 +69,17 @@
                   <Cell title="Judge Result">
                     <JudgeResult slot="extra" :result="submission.judgeResult" />
                   </Cell>
-                  <Cell title="Score">
+                  <Cell v-if="submission.judgeScore" title="Score">
                     <span slot="extra">{{ submission.judgeScore || 0 }}</span>
                   </Cell>
                   <Cell title="Language" :extra="submission.language" />
-                  <Cell title="Code Length">
+                  <Cell v-if="submission.codeLength" title="Code Length">
                     <span slot="extra">{{ submission.codeLength || 0 }}</span>
                   </Cell>
-                  <Cell title="Total Time">
+                  <Cell v-if="submission.usedTime" title="Total Time">
                     <span class="time" slot="extra">{{ submission.usedTime || 0 }}</span>
                   </Cell>
-                  <Cell title="Total Memory">
+                  <Cell v-if="submission.usedMemory" title="Total Memory">
                     <span class="mem" slot="extra">{{ submission.usedMemory || 0 }}</span>
                   </Cell>
                 </div>
@@ -106,7 +124,6 @@ export default {
   methods: {
     wsSuccess: function(data) {
       data = JSON.parse(data);
-      console.log(data);
       for (const item in data) {
         if (Array.isArray(item)) {
           this.fillCheckpointResults(item);
@@ -120,11 +137,8 @@ export default {
         }
       }
     },
-    wsError: function(err) {
-      console.log('Err: ' + err);
-    },
     wsRequest: function() {
-      sendWebsocket('/ws/submission', { id: this.submission.submissionId }, this.wsSuccess, this.wsError);
+      sendWebsocket('/ws/submission', { id: this.submission.submissionId }, this.wsSuccess, err => (this.$Message.error(err)));
     },
     gotoProblem: function(problemCode) {
       this.$router.push({
@@ -133,14 +147,12 @@ export default {
       });
     },
     fillCheckpointResults: function(oneJudge) {
-      console.log(typeof (oneJudge));
       this.submission.checkpointResults.splice(oneJudge[0], 1, {
         id: parseInt(oneJudge[0]) + 1,
         judgeResult: parseInt(oneJudge[1]),
         usedTime: oneJudge[2].toString(),
         usedMemory: oneJudge[3].toString()
       })
-      console.log(this.submission.checkpointResults);
     }
   },
   computed: {
@@ -162,11 +174,16 @@ export default {
         return 'Compiler Log'
       }
       return ''
+    },
+    contestId: function() {
+      return this.$route.params.contestId;
     }
   },
   mounted: function() {
-    api.getSubmissionDetail(this.$route.params.submissionId).then(ret => {
-      console.log(ret);
+    api.getSubmissionDetail({
+      submissionId: this.$route.params.submissionId,
+      contestId: this.contestId
+    }).then(ret => {
       this.submission = { ...ret };
       this.submission.checkpointResults = [];
       if (ret.checkpointResults === null || ret.checkpointResults.length === 0) {
@@ -180,7 +197,6 @@ export default {
         }
         this.wsRequest();
       } else {
-        console.log(123);
         for (let i = 0; i < this.submission.checkpointNum; ++i) {
           this.fillCheckpointResults([i, ...ret.checkpointResults[i]]);
         }

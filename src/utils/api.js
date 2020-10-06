@@ -111,11 +111,18 @@ export default {
     return get('/user/isExist', params);
   },
   // 提交相关
-  getSubmissionDetail: function(submissionId) {
-    return get('/submit/query', { submissionId });
+  getSubmissionDetail: function(params) {
+    if (params.contestId) {
+      return this.getContestSubmissionDetail(params);
+    }
+    return get('/submit/query', params);
   },
   getSubmissionList: function(params) {
-    return get('/submit/list', params);
+    if (params.contestId) {
+      return this.getContestSubmissionList(params);
+    } else {
+      return get('/submit/list', params);
+    }
   },
   submit: function(data) {
     if (data.contestId) {
@@ -154,7 +161,10 @@ export default {
   createContestSubmission: function(data) {
     return post('/contest/createSubmission', data);
   },
-  getACProblem: function(contestId) {
-    return get('/contest/queryACProblem', { contestId });
+  getContestSubmissionList: function(params) {
+    return get('/contest/listSubmission', params);
+  },
+  getContestSubmissionDetail: function(params) {
+    return get('/contest/querySubmission', params);
   }
 }

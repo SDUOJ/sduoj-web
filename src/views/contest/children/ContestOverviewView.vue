@@ -37,17 +37,6 @@ export default {
       start: false,
       problemColumn: [
         {
-          title: 'Status',
-          key: 'judgeResult',
-          render: (h, params) => {
-            if (params.row.judgeResult === 0) {
-              return '';
-            } else {
-              return h(JudgeResult, { props: { result: params.row.judgeResult } });
-            }
-          }
-        },
-        {
           key: 'problemCode',
           maxWidth: 60,
           render: (h, params) => h('strong', { class: 'hover' }, utils.contestProblemId(params.row.problemCode))
@@ -64,6 +53,17 @@ export default {
               return h('span', params.row.acceptNum + '/' + params.row.submitNum);
             } else {
               return '';
+            }
+          }
+        },
+        {
+          title: 'Status',
+          key: 'judgeResult',
+          render: (h, params) => {
+            if (params.row.judgeResult === 0) {
+              return '';
+            } else {
+              return h(JudgeResult, { props: { result: params.row.judgeResult } });
             }
           }
         }
