@@ -6,15 +6,14 @@
           <!-- websocket -->
           <Card class="box" dis-hover :padding="0">
             <JudgeResult class="title" slot="title" :result="submission.judgeResult" />
-            <!-- <Table
+            <Table
               disabled-hover
-              v-if="submission.checkpointResults.length !== 0"
-              :show-header="false"
+              v-if="submission.checkpointResults"
               no-data-text=""
               size="small"
               :columns="columns"
               :data="submission.checkpointResults"
-              class="data-table" ></Table> -->
+              class="data-table" ></Table>
           </Card>
           <Card v-if="showJudgerLog" class="box" :title="compilerLogTitle" dis-hover>
             <pre v-highlightjs="submission.judgeLog"><code style="font-family: Menlo, Monaco, 'Courier New', monospace;" class="plaintext"/></pre>
@@ -82,19 +81,22 @@ import api from '_u/api';
 
 export default {
   components: { JudgeResult, ProblemCode },
+  inject: ['reload'],
   data: function() {
     return {
-      submission: {},
+      submission: {
+        checkpointResults: []
+      },
       columns: [
-        { title: '#', key: 'submissionId' },
+        { title: '#', key: 'id' },
         {
           title: '评测结果',
           key: 'judgeResult',
           minWidth: 50,
           render: (h, params) => h(JudgeResult, {  props: { result: params.row.judgeResult } })
         },
-        { title: '用时', key: 'time' },
-        { title: '内存', key: 'memory' }
+        { title: '用时', key: 'usedTime' },
+        { title: '内存', key: 'usedMemory' }
       ]
     }
   },
@@ -103,11 +105,20 @@ export default {
   },
   methods: {
     wsSuccess: function(data) {
+      data = JSON.parse(data);
       console.log(data);
-      if (data.length === this.submission.checkpointNum) {
-        closeWebsocket();
+      for (const item in data) {
+        if (Array.isArray(item)) {
+          this.fillCheckpointResults(item);
+        } else {
+          if (data[0] === -1) {
+            closeWebsocket();
+            this.reload();
+          }
+          this.fillCheckpointResults(data);
+          break;
+        }
       }
-      this.checkpointResults = data;
     },
     wsError: function(err) {
       console.log('Err: ' + err);
@@ -120,6 +131,16 @@ export default {
         name: 'problem-detail',
         params: { problemCode }
       });
+    },
+    fillCheckpointResults: function(oneJudge) {
+      console.log(typeof (oneJudge));
+      this.submission.checkpointResults.splice(oneJudge[0], 1, {
+        id: parseInt(oneJudge[0]) + 1,
+        judgeResult: parseInt(oneJudge[1]),
+        usedTime: oneJudge[2].toString(),
+        usedMemory: oneJudge[3].toString()
+      })
+      console.log(this.submission.checkpointResults);
     }
   },
   computed: {
@@ -145,9 +166,26 @@ export default {
   },
   mounted: function() {
     api.getSubmissionDetail(this.$route.params.submissionId).then(ret => {
-      this.submission = ret;
-    })
-    // this.wsRequest();
+      console.log(ret);
+      this.submission = { ...ret };
+      this.submission.checkpointResults = [];
+      if (ret.checkpointResults === null || ret.checkpointResults.length === 0) {
+        for (let i = 0; i < this.submission.checkpointNum; ++i) {
+          this.submission.checkpointResults.push({
+            id: i + 1,
+            judgeResult: 0,
+            usedTime: 0,
+            usedMemory: 0
+          });
+        }
+        this.wsRequest();
+      } else {
+        console.log(123);
+        for (let i = 0; i < this.submission.checkpointNum; ++i) {
+          this.fillCheckpointResults([i, ...ret.checkpointResults[i]]);
+        }
+      }
+    });
   },
   beforeDestroy: function() {
     closeWebsocket();

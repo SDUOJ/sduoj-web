@@ -250,6 +250,13 @@ export default {
           setTimeout(() => {
             this.submitColdDown = false
           }, 5000);
+          this.$router.push({
+            name: 'submission-detail',
+            params: {
+              submissionId,
+              contestId: this.contestId
+            }
+          });
           this.reload();
         }).finally(() => {
           this.submitBtnLoading = false;

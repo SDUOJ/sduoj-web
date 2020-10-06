@@ -70,7 +70,7 @@ export default {
   data: function() {
     return {
       columns: [
-        { title: '#', key: 'submissionId', minWidth: 80 },
+        { title: '#', key: 'submissionId', minWidth: 70 },
         { title: '用户', key: 'username' },
         {
           title: '题目',
@@ -114,7 +114,7 @@ export default {
         {
           title: '评测结果',
           key: 'judgeResult',
-          minWidth: 30,
+          minWidth: 100,
           render: (h, params) => h(JudgeResult, { props: { result: params.row.judgeResult } })
         },
         { title: '用时', key: 'usedTime', sortable: true, maxWidth: 90 },
@@ -136,7 +136,7 @@ export default {
         judgeResult: '',
         language: ''
       },
-      total: 1,
+      total: 0,
       pageNow: 1,
       pageSize: 10,
       sortBy: '',
@@ -155,7 +155,7 @@ export default {
         pageSize: this.pageSize
       }).then(ret => {
         this.submissions = ret.rows;
-        this.total = parseInt(ret.total);
+        this.total = parseInt(ret.total) * parseInt(ret.totalPage);
       }).finally(() => { this.loading = false });
     },
     clearFilterOptions: function() {

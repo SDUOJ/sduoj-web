@@ -58,7 +58,6 @@ export default {
         if (valid) {
           const dataForm = Object.assign({}, this.loginForm);
           api.login(dataForm).then(ret => {
-            console.log(this.$route.query);
             this.setProfile(ret);
             this.$router.replace(this.$route.query.to || '/');
           }).catch(err => {

@@ -1,7 +1,8 @@
 let websocket = null;
 let successCallback = null;
 let errorCallback = null;
-let wsUrl = 'ws://api.oj.sdu.edu.cn:8080';
+const baseUrl = 'ws://api.oj.sdu.edu.cn:8080';
+let wsUrl = '';
 
 function websocketMessage(ret) {
   console.log('origin, ', ret);
@@ -28,7 +29,7 @@ function websocketInit() {
 }
 
 export function sendWebsocket(url, params, success, error) {
-  wsUrl += url;
+  wsUrl = baseUrl + url;
   if (params) {
     wsUrl += '?';
     for (const key in params) {

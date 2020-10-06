@@ -18,7 +18,7 @@
             </li>
             <li>
               <Icon type="ios-time-outline"/>
-              {{ contest.gmtStart | timeformat('hh:mm:ss') }}
+              {{ contest.gmtStart | timeformat('yyyy-MM-dd hh:mm:ss') }}
             </li>
             <li>{{ (contest.gmtEnd - contest.gmtStart) | time2hour }}</li>
             <li>
@@ -97,7 +97,9 @@
         </div>
       </Menu>
     </div>
-    <router-view></router-view>
+    <transition name="fade" mode="out-in">
+      <router-view />
+    </transition>
   </div>
 </template>
 
@@ -198,5 +200,18 @@ export default {
       font-size: 20px;
       font-weight: bold;
     }
+  }
+
+  .fade-leave-active,
+  .fade-enter-active {
+    transition: all 0.23s;
+  }
+  .fade-enter {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  .fade-leave-to {
+    opacity: 0;
+    transform: translateX(30px);
   }
 </style>

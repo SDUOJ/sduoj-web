@@ -5,7 +5,7 @@
         <div style="margin-right: 30px;">
           <UserProfile />
           <UserPassword v-if="isVerified" style="margin: 20px 0;" />
-          <UserEmail v-if="isVerified" />
+          <UserEmail />
         </div>
       </Col>
       <Col span="8">
@@ -73,7 +73,7 @@ export default {
   font-weight: 600;
 }
 .statistic {
-  border-top: 1px solid #d4d4d5; 
+  border-top: 1px solid #d4d4d5;
   padding: 10px 40px 0;
   div {
     margin: 10px 0;
