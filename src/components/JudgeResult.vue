@@ -17,14 +17,18 @@ export default {
     result: {
       type: Number,
       default: -1
+    },
+    abbr: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {
-    judgeResult2Text: judgeResult => {
+    judgeResult2Text: function(judgeResult) {
       if (judgeResult === -1) {
         return '';
       }
-      return utils.judgeResultMap[judgeResult];
+      return this.abbr ? utils.judgeResultMapAbbr[judgeResult] : utils.judgeResultMap[judgeResult];
     },
     judgeResult2Class: judgeResult => {
       if (judgeResult === -1) {
@@ -77,7 +81,7 @@ export default {
 
 // judge
 .verdict-compile-error {
-  color: orange;
+  color: #ffa500;
   font-weight: bold;
 }
 .verdict-compile-error:hover {

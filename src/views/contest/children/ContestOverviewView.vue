@@ -9,9 +9,10 @@
     <template v-else-if="start">
       <div class="overview">
         <Card dis-hover :padding="0">
-          <ContestProblem
-            :problems="contest.problems"
-            @on-cell-click="handleCellClick"/>
+          <Table
+            :columns="problemColumn"
+            :data="contest.problems"
+            @on-cell-click="handleCellClick" />
         </Card>
       </div>
     </template>
@@ -19,30 +20,61 @@
 </template>
 
 <script>
-import ContestProblem from '_c/ContestProblem';
+import JudgeResult from '_c/JudgeResult';
 import { mapGetters, mapState } from 'vuex';
 import api from '_u/api';
+import utils from '_u';
 
 export default {
   name: 'ContestOverviewView.vue',
-  components: { ContestProblem },
+  inject: ['reload'],
   data: function() {
     return {
       participateForm: {
         password: '',
         contestId: ''
       },
-      start: false
+      start: false,
+      problemColumn: [
+        {
+          title: 'Status',
+          key: 'judgeResult',
+          render: (h, params) => {
+            if (params.row.judgeResult === 0) {
+              return '';
+            } else {
+              return h(JudgeResult, { props: { result: params.row.judgeResult } });
+            }
+          }
+        },
+        {
+          key: 'problemCode',
+          maxWidth: 60,
+          render: (h, params) => h('strong', { class: 'hover' }, utils.contestProblemId(params.row.problemCode))
+        },
+        {
+          title: 'Problem Title',
+          key: 'problemTitle',
+          render: (h, params) => h('span', { class: 'hover' }, params.row.problemTitle)
+        },
+        {
+          title: 'AC/Submit',
+          render: (h, params) => {
+            if (params.row.submitNum > 0) {
+              return h('span', params.row.acceptNum + '/' + params.row.submitNum);
+            } else {
+              return '';
+            }
+          }
+        }
+      ]
     }
   },
   methods: {
     handleParticipate: function() {
       this.participateForm.contestId = this.contest.contestId;
       if (this.openness !== 'protected' && !this.contest.participants.includes(this.username)) {
-        api.participateIn(this.participateForm)
-          .then(() => {
-            this.$router.push(0)
-          });
+        api.participateIn(this.participateForm).then(() => (this.reload()));
       }
     },
     handleCellClick: function(row, col) {

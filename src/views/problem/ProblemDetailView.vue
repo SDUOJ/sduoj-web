@@ -52,12 +52,12 @@
               style="float: right; margin: 5px 0 5px 10px;"
               :loading="submitBtnLoading"
               :disabled="submitColdDown"
-              @click="onSubmit">提交
+              @click="onSubmit">Submit
             </Button>
             <Input
               style="float: right; width: 200px; margin: 8px 0;"
               placeholder="Contest Password"
-              v-if="contestId && $store.getters['contest/needPassword']"
+              v-if="contestId && needPassword"
               size="small"
               v-model="contestPassword" />
           </div>
@@ -65,11 +65,11 @@
         <!--  -->
       </Col>
       <Col span="7">
-<!--        比赛的题目导航-->
+<!--        比赛：题目导航-->
         <div class="box">
           <div class="contest__problems" v-if="contestId">
             <span
-              v-for="pb in $store.state.contest.contest.problems"
+              v-for="pb in contest.problems"
               :key="pb.problemCode"
               :class="pb.problemCode === problem.problemCode ? 'active' : ''"
               @click="switchContestProblem(pb.problemCode)">
@@ -101,6 +101,7 @@
             </CellGroup>
           </Card>
           <!--  -->
+<!--          题面描述选择列表-->
           <Card class="display__card"
                 title="Descriptions"
                 v-if="problem.problemDescriptionListDTOList"
@@ -119,19 +120,29 @@
                 }"/>
             </CellGroup>
           </Card>
-          <!-- 近期提交记录 -->
-          <Card class="display__card"
-                title="Recent Submissions"
-                v-if="isLogin && submissions"
+<!--          比赛： 其他题目简要预览-->
+          <Card class="dispay__card"
+                title="Contest Problems"
+                v-if="contestId"
                 dis-hover :padding="0">
             <Table
               size="small"
-              :columns="columns"
+              :show-header="false"
+              :columns="problemColumn"
+              :data="contest.problems"
+              @on-cell-click="onProblemTableClick"></Table>
+          </Card>
+          <!-- 近期提交记录 -->
+          <Card class="display__card"
+                title="Recent Submissions"
+                v-if="submissions"
+                dis-hover :padding="0">
+            <Table
+              size="small"
+              :columns="submissionColumn"
               :data="submissions"
-              @on-cell-click="onTableClick"></Table>
-            <Button type="text" style="width: 100%; margin: 5px auto;" @click="handleShowSubmission">Show all
-              submissions
-            </Button>
+              @on-cell-click="onSubmissionTableClick"></Table>
+            <Button type="text" style="width: 100%; margin: 5px auto;" @click="handleShowSubmission">Show all submissions</Button>
           </Card>
         </div>
       </Col>
@@ -149,7 +160,7 @@ import JudgeResult from '_c/JudgeResult';
 import api from '_u/api';
 import utils from '_u';
 
-import { mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 
 export default {
   components: {
@@ -160,7 +171,7 @@ export default {
   inject: ['reload'],
   data: function () {
     return {
-      columns: [
+      submissionColumn: [
         {
           title: 'Result',
           key: 'judgeResult',
@@ -170,6 +181,37 @@ export default {
           title: 'Submit time',
           key: 'gmtCreate',
           render: (h, params) => h('Time', { props: { time: parseInt(params.row.gmtCreate) } })
+        }
+      ],
+      problemColumn: [
+        {
+          key: 'problemCode',
+          maxWidth: 60,
+          render: (h, params) => h('div', utils.contestProblemId(params.row.problemCode))
+        },
+        {
+          key: 'problemTitle',
+          minWidth: 80,
+          render: (h, params) => h('span', { class: 'hover' }, params.row.problemTitle)
+        },
+        {
+          render: (h, params) => {
+            if (params.row.submitNum > 0) {
+              return h('span', params.row.acceptNum + '/' + params.row.submitNum);
+            } else {
+              return '';
+            }
+          }
+        },
+        {
+          key: 'judgeResult',
+          render: (h, params) => {
+            if (params.row.judgeResult === 0) {
+              return '';
+            } else {
+              return h(JudgeResult, { props: { result: params.row.judgeResult, abbr: true } });
+            }
+          }
         }
       ],
       problem: {},
@@ -197,13 +239,24 @@ export default {
         params: { submissionId }
       });
     },
-    onTableClick: function (row, col) {
+    onSubmissionTableClick: function (row, col) {
       if (col.key === 'judgeResult') {
         this.$router.push({
           name: 'submission',
           params: {
             username: this.username,
             problemCode: row.problemCode
+          }
+        });
+      }
+    },
+    onProblemTableClick: function (row, col) {
+      if (col.key === 'problemTitle') {
+        this.$router.push({
+          name: 'contest-problem',
+          params: {
+            problemCode: row.problemCode,
+            contestId: this.contestId
           }
         });
       }
@@ -294,6 +347,8 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['username', 'isLogin']),
+    ...mapGetters('contest', ['needPassword']),
+    ...mapState('contest', ['contest']),
     problemDescription: function () {
       return this.problem.problemDescriptionDTO;
     },
@@ -387,5 +442,21 @@ export default {
       color: @sdu-red;
       background-color: rgba(0, 0, 0, .15);
     }
+  }
+
+  .block__normal {
+
+  }
+  .block__ac {
+    display: block;
+    border-left: 6px solid rgba(92, 184, 92, .15) !important;
+  }
+  .block__wa {
+    display: block;
+    border-left: 6px solid rgba(217, 83, 79, .15) !important;
+  }
+  .block__ce {
+    display: block;
+    border-left: 6px solid rgba(255, 165, 0, .15) !important;
   }
 </style>

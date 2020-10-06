@@ -153,5 +153,8 @@ export default {
   },
   createContestSubmission: function(data) {
     return post('/contest/createSubmission', data);
+  },
+  getACProblem: function(contestId) {
+    return get('/contest/queryACProblem', { contestId });
   }
 }

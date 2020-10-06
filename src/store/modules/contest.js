@@ -29,6 +29,8 @@ const mutations = {
       problems: [],
       participants: []
     };
+    state.questions = [];
+    state.acProblems = [];
   }
 }
 
@@ -37,6 +39,11 @@ const actions = {
     return new Promise((resolve, reject) => {
       api.getContest(contestId).then(contest => {
         resolve(contest);
+        for (let i = 0; i < contest.problems.length; ++i) {
+          contest.problems[i].acceptNum = 10;
+          contest.problems[i].submitNum = 10;
+          contest.problems[i].judgeResult = 1;
+        }
         commit('setContest', { contest });
         dispatch('getQuestions');
       }, err => (reject(err)));

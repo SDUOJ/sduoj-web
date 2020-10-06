@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import JudgeResult from './JudgeResult';
+import JudgeResult from '_c/JudgeResult';
 import utils from '_u';
 
 export default {
@@ -26,19 +26,27 @@ export default {
     return {
       problemColumn: [
         {
-          key: 'status',
-          minWidth: 30,
-          render: (h, params) => h(JudgeResult, { props: { result: params.row.judgeResult } })
+          key: 'judgeResult',
+          render: (h, params) => {
+            if (params.row.judgeResult === 1) {
+              return h(JudgeResult, { props: { result: 1 } });
+            } else {
+              return '';
+            }
+          }
         },
         {
           // TODO: 展示 通过数/总提交数
+          title: 'AC/Total',
           key: 'acRate'
         },
         {
+          title: '#',
           key: 'problemCode',
           render: (h, params) => h('strong', { class: 'hover' }, utils.contestProblemId(params.row.problemCode))
         },
         {
+          title: 'Problem Title',
           key: 'problemTitle',
           render: (h, params) => h('span', { class: 'hover' }, params.row.problemTitle)
         }
