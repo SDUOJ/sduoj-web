@@ -1,4 +1,14 @@
 /*
+ * Copyright 2020-2020 the original author or authors.
+ *
+ * Licensed under the General Public License, Version 3.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.gnu.org/licenses/gpl-3.0.en.html
+ */
+
+/*
  * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
  * Digest Algorithm, as defined in RFC 1321.
  * Version 2.1 Copyright (C) Paul Johnston 1999 - 2002.
