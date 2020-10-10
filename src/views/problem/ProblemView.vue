@@ -9,107 +9,103 @@
  -->
 
 <template>
-    <div>
-      <!-- 页面容器 -->
-      <div class="container">
-        <Row>
-          <!-- 页面左边部分 -->
-          <Col span="19" class="main-lf">
-            <Card class="problem-set" :padding="0" dis-hover>
-              <!-- 题库 header -->
-              <div class="problem-set-header clearfix" slot="title">
-                <span class="problem-set-header-name">题库</span>
-                <!-- <div class="problem-set-header-switch">
-                  <i-switch size="large" @on-change="switchTag">
-                    <span slot="open">标签</span>
-                    <span slot="close">标签</span>
-                  </i-switch>
-                </div> -->
-              </div>
-              <div slot="extra">
-                <i-switch size="large" @on-change="switchTag">
-                  <span slot="open">标签</span>
-                  <span slot="close">标签</span>
-                </i-switch>
-              </div>
-              <!-- 题库 header -->
-
-              <!-- 题库 content -->
-              <div class="problem-set-content">
-                  <Table
-                    :columns="problemTableColumns"
-                    :data="problemTableData"
-                    :loading="loading"
-                    class="problem-set-content-table"
-                    @on-cell-click="handleProblemClick"
-                    @on-sort-change="handleProblemSort">
-                  </Table>
-                  <Page
-                    class="problem-set-content-page"
-                    size="small" show-elevator show-sizer
-                    :total="total"
-                    :current.sync="pageNow"
-                    @on-change="onPageChange"
-                    @on-page-size-change="onPageSizeChange"/>
-              </div>
-              <!-- 题库 content -->
-            </Card>
-          </Col>
-          <!-- 页面左边部分 -->
-
-          <!-- 页面右边部分 -->
-          <Col span="5" class="main-rf">
-            <!-- 搜索框 -->
-            <div class="problem-search">
-              <Input suffix="ios-search" placeholder="题目查询"/>
+  <div>
+    <!-- 页面容器 -->
+    <div class="container">
+      <Row>
+        <!-- 页面左边部分 -->
+        <Col span="19" class="main-lf">
+          <Card class="problem-set" :padding="0" dis-hover>
+            <!-- 题库 header -->
+            <div class="problem-set-header clearfix" slot="title">
+              <span class="problem-set-header-name">题库</span>
             </div>
-            <!-- 搜索框 -->
-
-            <!-- 标签分类 -->
-            <div class="problem-tags">
-              <!-- header -->
-              <div class="problem-tags-header">
-                分类
-              </div>
-              <!-- header -->
-              <!-- 标签内容 -->
-              <div class="problem-tags-content">
-                <Row>
-                  <Col span="12" class="problem-tags-content-col">
-                    <template v-for="(ptag, index) in tags">
-                      <div class="problem-tags-content-line" v-if="index % 2 === 0" :key="ptag.name">
-                        <Poptip trigger="hover" placement="left" :disabled="(ptag.children || []).length === 0" word-wrap width="300">
-                          <span>{{ ptag.name }}</span>
-                          <div slot="content" class="problem-tags-content-poptip">
-                            <span v-for="tag in (ptag.children || [])" :key="tag"> {{ tag }}</span>
-                          </div>
-                        </Poptip>
-                      </div>
-                    </template>
-                  </Col>
-                  <Col span="12" class="problem-tags-content-col">
-                    <template v-for="(ptag, index) in tags">
-                      <div class="problem-tags-content-line" v-if="index % 2 === 1" :key="ptag.name">
-                        <Poptip trigger="hover" placement="right" :disabled="(ptag.children || []).length === 0" word-wrap width="300">
-                          <span>{{ ptag.name }}</span>
-                          <div slot="content" class="problem-tags-content-poptip">
-                            <span v-for="tag in (ptag.children || [])" :key="tag"> {{ tag }}</span>
-                          </div>
-                        </Poptip>
-                      </div>
-                    </template>
-                  </Col>
-                </Row>
-              </div>
-              <!-- 标签内容 -->
+            <div slot="extra">
+              <i-switch size="large" @on-change="switchTag">
+                <span slot="open">标签</span>
+                <span slot="close">标签</span>
+              </i-switch>
             </div>
-            <!-- 标签分类 -->
-          </Col>
-          <!-- 页面右边部分 -->
-        </Row>
-      </div>
-      <!-- 页面容器 -->
+            <!-- 题库 header -->
+
+            <!-- 题库 content -->
+            <div class="problem-set-content">
+              <Table
+                :columns="problemTableColumns"
+                :data="problems"
+                :loading="loading"
+                class="problem-set-content-table"
+                @on-cell-click="onProblemClick"
+                @on-sort-change="onProblemSort">
+              </Table>
+              <Page
+                class="problem-set-content-page"
+                size="small" show-elevator show-sizer
+                :total="total"
+                :current.sync="pageNow"
+                @on-change="onPageChange"
+                @on-page-size-change="onPageSizeChange"/>
+            </div>
+            <!-- 题库 content -->
+          </Card>
+        </Col>
+        <!-- 页面左边部分 -->
+
+        <!-- 页面右边部分 -->
+        <Col span="5" class="main-rf">
+          <!-- 搜索框 -->
+          <div class="problem-search">
+            <Input suffix="ios-search" placeholder="题目查询"/>
+          </div>
+          <!-- 搜索框 -->
+
+          <!-- 标签分类 -->
+          <div class="problem-tags">
+            <!-- header -->
+            <div class="problem-tags-header">
+              分类
+            </div>
+            <!-- header -->
+            <!-- 标签内容 -->
+            <div class="problem-tags-content">
+              <Row>
+                <Col span="12" class="problem-tags-content-col">
+                  <template v-for="(ptag, index) in tags">
+                    <div class="problem-tags-content-line" v-if="index % 2 === 0" :key="ptag.name">
+                      <Poptip trigger="hover" placement="left" :disabled="(ptag.children || []).length === 0" word-wrap
+                              width="300">
+                        <span>{{ ptag.name }}</span>
+                        <div slot="content" class="problem-tags-content-poptip">
+                          <span v-for="tag in (ptag.children || [])" :key="tag"> {{ tag }}</span>
+                        </div>
+                      </Poptip>
+                    </div>
+                  </template>
+                </Col>
+                <Col span="12" class="problem-tags-content-col">
+                  <template v-for="(ptag, index) in tags">
+                    <div class="problem-tags-content-line" v-if="index % 2 === 1" :key="ptag.name">
+                      <Poptip trigger="hover" placement="right" :disabled="(ptag.children || []).length === 0" word-wrap
+                              width="300">
+                        <span>{{ ptag.name }}</span>
+                        <div slot="content" class="problem-tags-content-poptip">
+                          <span v-for="tag in (ptag.children || [])" :key="tag"> {{ tag }}</span>
+                        </div>
+                      </Poptip>
+                    </div>
+                  </template>
+                </Col>
+              </Row>
+            </div>
+            <!-- 标签内容 -->
+          </div>
+          <!-- 标签分类 -->
+        </Col>
+        <!-- 页面右边部分 -->
+      </Row>
     </div>
+    <!-- 页面容器 -->
+  </div>
 </template>
 
 <script>
@@ -117,7 +113,7 @@ import ProblemCode from '_c/ProblemCode';
 import api from '_u/api';
 
 export default {
-  data () {
+  data: function() {
     return {
       problemTableColumns: [
         {
@@ -160,27 +156,27 @@ export default {
         {
           title: '标题',
           key: 'problemTitle',
-          minWidth: 150
-          // render: (h, params) => {
-          //   if (params.row.problemInfo.ifPass === 0) {
-          //     return h('span', { class: 'hover' },
-          //       params.row.problemInfo.name);
-          //   } else {
-          //     return h('span', { class: 'hover' }, [
-          //       params.row.problemInfo.name,
-          //       ' ',
-          //       h('Icon', {
-          //         props: {
-          //           type: 'md-checkmark'
-          //         },
-          //         style: {
-          //           color: '#229954',
-          //           fontSize: '16px',
-          //           verticalAlign: 'middle'
-          //         }
-          //       })]);
-          //   }
-          // }
+          minWidth: 150,
+          render: (h, params) => {
+            if (!this.acproblems.includes(params.row.problemCode)) {
+              return h('span', { class: 'hover' },
+                params.row.problemTitle);
+            } else {
+              return h('span', { class: 'hover' }, [
+                params.row.problemTitle,
+                ' ',
+                h('Icon', {
+                  props: {
+                    type: 'md-checkmark'
+                  },
+                  style: {
+                    color: '#229954',
+                    fontSize: '16px',
+                    verticalAlign: 'middle'
+                  }
+                })]);
+            }
+          }
         },
         {
           title: '通过数',
@@ -189,17 +185,9 @@ export default {
           sortable: 'custom'
         }
       ],
-      problemTableData: [
-        // {
-        //   ojProblemId: 'POJ-1001',
-        //   problemInfo: {
-        //     name: 'A + B Problem',
-        //     ifPass: 0
-        //   },
-        //   tags: ['模拟', '暴力', '思维'],
-        //   acNumber: 4586
-        // },
-      ],
+      acproblems: [],
+      problems: [],
+      // TODO: 获取总的tag列表
       tags: [
         {
           name: '动态规划',
@@ -277,7 +265,7 @@ export default {
     }
   },
   methods: {
-    switchTag: function(open) {
+    switchTag: function (open) {
       if (open) {
         this.problemTableColumns = [
           ...this.problemTableColumns.slice(0, 2),
@@ -302,13 +290,13 @@ export default {
         this.problemTableColumns = this.problemTableColumns.filter(item => item.key !== 'problemTagDTOList');
       }
     },
-    onPageChange: function(pageNow) {
+    onPageChange: function (pageNow) {
       this.pageNow = pageNow;
     },
-    onPageSizeChange: function(pageSize) {
+    onPageSizeChange: function (pageSize) {
       this.pageSize = pageSize;
     },
-    handleProblemClick: function(row, col) {
+    onProblemClick: function (row, col) {
       if (col.key === 'problemTitle') {
         this.$router.push({
           name: 'problem-detail',
@@ -318,7 +306,7 @@ export default {
         });
       }
     },
-    handleProblemSort: function({ column, key, order }) {
+    onProblemSort: function ({ column, key, order }) {
       if (order === 'normal') {
         this.sortBy = '';
         this.ascending = false
@@ -328,7 +316,7 @@ export default {
       }
       this.getProblemList();
     },
-    getProblemList: function() {
+    getProblemList: function () {
       this.loading = true;
       api.getProblemList({
         pageNow: this.pageNow,
@@ -336,159 +324,164 @@ export default {
         sortBy: this.sortBy,
         ascending: this.ascending
       }).then(ret => {
-        this.problemTableData = ret.rows;
+        this.problems = ret.rows;
         this.pageNum = parseInt(ret.totalPage);
         this.total = parseInt(ret.total);
-      }).finally(() => { this.loading = false; });
+      }).finally(() => {
+        this.loading = false;
+      });
+      api.getUserACProblems().then(acproblems => (this.acproblems = acproblems));
     }
   },
   watch: {
-    pageNow: function() {
+    pageNow: function () {
     },
-    pageSize: function() {
+    pageSize: function () {
       this.getProblemList();
     }
   },
-  mounted: function() {
+  mounted: function () {
     this.getProblemList();
   }
 }
 </script>
 
 <style lang="less" scoped>
-.problem-set {
-  border-radius: 4px;
-  // 题库表头
-  .problem-set-header {
-    // height: 45px;
-    // margin-right: 20px;
-    // background-color: #f7f7f8;
-    // border: 1px solid #d4d4d5;
-    // border-top-left-radius: 4px;
-    // border-top-right-radius: 4px;
+  .problem-set {
+    border-radius: 4px;
+    // 题库表头
+    .problem-set-header {
+      .problem-set-header-name {
+        // padding-left: 15px;
+        line-height: 20px;
+        font-size: 1.2em;
+        font-weight: bold;
+      }
 
-    .problem-set-header-name {
-      // padding-left: 15px;
-      line-height: 20px;
-      font-size: 1.2em;
-      font-weight: bold;
-    }
-
-    .problem-set-header-switch {
-      float: right;
-      // padding-right: 30px;
-      // padding-top: 10px;
+      .problem-set-header-switch {
+        float: right;
+      }
     }
   }
-}
 </style>
 
 <style lang="less">
-li {
-  list-style: none;
-}
+  li {
+    list-style: none;
+  }
 
-.problem-set {
-  // 题库内容
-  margin-right: 20px;
-  .problem-set-content {
-    // margin-right: 20px;
-    // border-left: 1px solid #d4d4d5;
+  .problem-set {
+    // 题库内容
+    margin-right: 20px;
 
-    .problem-set-content-table {
-      // border-right: 1px solid #d4d4d5;
-      // ivu 表格头部
-      .ivu-table-header {
-        padding-right: 0;
-        th {
-          background-color: #fff;
+    .problem-set-content {
+
+      .problem-set-content-table {
+        // ivu 表格头部
+        .ivu-table-header {
+          padding-right: 0;
+
+          th {
+            background-color: #fff;
+          }
         }
-      }
-      // ivu 表格内部
-      .ivu-table-body {
-        padding-right: 0;
-      }
-      .ivu-table-row-hover td {
+
+        // ivu 表格内部
+        .ivu-table-body {
+          padding-right: 0;
+        }
+
+        .ivu-table-row-hover td {
           background-color: #fbfcfc;
-      }
-      // ivu 数据内容
-      .problem-set-name {
-        float: left;
-      }
-      .problem-set-tags {
-        float: right;
-        .problem-set-tagbox {
-          margin: 2px;
-          background-color: #F8F9F9;
+        }
+
+        // ivu 数据内容
+        .problem-set-name {
+          float: left;
+        }
+
+        .problem-set-tags {
           float: right;
-          border-radius: 4px;
-          .problem-set-tag {
-            user-select: none;
-            margin: 4px 6px;
+
+          .problem-set-tagbox {
+            margin: 2px;
+            background-color: #F8F9F9;
+            float: right;
+            border-radius: 4px;
+
+            .problem-set-tag {
+              user-select: none;
+              margin: 4px 6px;
+            }
           }
         }
       }
-    }
 
-    // 题库分页栏
-    .problem-set-content-page {
-      margin: 20px 15px;
-      float: right;
-    }
-  }
-}
-
-// 题库搜索框
-.problem-search {
-  .ivu-input:hover {
-    border-color: #CACFD2;
-  }
-  .ivu-input-default:focus {
-    border-color: #BDC3C7;
-    box-shadow: 0 0 0 0.5px rgba(154, 154, 154, 0.1);
-  }
-}
-
-// 题库标签搜索
-.problem-tags {
-  margin-top: 12px;
-  border: 1px solid #d4d4d5;
-  border-radius: 4px;
-  .problem-tags-header {
-    padding: 20px 25px 17px 35px;
-    font-size: 1.4em;
-    color: #797f7f;
-  }
-  .problem-tags-content {
-    margin-bottom: 14px;
-    .problem-tags-content-col {
-      padding-left: 25px;
-      .problem-tags-content-line  {
-        margin-bottom: 16px;
+      // 题库分页栏
+      .problem-set-content-page {
+        margin: 20px 15px;
+        float: right;
       }
     }
-    span {
-      white-space: nowrap;
-      padding: 10px 10px;
-      border-radius: 2px;
-      font-size: 1.1em;
-      color: #797d7f;
-      transition: all .2s linear;
+  }
+
+  // 题库搜索框
+  .problem-search {
+    .ivu-input:hover {
+      border-color: #CACFD2;
     }
-    span:hover {
-      // background-color: #C0392B;
-      // color: #fff;
-      background-color: #F7F9F9;
-      color: #A93226;
-      transition: all .2s linear;
+
+    .ivu-input-default:focus {
+      border-color: #BDC3C7;
+      box-shadow: 0 0 0 0.5px rgba(154, 154, 154, 0.1);
     }
-    .problem-tags-content-poptip {
+  }
+
+  // 题库标签搜索
+  .problem-tags {
+    margin-top: 12px;
+    border: 1px solid #d4d4d5;
+    border-radius: 4px;
+
+    .problem-tags-header {
+      padding: 20px 25px 17px 35px;
+      font-size: 1.4em;
+      color: #797f7f;
+    }
+
+    .problem-tags-content {
+      margin-bottom: 14px;
+
+      .problem-tags-content-col {
+        padding-left: 25px;
+
+        .problem-tags-content-line {
+          margin-bottom: 16px;
+        }
+      }
+
       span {
-        display: inline-block;
-        margin-right: 5px;
-        line-height: 20px;
+        white-space: nowrap;
+        padding: 10px 10px;
+        border-radius: 2px;
+        font-size: 1.1em;
+        color: #797d7f;
+        transition: all .2s linear;
+      }
+
+      span:hover {
+        background-color: #F7F9F9;
+        color: #A93226;
+        transition: all .2s linear;
+      }
+
+      .problem-tags-content-poptip {
+        span {
+          display: inline-block;
+          margin-right: 5px;
+          line-height: 20px;
+        }
       }
     }
   }
-}
 </style>

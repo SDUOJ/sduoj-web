@@ -122,6 +122,9 @@ export default {
   isExist: function(params) {
     return get('/user/isExist', params);
   },
+  getUserACProblems: function() {
+    return get('/user/queryACProblem');
+  },
   // 提交相关
   getSubmissionDetail: function(params) {
     const contestId = getContestId();
