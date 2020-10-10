@@ -22,7 +22,9 @@ const state = {
 
 const getters = {
   contestLoaded: state => !!state.contest.contestId,
+  contestId: state => state.contest.contestId,
   openness: state => state.contest.features.openness,
+  mode: state => state.contest.features.mode,
   needPassword: (state, getters, rootState, rootGetters) => !state.contest.participants.includes(rootGetters['user/username']),
   startTime: state => new Date(parseInt(state.contest.gmtStart)),
   endTime: state => new Date(parseInt(state.contest.gmtEnd))

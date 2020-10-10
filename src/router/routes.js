@@ -76,7 +76,7 @@ const routes = [
       {
         name: 'contest-overview',
         path: 'overview',
-        component: () => import('@/views/contest/children/ContestOverviewView')
+        component: () => import('@/views/contest/ContestOverviewView')
       },
       {
         name: 'contest-problem',
@@ -96,7 +96,7 @@ const routes = [
       {
         name: 'contest-rank',
         path: 'rank',
-        component: () => import('@/views/contest/children/ContestRank')
+        component: () => import('@/views/contest/ContestRank')
       }
     ]
   },
