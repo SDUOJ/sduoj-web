@@ -246,15 +246,14 @@ export default {
   },
   methods: {
     copyToClipboard: function (content) {
-      this.$copyText(content).then(e => this.$Message.success('已复制到剪切板'), e => console.log(e));
+      this.$copyText(content).then(_ => this.$Message.success('已复制到剪切板'));
     },
     onSubmissionTableClick: function (row, col) {
       if (col.key === 'judgeResult') {
         this.$router.push({
           name: this.contestId ? 'contest-submission-detail' : 'submission-detail',
           params: {
-            submissionId: row.submissionId,
-            contestId: this.contestId
+            submissionId: row.submissionId
           }
         });
       }
@@ -264,8 +263,7 @@ export default {
         this.$router.push({
           name: 'contest-problem',
           params: {
-            problemCode: row.problemCode,
-            contestId: this.contestId
+            problemCode: row.problemCode
           }
         });
       }
@@ -277,7 +275,6 @@ export default {
       this.$router.push({
         name: 'contest-problem',
         params: {
-          contestId: this.contestId,
           problemCode
         }
       });
@@ -296,7 +293,6 @@ export default {
           code: this.code
         };
         if (this.contestId) {
-          dataForm.contestId = this.contestId;
           if (this.$store.getters['contest/needPassword']) {
             try {
               await api.participateIn({
@@ -314,10 +310,7 @@ export default {
           }, 5000);
           this.$router.push({
             name: this.contestId ? 'contest-submission-detail' : 'submission-detail',
-            params: {
-              submissionId,
-              contestId: this.contestId
-            }
+            params: { submissionId }
           });
           this.reload();
         }).finally(() => {
@@ -330,8 +323,7 @@ export default {
         name: this.contestId ? 'contest-submission' : 'submission',
         params: {
           username: this.username,
-          problemCode: this.problem.problemCode,
-          contestId: this.contestId
+          problemCode: this.problem.problemCode
         }
       });
     },
@@ -348,8 +340,7 @@ export default {
           pageNow: 1,
           pageSize: 5,
           username: this.username,
-          problemCode: this.problem.problemCode,
-          contestId: this.contestId
+          problemCode: this.problem.problemCode
         }).then(ret => {
           this.submissions = ret.rows;
         });
@@ -358,17 +349,14 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['username', 'isLogin']),
-    ...mapGetters('contest', ['needPassword']),
+    ...mapGetters('contest', ['needPassword', 'contestId']),
     ...mapState('contest', ['contest']),
     problemDescription: function () {
       return this.problem.problemDescriptionDTO;
-    },
-    contestId: function() {
-      return this.$route.params.contestId;
     }
   },
   watch: {
-    $route: function(to, from) {
+    $route: function() {
       this.getProblem();
     }
   },

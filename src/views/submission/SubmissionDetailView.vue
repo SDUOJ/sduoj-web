@@ -48,7 +48,6 @@
                   :extra="submission.problemCode | contestProblemId"
                   :to="{ name: 'contest-problem', params: {
                       problemCode: submission.problemCode,
-                      contestId
                     }}"/>
                 <Cell
                   title="Contest"
@@ -116,6 +115,12 @@ export default {
     ProblemCode
   },
   inject: ['reload'],
+  props: {
+    submissionId: {
+      type: String,
+      default: ''
+    }
+  },
   data: function () {
     return {
       submission: {
@@ -182,10 +187,32 @@ export default {
         usedTime: oneJudge[2].toString(),
         usedMemory: oneJudge[3].toString()
       })
+    },
+    getSubmissionDetail: function(submissionId) {
+      api.getSubmissionDetail({ submissionId }).then(ret => {
+        this.submission = { ...ret };
+        this.submission.checkpointResults = [];
+        if (ret.checkpointResults === null || ret.checkpointResults.length === 0) {
+          for (let i = 0; i < this.submission.checkpointNum; ++i) {
+            this.submission.checkpointResults.push({
+              id: i + 1,
+              judgeResult: 0,
+              usedTime: 0,
+              usedMemory: 0
+            });
+          }
+          this.wsRequest();
+        } else {
+          for (let i = 0; i < this.submission.checkpointNum; ++i) {
+            this.fillCheckpointResults([i, ...ret.checkpointResults[i]]);
+          }
+        }
+      });
     }
   },
   computed: {
     ...mapGetters('user', ['username']),
+    ...mapGetters('contest', ['contestId']),
     showCode: function () {
       return !!this.submission.code;
     },
@@ -203,37 +230,20 @@ export default {
         return 'Compiler Log'
       }
       return ''
-    },
-    contestId: function () {
-      return this.$route.params.contestId;
     }
   },
-  mounted: function () {
-    api.getSubmissionDetail({
-      submissionId: this.$route.params.submissionId,
-      contestId: this.contestId
-    }).then(ret => {
-      this.submission = { ...ret };
-      this.submission.checkpointResults = [];
-      if (ret.checkpointResults === null || ret.checkpointResults.length === 0) {
-        for (let i = 0; i < this.submission.checkpointNum; ++i) {
-          this.submission.checkpointResults.push({
-            id: i + 1,
-            judgeResult: 0,
-            usedTime: 0,
-            usedMemory: 0
-          });
-        }
-        this.wsRequest();
-      } else {
-        for (let i = 0; i < this.submission.checkpointNum; ++i) {
-          this.fillCheckpointResults([i, ...ret.checkpointResults[i]]);
-        }
-      }
-    });
+  created: function () {
+    if (this.$route.params.submissionId) {
+      this.getSubmissionDetail(this.$route.params.submissionId);
+    }
   },
   beforeDestroy: function () {
     closeWebsocket();
+  },
+  watch: {
+    submissionId: function() {
+      this.getSubmissionDetail(this.submissionId);
+    }
   }
 }
 </script>

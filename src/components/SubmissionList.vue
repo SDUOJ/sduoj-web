@@ -12,8 +12,10 @@
   <Card class="clearfix" dis-hover :padding="0">
     <Table
       class="data-table"
+      :size="size"
       :show-header="showHeader"
-      :columns="columns"
+      :no-data-text="noDataText"
+      :columns="filteredColumns"
       :data="submissions"
       :loading="loading"
       @on-sort-change="onSort"
@@ -35,13 +37,26 @@ import JudgeResult from '_c/JudgeResult';
 import utils from '_u';
 import api from '_u/api';
 import { mapGetters } from 'vuex';
+import store from '@/store';
 
 export default {
   name: 'SubmissionList',
   props: {
+    size: {
+      type: String,
+      default: 'default'
+    },
     showHeader: {
       type: Boolean,
       default: true
+    },
+    noDataText: {
+      type: String,
+      default: ''
+    },
+    bannedKey: {
+      type: Array,
+      default: () => []
     },
     columns: {
       type: Array,
@@ -53,7 +68,7 @@ export default {
           key: 'problemCode',
           minWidth: 15,
           render: function(h, params) {
-            if (this.contestId) {
+            if (store.state.contest.contest.contestId) {
               return h('strong', utils.contestProblemId(params.row.problemCode));
             } else {
               if (params.row.problemCode !== undefined) {
@@ -122,6 +137,7 @@ export default {
   },
   data: function() {
     return {
+      filteredColumns: [],
       submissions: [],
       total: 0,
       pageNow: 1,
@@ -184,6 +200,9 @@ export default {
     ascending: function() {
       this.querySubmissionList();
     }
+  },
+  created: function() {
+    this.filteredColumns = this.columns.filter(col => !this.bannedKey.includes(col.key));
   }
 }
 </script>

@@ -71,10 +71,7 @@
         :padding="0"
         dis-hover
         v-if="!!upcomingContest.contestId">
-        <div class="upcoming-title" @click="$router.push({
-          name: 'contest-detail',
-          params: { contestId: upcomingContest.contestId }
-        })">{{ upcomingContest.contestTitle }}</div>
+        <div class="upcoming-title" @click="toContestDetail(upcomingContest.contestId)">{{ upcomingContest.contestTitle }}</div>
         <div class="upcoming-countdown">
           <VueCountdown
             :time="countdown"
@@ -245,7 +242,7 @@ export default {
   }
 
   /deep/ .ivu-list-item-meta-avatar {
-    margin-right: 0px;
+    margin-right: 0;
     margin-top: -4px;
   }
 </style>
