@@ -19,7 +19,7 @@
       <div class="clearfix filter-sets">
         <div>
           <div class="filter-title">由用户</div>
-          <Input v-model="filterOption.username"
+          <Input v-model="filterForm.username"
             placeholder="Username"
             style="width: 200px;"
             @on-enter="onFiltering">
@@ -27,7 +27,7 @@
         </div>
         <div>
           <div class="filter-title">由题目</div>
-          <Input v-model="filterOption.problemCode"
+          <Input v-model="filterForm.problemCode"
             placeholder="Problem Code"
             style="width: 200px;"
             @on-enter="onFiltering">
@@ -35,7 +35,7 @@
         </div>
         <div>
           <div class="filter-title">由评测结果</div>
-          <Input v-model="filterOption.judgeResult"
+          <Input v-model="filterForm.judgeResult"
             placeholder="Status"
             style="width: 200px;"
             @on-enter="onFiltering">
@@ -43,7 +43,7 @@
         </div>
         <div>
           <div class="filter-title">由语言</div>
-          <Input v-model="filterOption.lang"
+          <Input v-model="filterForm.lang"
             placeholder="Language"
             style="width: 200px;"
             @on-enter="onFiltering">
@@ -51,152 +51,34 @@
         </div>
       </div>
     </Card>
-    <Card class="clearfix" dis-hover :padding="0">
-      <Table
-        class="data-table"
-        :columns="columns"
-        :data="submissions"
-        :loading="loading"
-        @on-sort-change="handleSortBy"
-        @on-cell-click="onTableClick"></Table>
-      <div class="pages">
-        <Page
-          size="small" show-elevator show-sizer
-          :total="total"
-          :current.sync="pageNow"
-          @on-change="onPageChange"
-          @on-page-size-change="onPageSizeChange"/>
-      </div>
-    </Card>
+    <SubmissionList :filter="filterOption" @on-cell-click="onTableClick"/>
   </div>
 </template>
 
 <script>
-import ProblemCode from '_c/ProblemCode';
-import JudgeResult from '_c/JudgeResult';
-import api from '_u/api';
-import utils from '_u';
+import SubmissionList from '_c/SubmissionList';
+import { mapGetters } from 'vuex';
 
 export default {
+  name: 'SubmissionView',
+  components: { SubmissionList },
   data: function() {
     return {
-      columns: [
-        { title: '#', key: 'submissionId', minWidth: 70 },
-        { title: 'Username', key: 'username' },
-        {
-          title: 'Problem Code',
-          key: 'problemCode',
-          minWidth: 15,
-          render: (h, params) => {
-            if (this.contestId) {
-              return h('strong', utils.contestProblemId(params.row.problemCode));
-            } else {
-              if (params.row.problemCode !== undefined) {
-                if (params.row.problemCode.length > 20) {
-                  const texts = params.row.problemCode.substring(0, 20) + '...';
-                  return h('Tooltip', {
-                    props: {
-                      placement: 'top',
-                      maxWidth: '180'
-                    }
-                  }, [
-                    h(ProblemCode, {
-                      class: 'hover',
-                      props: {
-                        problemCode: texts
-                      }
-                    }),
-                    h('span', {
-                      slot: 'content',
-                      style: {
-                        whiteSpace: 'normal',
-                        wordBreak: 'break-all'
-                      }
-                    }, params.row.problemCode)
-                  ]);
-                } else {
-                  return h(ProblemCode, {
-                    class: 'hover',
-                    props: {
-                      problemCode: params.row.problemCode
-                    }
-                  });
-                }
-              }
-            }
-          }
-        },
-        {
-          title: 'Judge Result',
-          key: 'judgeResult',
-          minWidth: 100,
-          render: (h, params) => h(JudgeResult, { props: { result: params.row.judgeResult } })
-        },
-        { title: 'Time', key: 'usedTime', sortable: true, maxWidth: 90 },
-        { title: 'Memory', key: 'usedMemory', sortable: true, maxWidth: 120 },
-        { title: 'Language', key: 'language' },
-        {
-          title: 'Submit Time',
-          key: 'gmtCreate',
-          minWidth: 55,
-          render: (h, params) => {
-            return h('Time', { props: { time: parseInt(params.row.gmtCreate), type: 'datetime' } })
-          }
-        }
-      ],
-      submissions: [],
-      filterOption: {
-        username: '',
-        problemCode: '',
-        judgeResult: '',
-        language: ''
-      },
-      total: 0,
-      pageNow: 1,
-      pageSize: 10,
-      sortBy: '',
-      ascending: false,
-      loading: false
+      filterOption: {},
+      filterForm: {}
     }
   },
   methods: {
-    onFiltering: function() {
-      this.loading = true;
-      api.getSubmissionList({
-        ...this.filterOption,
-        contestId: this.contestId,
-        sortBy: this.sortBy,
-        ascending: this.ascending,
-        pageNow: this.pageNow,
-        pageSize: this.pageSize
-      }).then(ret => {
-        this.submissions = ret.rows;
-        this.total = parseInt(this.pageSize) * parseInt(ret.totalPage);
-      }).finally(() => { this.loading = false });
-    },
     clearFilterOptions: function() {
       for (const key in this.filterOption) {
         this.filterOption[key] = '';
       }
     },
+    onFiltering: function() {
+      this.filterOption = { ...this.filterForm };
+    },
     onReset: function() {
       this.clearFilterOptions();
-    },
-    onPageChange: function(pageNow) {
-      this.pageNow = pageNow;
-    },
-    onPageSizeChange: function(pageSize) {
-      this.pageSize = pageSize;
-    },
-    handleSortBy: function({ column, key, order }) {
-      if (order === 'normal') {
-        this.sortBy = '';
-        this.ascending = false
-      } else {
-        this.sortBy = key;
-        this.ascending = order === 'asc';
-      }
-      this.onFiltering();
     },
     onTableClick: function(row, col) {
       const name = this.contestId ? 'contest-submission-detail' : 'submission-detail';
@@ -221,20 +103,10 @@ export default {
     }
   },
   computed: {
-    contestId: function() {
-      return this.$route.params.contestId;
-    }
-  },
-  watch: {
-    pageNow: function() {
-      this.onFiltering();
-    },
-    pageSize: function() {
-      this.onFiltering();
-    }
+    ...mapGetters('contest', ['contestId'])
   },
   mounted: function() {
-    this.filterOption = Object.assign(this.$route.params);
+    this.filterForm = { ...this.$route.params };
     this.onFiltering();
   }
 }
@@ -257,21 +129,9 @@ export default {
 }
 
 .btns {
-  // position: relative;
-  // top: -7px;
   .ivu-btn:hover {
     background: rgba(0, 0, 0, .05);
   }
-}
-
-.data-table {
-  user-select: none;
-}
-
-.pages {
-  float: right;
-  margin: 20px auto;
-  padding-right: 15px;
 }
 
 </style>
