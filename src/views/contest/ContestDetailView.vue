@@ -17,13 +17,13 @@
             {{ contest.contestTitle }}
           </span>
           <span class="contest__subtitle">{{ contest.source }}</span>
-          <Icon type="md-lock" color="#d9534f" size="19" v-if="contest.features.openness === 'private'"/>
-          <Icon type="md-lock" color="orange" size="19" v-else-if="contest.features.openness === 'protected'"/>
+          <Icon type="md-lock" color="#d9534f" size="19" v-if="openness === 'private'"/>
+          <Icon type="md-lock" color="orange" size="19" v-else-if="openness === 'protected'"/>
           <ul class="ivu-list-item-action contest__float">
             <li>
-              <div :class="'contest-type--' + contest.features.mode">
+              <div :class="'contest-type--' + mode">
                 <Icon type="md-bulb" color="#fff"/>&nbsp;
-                <span>{{ contest.features.mode.toUpperCase() }}</span>
+                <span>{{ mode.toUpperCase() }}</span>
               </div>
             </li>
             <li>
@@ -151,7 +151,7 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['username']),
-    ...mapGetters('contest', ['startTime', 'endTime', 'contestLoaded']),
+    ...mapGetters('contest', ['startTime', 'endTime', 'contestLoaded', 'openness', 'mode']),
     ...mapState('contest', ['contest'])
   },
   mounted: function() {
