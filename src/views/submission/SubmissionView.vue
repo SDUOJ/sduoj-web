@@ -51,7 +51,7 @@
         </div>
       </div>
     </Card>
-    <SubmissionList :filter="filterOption" @on-cell-click="onTableClick"/>
+    <SubmissionList :filter="filterOption" @on-cell-click="onSubmissionListCellClick"/>
   </div>
 </template>
 
@@ -80,14 +80,13 @@ export default {
     onReset: function() {
       this.clearFilterOptions();
     },
-    onTableClick: function(row, col) {
+    onSubmissionListCellClick: function(row, col) {
       const name = this.contestId ? 'contest-submission-detail' : 'submission-detail';
       if (col.key === 'judgeResult') {
         this.$router.push({
           name,
           params: {
-            submissionId: row.submissionId,
-            contestId: this.contestId
+            submissionId: row.submissionId
           }
         });
       }
@@ -95,8 +94,7 @@ export default {
         this.$router.push({
           name,
           params: {
-            problemCode: row.problemCode,
-            contestId: this.contestId
+            problemCode: row.problemCode
           }
         })
       }

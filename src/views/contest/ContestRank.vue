@@ -24,10 +24,7 @@
        <th :title="'problem ' + problem.problemTitle" scope="col" v-for="problem in contest.problems" :key="problem.problemCode">
         <router-link :to="{
           name: 'contest-problem',
-          params: {
-            problemCode: problem.problemCode,
-            contestId
-          }
+          params: { problemCode: problem.problemCode }
         }">
           {{ problem.problemCode | contestProblemId }}
           <div class="circle" v-if="problem.ballonColor" :style="'background: ' + problem.ballonColor + ';'"></div>
@@ -39,7 +36,6 @@
      </tr>
      </thead>
      <tbody>
-
      <tr
        v-for="(score, index) in scores"
        :key="-score.user.userId"
@@ -65,7 +61,7 @@
        <td class="scorett">{{ score.score }}</td>
 
        <td class="score_cell" v-for="problem in score.problems" :key="problem.problemCode">
-         <a @dblclick="showAllSubmissions(score.user.username, problem.problemCode)">
+         <a @click="showAllSubmissions(score.user.username, problem.problemCode)">
            <div :class="problem.css" v-if="(problem.numSubmissions + problem.numSubmissionsPending) > 0">
              {{ problem.time | raw }}
              <span>
@@ -76,77 +72,77 @@
        </td>
      </tr>
 
-      <tr
-        v-for="(score, index) in scores"
-        :key="score.user.userId"
-        :class="{
-          sortorderswitch: index === 0,
-          scorethisisme: score.user.userId === profile.userId,
-          scoreliked: score.liked
-        }"
-        :id="'user:' + score.user.userId">
+     <tr
+      v-for="(score, index) in scores"
+      :key="score.user.userId"
+      :class="{
+        sortorderswitch: index === 0,
+        scorethisisme: score.user.userId === profile.userId,
+        scoreliked: score.liked
+      }"
+      :id="'user:' + score.user.userId">
 
-        <td class="scorepl">
-          {{ displayRank ? score.rank : '?' }}
-        </td>
-        <td class="scoreaf" style="background: #ffffff">
-          <Icon v-if="score.liked" class="heart fas" type="md-heart" @click="setUserLiked(index, false)"/>
-          <Icon v-else class="heart" type="md-heart-outline" @click="setUserLiked(index, true)" />
-        </td>
-        <td class="scoretn" style="background: #ffffff" :title="score.user.username">
-            <span class="forceWidth">{{ score.user.username }}</span>
-            <span v-if="score.user.affiliation || false" class="forceWidth univ">{{ score.user.affiliation }}</span>
-        </td>
-        <td class="scorenc">{{ score.solved }}</td>
-        <td class="scorett">{{ score.score }}</td>
+      <td class="scorepl">
+        {{ displayRank ? score.rank : '?' }}
+      </td>
+      <td class="scoreaf" style="background: #ffffff">
+        <Icon v-if="score.liked" class="heart fas" type="md-heart" @click="setUserLiked(index, false)"/>
+        <Icon v-else class="heart" type="md-heart-outline" @click="setUserLiked(index, true)" />
+      </td>
+      <td class="scoretn" style="background: #ffffff" :title="score.user.username">
+          <span class="forceWidth">{{ score.user.username }}</span>
+          <span v-if="score.user.affiliation || false" class="forceWidth univ">{{ score.user.affiliation }}</span>
+      </td>
+      <td class="scorenc">{{ score.solved }}</td>
+      <td class="scorett">{{ score.score }}</td>
 
-        <td class="score_cell" v-for="problem in score.problems" :key="problem.problemCode">
-          <a @dblclick="showAllSubmissions(score.user.username, problem.problemCode)">
-            <div :class="problem.css" v-if="(problem.numSubmissions + problem.numSubmissionsPending) > 0">
-              {{ problem.time | raw }}
-              <span>
-                {{ (problem.numSubmissions + problem.numSubmissionsPending) === 1 ? '1 try' : (problem.numSubmissions + problem.numSubmissionsPending) + ' tries' }}
-              </span>
-            </div>
-          </a>
-        </td>
-      </tr>
+      <td class="score_cell" v-for="problem in score.problems" :key="problem.problemCode">
+        <a @click="showAllSubmissions(score.user.username, problem.problemCode)">
+          <div :class="problem.css" v-if="(problem.numSubmissions + problem.numSubmissionsPending) > 0">
+            {{ problem.time | raw }}
+            <span>
+              {{ (problem.numSubmissions + problem.numSubmissionsPending) === 1 ? '1 try' : (problem.numSubmissions + problem.numSubmissionsPending) + ' tries' }}
+            </span>
+          </div>
+        </a>
+      </td>
+    </tr>
      </tbody>
    </table>
-   <Modal v-model="modelSubmissions" width="1000px">
-     <SubmissionView />
+   <Modal v-model="modelSubmissions" width="900px" footer-hide :closable="false">
+     <SubmissionList
+       size="small"
+       :filter="showOnesAllSubmission"
+       :bannedKey="['problemCode', 'username']"
+       @on-cell-click="onSubmissionListCellClick" />
    </Modal>
-   <Modal v-model="modelSubmissionDetail">
-     <SubmissionDetailView />
+   <Modal v-model="modelSubmissionDetail" width="1000px" footer-hide :closable="false">
+     <SubmissionDetailView :submission-id="submissionId" />
    </Modal>
  </div>
 </template>
 
 <script>
-import SubmissionView from '@/views/submission/SubmissionView';
+import SubmissionList from '_c/SubmissionList';
 import SubmissionDetailView from '@/views/submission/SubmissionDetailView';
-import '@/styles/domjudge.css';
-import { mapState, mapGetters } from 'vuex';
 import rankHandler from '@/views/contest/ranks';
 import utils from '_u';
 
+import { mapState, mapGetters } from 'vuex';
+
+import '@/styles/domjudge.css';
+
 export default {
   name: 'ContestRank',
-  components: { SubmissionView, SubmissionDetailView },
+  components: { SubmissionList, SubmissionDetailView },
   data: function() {
     return {
-      modelSubmissions: false,
-      modelSubmissionDetail: false,
-      displayRank: true,
-      showSubmissions: true,
-      showFlags: false,
       scores: [
         {
           rank: 1,
           user: {
-            username: 'tttt',
-            userId: '1',
-            affiliation: 'Nanjing University'
+            username: 'jeshrz',
+            userId: '2'
           },
           solved: 10,
           score: 100,
@@ -182,7 +178,17 @@ export default {
             { }
           ]
         }
-      ]
+      ],
+      modelSubmissions: false,
+      modelSubmissionDetail: false,
+      displayRank: true,
+      showSubmissions: true,
+      showFlags: false,
+      showOnesAllSubmission: {
+        username: '',
+        problemCode: ''
+      },
+      submissionId: ''
     }
   },
   filters: {
@@ -205,22 +211,18 @@ export default {
       this.$set(this.scores[index], 'liked', state);
     },
     showAllSubmissions: function(username, problemCode) {
-      this.$set(this.$route.params, 'username', username);
-      this.$set(this.$route.params, 'problemCode', problemCode);
+      this.showOnesAllSubmission = { username, problemCode };
       this.modelSubmissions = true;
+    },
+    onSubmissionListCellClick: function(row, col) {
+      if (col.key === 'judgeResult') {
+        this.submissionId = row.submissionId;
+        this.modelSubmissionDetail = true;
+      }
     }
   }
 }
 </script>
 
 <style scoped>
-  .cl_FFFFFF {
-    background-color: #FFFFFF;
-  }
-
-  .cl_FFFFFF .forceWidth.toolong:after {
-    background: linear-gradient(to right,
-    rgba(255,255,255,0) 0%,
-    rgba(255,255,255,1) 96%);
-  }
 </style>

@@ -52,27 +52,18 @@
         <template v-if="start && !$store.getters['contest/needPassword']">
           <MenuItem name="problem" :to="{
             name: 'contest-problem',
-            params: {
-              problemCode: '1',
-              contestId: contest.contestId
-            }
+            params: { problemCode: '1' }
           }">
             <span class="span__menu">Problem</span>
           </MenuItem>
           <MenuItem name="submission" :to="{
             name: 'contest-submission',
-            params: {
-              username,
-              contestId: contest.contestId
-            }
+            params: { username }
           }">
             <span class="span__menu">Status</span>
           </MenuItem>
           <MenuItem name="rank" :to="{
             name: 'contest-rank',
-            params: {
-              contestId: contest.contestId
-            }
           }">
             <span class="span__menu">Rank</span>
           </MenuItem>
@@ -155,7 +146,7 @@ export default {
     ...mapState('contest', ['contest'])
   },
   mounted: function() {
-    this.$store.dispatch('contest/getContest', this.$route.params.contestId).then(ret => {
+    this.$store.dispatch('contest/getContest', this.$route.params.contestId).then(_ => {
       const currentTime = new Date();
       if (this.startTime <= currentTime) {
         this.start = true;

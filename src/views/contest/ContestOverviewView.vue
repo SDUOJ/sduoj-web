@@ -91,10 +91,7 @@ export default {
       if (col.key === 'problemCode' || col.key === 'problemTitle') {
         this.$router.push({
           name: 'contest-problem',
-          params: {
-            contestId: this.contest.contestId,
-            problemCode: row.problemCode
-          }
+          params: { problemCode: row.problemCode }
         });
       }
     }

@@ -64,6 +64,8 @@ function get(url, params) {
   })
 }
 
+const getContestId = () => store.state.contest.contest.contestId;
+
 export default {
   // 配置相关
   getCopyright: function() {
@@ -122,32 +124,39 @@ export default {
   },
   // 提交相关
   getSubmissionDetail: function(params) {
-    if (params.contestId) {
-      return this.getContestSubmissionDetail(params);
+    const contestId = getContestId();
+    if (contestId) {
+      return this.getContestSubmissionDetail({ ...params, contestId });
     }
     return get('/submit/query', params);
   },
   getSubmissionList: function(params) {
-    if (params.contestId) {
-      return this.getContestSubmissionList(params);
+    const contestId = getContestId();
+    if (contestId) {
+      return this.getContestSubmissionList({ ...params, contestId });
     } else {
       return get('/submit/list', params);
     }
   },
   submit: function(data) {
-    if (data.contestId) {
-      return this.createContestSubmission(data);
+    const contestId = getContestId();
+    if (contestId) {
+      return this.createContestSubmission({ ...data, contestId });
     } else {
       return post('/submit/create', data);
     }
   },
   // 题目相关
   problemQuery: function(params) {
-    if (params.contestId) {
+    const contestId = getContestId();
+    if (contestId) {
       const index = parseInt(params.problemCode) - 1;
       return new Promise((resolve, reject) => {
         if (!store.state.contest.problems[index]._valid) {
-          this.getContestProblem(params).then(ret => {
+          this.getContestProblem({
+            ...params,
+            contestId
+          }).then(ret => {
             store.commit('contest/setProblemDetail', { problem: ret });
             resolve(ret);
           }, _ => reject(_));
