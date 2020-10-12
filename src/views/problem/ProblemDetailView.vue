@@ -120,7 +120,8 @@
               <Cell
                 v-for="pd in problem.problemDescriptionListDTOList"
                 :key="pd.id"
-                :title="pd.username"
+                :title="pd.title"
+                :label="pd.username"
                 :extra="pd.voteNum.toString()"
                 :selected="pd.id === problemDescription.id"
                 :to="{
