@@ -101,7 +101,7 @@ function calculateRank(scores) {
   let last = null;
   scores.forEach(score => {
     if (score.official) {
-      if (!last || score.score > last.score) {
+      if (!last || last.score > score.score) {
         score.rank = rank;
         last = score;
       } else {

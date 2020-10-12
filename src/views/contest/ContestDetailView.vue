@@ -74,20 +74,21 @@
               <span>Finished</span>
             </template>
             <template v-else>
-              <span>Running&nbsp;</span>
+              <span>Running,&nbsp;</span>
               <VueCountdown
                 :time="countdown"
                 @end="reload"
                 style="display: inline">
                 <template slot-scope="props">
-                  <span v-if="props.days > 0">{{ props.days + props.days > 1 ? ' days' : ' day' }}</span>
+                  <span v-if="props.days > 0">{{ props.days + (props.days > 1 ? ' days' : ' day') }}</span>
                   <span v-else>{{ props.hours }}:{{ props.minutes }}:{{ props.seconds }}</span>
                 </template>
               </VueCountdown>
+              <span>&nbsp;left</span>
             </template>
           </template>
           <template v-else>
-            <span>Before the contest&nbsp;</span>
+            <span>Before the contest:&nbsp;</span>
             <VueCountdown
               :time="countdown"
               style="display: inline">

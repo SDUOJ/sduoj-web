@@ -246,7 +246,7 @@ td.scorenc { border-color: silver; border-right: 0; }
     font-variant: small-caps;
 }
 .scorethisisme  {
-    background: #ffff99;
+    background: #ffff99 !important;
 }
 .scoreliked {
     background: lightyellow;

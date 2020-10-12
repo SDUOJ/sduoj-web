@@ -121,17 +121,18 @@ function calculateRank(scores) {
       return true;
     }
   });
-  let rank = 1;
+  let rank = 0;
   let last = null;
   scores.forEach(score => {
     if (score.official) {
-      if (!last || score.solved > last.solved || score.score > last.score) {
+      rank++;
+      if (!last || last.solved > score.solved || score.score > last.score) {
         score.rank = rank;
         last = score;
       } else {
         score.rank = last.rank;
       }
-      rank++;
+      console.log(last, score, rank);
     } else {
       score.rank = -1;
     }

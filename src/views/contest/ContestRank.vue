@@ -37,13 +37,14 @@
      </thead>
      <tbody>
      <tr
-       v-for="(score, index) in scores"
+       v-for="(score, index) in scoresLiked"
        :key="-score.user.userId"
        :class="{
           sortorderswitch: index === 0,
-          scorethisisme: score.user.userId === profile.userId,
-          scoreliked: score.liked
+          scoreliked: score.liked,
+          scorethisisme: score.user.userId === profile.userId
         }"
+       :style="index === scoresLiked.length - 1 ? 'border-bottom: thick solid black;' : ''"
        :id="'user:' + score.user.userId">
 
        <td class="scorepl">
@@ -209,13 +210,15 @@ export default {
   },
   computed: {
     ...mapState('contest', ['contest', 'problems']),
-    ...mapGetters('contest', ['mode', 'contestId', 'startTime']),
+    ...mapGetters('contest', ['mode', 'contestId', 'startTime', 'endTime']),
     ...mapGetters('user', ['profile']),
     rankHandler: function() {
       return rankHandler[this.mode];
     },
     scoresLiked: function() {
-      return this.scores.filter(score => score.liked || score.user.userId === this.profile.userId);
+      return this.scores.filter(score => {
+        return score.liked || score.user.userId === this.profile.userId
+      });
     }
   },
   methods: {
@@ -223,8 +226,13 @@ export default {
       this.$set(this.scores[index], 'liked', state);
     },
     showAllSubmissions: function(username, problemCode) {
-      this.showOnesAllSubmission = { username, problemCode };
-      this.modelSubmissions = true;
+      if (this.endTime < new Date() || username === this.profile.username) {
+        this.showOnesAllSubmission = {
+          username,
+          problemCode
+        };
+        this.modelSubmissions = true;
+      }
     },
     onSubmissionListCellClick: function(row, col) {
       if (col.key === 'judgeResult') {
@@ -273,7 +281,7 @@ export default {
               result.css = 'score_first';
             }
           }
-        })
+        });
       })
     }
   },
