@@ -10,13 +10,19 @@
 
 <template>
   <div class="container">
-    <template v-if="openness === 'private' && $store.getters['contest/needPassword']">
-          <Input type="password" v-model="participateForm.password" placeholder="Password">
+    <div v-if="openness === 'private' && $store.getters['contest/needPassword']">
+      <Form :model="participateForm" inline>
+        <FormItem>
+          <Input style="width: 200px;" type="password" v-model="participateForm.password" placeholder="Password">
             <Icon type="ios-lock-outline" slot="prepend"></Icon>
           </Input>
+        </FormItem>
+        <FormItem>
           <Button @click="handleParticipate">Participate In</Button>
-    </template>
-    <template v-else-if="start">
+        </FormItem>
+      </Form>
+    </div>
+    <div v-else-if="start">
       <div class="overview">
         <Card dis-hover :padding="0">
           <Table
@@ -25,7 +31,7 @@
             @on-cell-click="handleCellClick" />
         </Card>
       </div>
-    </template>
+    </div>
   </div>
 </template>
 
