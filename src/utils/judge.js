@@ -8,7 +8,7 @@
  *      https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
-const judgeResultMap = {
+const judgeResultStrMap = {
   0: 'Pending',
   1: 'Accepted',
   2: 'Time Limit Exceeded',
@@ -20,7 +20,7 @@ const judgeResultMap = {
   8: 'Compile Error'
 };
 
-const judgeResultMapAbbr = {
+const judgeResultStrAbbrMap = {
   0: 'PD',
   1: 'AC',
   2: 'TLE',
@@ -30,7 +30,19 @@ const judgeResultMapAbbr = {
   6: 'WA',
   7: 'PEr',
   8: 'CE'
-}
+};
+
+const judgeResultMap = {
+  PD: 0,
+  AC: 1,
+  TLE: 2,
+  MLE: 3,
+  RE: 4,
+  SE: 5,
+  WA: 6,
+  PE: 7,
+  CE: 8
+};
 
 const status2Class = function(status) {
   if (status === 0) {
@@ -42,7 +54,7 @@ const status2Class = function(status) {
   } else {
     return 'verdict-failed';
   }
-}
+};
 
 const result2Status = function(result) {
   result = result.toLowerCase();
@@ -66,11 +78,12 @@ const result2Status = function(result) {
     return 8;
   }
   return -1;
-}
+};
 
 export default {
+  judgeResultStrMap,
+  judgeResultStrAbbrMap,
   judgeResultMap,
-  judgeResultMapAbbr,
   status2Class,
   result2Status
 }

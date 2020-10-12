@@ -58,15 +58,38 @@
          <span v-if="score.user.affiliation || false" class="forceWidth univ">{{ score.user.affiliation }}</span>
        </td>
        <td class="scorenc">{{ score.solved }}</td>
-       <td class="scorett">{{ score.score }}</td>
+       <td class="scorett" v-if="mode === 'acm'">{{ score.score | time2minutes }}</td>
+       <td class="scorett" v-else>{{ score.score }}</td>
 
-       <td class="score_cell" v-for="problem in score.problems" :key="problem.problemCode">
-         <a @click="showAllSubmissions(score.user.username, problem.problemCode)">
-           <div :class="problem.css" v-if="(problem.numSubmissions + problem.numSubmissionsPending) > 0">
-             {{ problem.time | raw }}
+       <td class="score_cell" v-for="problem in score.problemResults" :key="problem.problemCode">
+         <a v-if="mode === 'acm'">
+           <div
+             :class="problem.css"
+             v-if="(problem.numSubmissions + problem.numSubmissionsPending) > 0"
+             @click="showAllSubmissions(score.user.username, problem.problemCode)">
+             {{ problem.time | time2minutes }}
              <span>
-                {{ (problem.numSubmissions + problem.numSubmissionsPending) === 1 ? '1 try' : (problem.numSubmissions + problem.numSubmissionsPending) + ' tries' }}
-              </span>
+              {{ (problem.numSubmissions + problem.numSubmissionsPending) === 1 ? '1 try' : (problem.numSubmissions + problem.numSubmissionsPending) + ' tries' }}
+            </span>
+           </div>
+         </a>
+         <a v-else-if="mode === 'oi'">
+           <div
+             :class="problem.css"
+             v-if="problem.numSubmissions > 0"
+             @click="showAllSubmissions(score.user.username, problem.problemCode)">
+             {{ problem.score }}
+           </div>
+         </a>
+         <a v-else-if="mode === 'ioi'">
+           <div
+             :class="problem.css"
+             v-if="problem.numSubmissions > 0"
+             @click="showAllSubmissions(score.user.username, problem.problemCode)">
+             {{ problem.score }}
+             <span>
+              {{ problem.time | time2minutes }}
+            </span>
            </div>
          </a>
        </td>
@@ -94,14 +117,37 @@
           <span v-if="score.user.affiliation || false" class="forceWidth univ">{{ score.user.affiliation }}</span>
       </td>
       <td class="scorenc">{{ score.solved }}</td>
-      <td class="scorett">{{ score.score }}</td>
+      <td class="scorett" v-if="mode === 'acm'">{{ score.score | time2minutes }}</td>
+      <td class="scorett" v-else>{{ score.score }}</td>
 
-      <td class="score_cell" v-for="problem in score.problems" :key="problem.problemCode">
-        <a @click="showAllSubmissions(score.user.username, problem.problemCode)">
-          <div :class="problem.css" v-if="(problem.numSubmissions + problem.numSubmissionsPending) > 0">
-            {{ problem.time | raw }}
+      <td class="score_cell" v-for="problem in score.problemResults" :key="problem.problemCode">
+        <a v-if="mode === 'acm'">
+          <div
+            :class="problem.css"
+            v-if="(problem.numSubmissions + problem.numSubmissionsPending) > 0"
+            @click="showAllSubmissions(score.user.username, problem.problemCode)">
+            {{ problem.time | time2minutes }}
             <span>
               {{ (problem.numSubmissions + problem.numSubmissionsPending) === 1 ? '1 try' : (problem.numSubmissions + problem.numSubmissionsPending) + ' tries' }}
+            </span>
+          </div>
+        </a>
+        <a v-else-if="mode === 'oi'">
+          <div
+            :class="problem.css"
+            v-if="problem.numSubmissions > 0"
+            @click="showAllSubmissions(score.user.username, problem.problemCode)">
+            {{ problem.score }}
+          </div>
+        </a>
+        <a v-else-if="mode === 'ioi'">
+          <div
+            :class="problem.css"
+            v-if="problem.numSubmissions > 0"
+            @click="showAllSubmissions(score.user.username, problem.problemCode)">
+            {{ problem.score }}
+            <span>
+              {{ problem.time | time2minutes }}
             </span>
           </div>
         </a>
@@ -127,6 +173,7 @@ import SubmissionList from '_c/SubmissionList';
 import SubmissionDetailView from '@/views/submission/SubmissionDetailView';
 import rankHandler from '@/views/contest/ranks';
 import utils from '_u';
+import api from '_u/api';
 
 import { mapState, mapGetters } from 'vuex';
 
@@ -137,53 +184,13 @@ export default {
   components: { SubmissionList, SubmissionDetailView },
   data: function() {
     return {
-      scores: [
-        {
-          rank: 1,
-          user: {
-            username: 'jeshrz',
-            userId: '2'
-          },
-          solved: 10,
-          score: 100,
-          liked: true,
-          problems: [
-            {
-              problemCode: 1,
-              css: 'score_first',
-              time: 60,
-              numSubmissions: 5,
-              numSubmissionsPending: 0
-            },
-            { problemCode: 2, css: 'score_correct', time: 100, numSubmissions: 1 },
-            { problemCode: 3, css: 'score_pending', time: 200, numSubmissions: 0, numSubmissionsPending: 1 },
-            { },
-            { },
-            { },
-            { },
-            { },
-            { },
-            { },
-            { },
-            { },
-            { },
-            { },
-            { },
-            { },
-            { },
-            { },
-            { },
-            { },
-            { },
-            { }
-          ]
-        }
-      ],
+      scores: [],
       modelSubmissions: false,
       modelSubmissionDetail: false,
       displayRank: true,
       showSubmissions: true,
       showFlags: false,
+      intervalInstance: null,
       showOnesAllSubmission: {
         username: '',
         problemCode: ''
@@ -193,13 +200,18 @@ export default {
   },
   filters: {
     contestProblemId: problemCode => utils.contestProblemId(problemCode),
-    raw: time => parseInt(time / 60)
+    time2minutes: time => {
+      if (time === 0) {
+        return '\b';
+      }
+      return parseInt(time / 60 / 1000).toString();
+    }
   },
   computed: {
     ...mapState('contest', ['contest', 'problems']),
-    ...mapGetters('contest', ['mode', 'contestId']),
+    ...mapGetters('contest', ['mode', 'contestId', 'startTime']),
     ...mapGetters('user', ['profile']),
-    '@': function() {
+    rankHandler: function() {
       return rankHandler[this.mode];
     },
     scoresLiked: function() {
@@ -219,6 +231,62 @@ export default {
         this.submissionId = row.submissionId;
         this.modelSubmissionDetail = true;
       }
+    },
+    calculateScore: function(score) {
+      const ret = { ...score };
+      delete ret.userId;
+      delete ret.username;
+      delete ret.submissions;
+
+      ret.user = {
+        userId: score.userId,
+        username: score.username
+      };
+      ret.liked = false;
+
+      if (score.submissions) {
+        ret.problemResults = this.rankHandler.calculateProblemResult(score.submissions, score.problemNum);
+      }
+
+      return Object.assign(ret, this.rankHandler.formatProblemResults(ret.problemResults, this.startTime));
+    },
+    getContestRank: function() {
+      api.getContestRank(this.contestId).then(ret => {
+        const scores = [];
+        ret.forEach(score => (scores.push(this.calculateScore(score))));
+        this.scores = this.rankHandler.calculateRank(scores);
+
+        // first blood
+        const firstSolvedMap = {};
+        this.scores.forEach(score => {
+          for (const result in score.problemResults) {
+            if (utils.judgeResultMap.AC === result.judgeResult) {
+              if (!firstSolvedMap[result.problemCode] || firstSolvedMap[result.problemCode] > result.gmtCreate) {
+                firstSolvedMap[result.problemCode] = result.gmtCreate;
+              }
+            }
+          }
+        });
+        this.scores.forEach(score => {
+          for (const result in score.problemResults) {
+            if (utils.judgeResultMap.AC === result.judgeResult && firstSolvedMap[result.problemCode] === result.gmtCreate) {
+              result.css = 'score_first';
+            }
+          }
+        })
+      })
+    }
+  },
+  mounted: function() {
+    this.getContestRank();
+
+    this.intervalInstance = setInterval(() => {
+      this.getContestRank();
+    }, 30000);
+  },
+  beforeDestroy: function() {
+    if (this.intervalInstance) {
+      clearInterval(this.intervalInstance);
     }
   }
 }
