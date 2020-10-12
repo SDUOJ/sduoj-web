@@ -38,7 +38,7 @@ export default {
       if (judgeResult === -1) {
         return '';
       }
-      return this.abbr ? utils.judgeResultMapAbbr[judgeResult] : utils.judgeResultMap[judgeResult];
+      return this.abbr ? utils.judgeResultStrAbbrMap[judgeResult] : utils.judgeResultStrMap[judgeResult];
     },
     judgeResult2Class: judgeResult => {
       if (judgeResult === -1) {

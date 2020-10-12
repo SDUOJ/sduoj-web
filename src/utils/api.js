@@ -198,5 +198,8 @@ export default {
   },
   getContestSubmissionDetail: function(params) {
     return get('/contest/querySubmission', params);
+  },
+  getContestRank: function(contestId) {
+    return get('/contest/rank', { contestId });
   }
 }
