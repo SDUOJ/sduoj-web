@@ -58,11 +58,16 @@ export const JUDGE_RESULT = {
     css: 'verdict-system-error'
   },
   6: {
+    name: 'Wrong Answer',
+    abbr: 'WA',
+    css: 'verdict-failed'
+  },
+  7: {
     name: 'Presentation Error',
     abbr: 'PE',
     css: 'verdict-failed'
   },
-  7: {
+  8: {
     name: 'Compile Error',
     abbr: 'CE',
     css: 'verdict-compile-error'

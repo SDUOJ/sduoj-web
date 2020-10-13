@@ -10,11 +10,13 @@
          <strong>End: <span>{{ contestEndTime.format('yyyy-MM-DD hh:mm:ss') }}</span></strong>
        </div>
      </div>
-
-     <CProgress ref="prog" :width="1256" :percent="currentPercent" @percentChange="handleProgressChange" :disable="contestStatus === CONTEST_STATUS.RUNNING"></CProgress>
+     <div>
+       <Slider v-model="currentPercent" :disabled="contestStatus === CONTEST_STATUS.RUNNING" show-tip="never" :step="0.001"/>
+     </div>
      <div style="margin: 10px 10px 0 10px; text-align: center">
          <template v-if="contestStatus === CONTEST_STATUS.FINISHED">
-             <strong>Finished</strong>
+           <strong v-if="sliderTime"> {{ (sliderTime - contestStartTime) | time2hour }}</strong>
+           <strong v-else>Finished</strong>
          </template>
          <template v-else>
            <strong>{{ elapsed }}</strong>
@@ -192,7 +194,6 @@
 </template>
 
 <script>
-import CProgress from '_c/CProgress';
 import SubmissionList from '_c/SubmissionList';
 import SubmissionDetailView from '@/views/submission/SubmissionDetailView';
 
@@ -206,7 +207,7 @@ import '@/styles/domjudge.css';
 
 export default {
   name: 'ContestRank',
-  components: { SubmissionList, SubmissionDetailView, CProgress },
+  components: { SubmissionList, SubmissionDetailView },
   data: function() {
     return {
       modelSubmissions: false,
@@ -228,10 +229,11 @@ export default {
         return '\b';
       }
       return parseInt(time / 60 / 1000).toString();
-    }
+    },
+    time2hour: time => s2hs(time)
   },
   computed: {
-    ...mapState('contest', ['contest', 'problems', 'likedScoresMap']),
+    ...mapState('contest', ['contest', 'problems', 'likedScoresMap', 'sliderTime']),
     ...mapGetters('contest', [
       'contestId',
       'contestMode',
@@ -246,10 +248,21 @@ export default {
     elapsed: function() {
       return s2hs(this.$store.state.now - this.contestStartTime);
     },
-    currentPercent: function() {
-      const now = this.$store.state.now;
-      const duration = moment(now - this.contestStartTime);
-      return Math.min(100, parseInt(duration / this.contestDuration * 100));
+    currentPercent: {
+      get: function() {
+        const now = this.$store.state.now;
+        const duration = moment(now - this.contestStartTime);
+        return Math.min(100, parseInt(duration / this.contestDuration * 100));
+      },
+      set: function (percent) {
+        if (percent === 100) {
+          this.$store.commit('contest/setSliderTime', { sliderTime: null });
+        } else {
+          this.$store.commit('contest/setSliderTime', {
+            sliderTime: this.contestStartTime + parseInt(this.contestDuration * percent / 100)
+          });
+        }
+      }
     },
     CONTEST_MODE: () => CONTEST_MODE,
     CONTEST_STATUS: () => CONTEST_STATUS
@@ -287,7 +300,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
   .tools {
     margin: 10px auto;
     padding: 5px 10px;
@@ -295,5 +308,9 @@ export default {
   }
   .practice__switch {
     float: right;
+  }
+  /deep/ .ivu-slider-button {
+    position: relative;
+    top: -4px;
   }
 </style>

@@ -10,12 +10,13 @@
 
 <template>
   <div class="judge-result">
-    <Icon type="md-information" color="grey" v-if="result === 0"/>
-    <Icon type="md-checkmark" color="#5cb85c" v-else-if="result === 1"/>
-    <Icon type="md-close" color="orange" v-else-if="result === 8"/>
+    <Icon type="md-information" color="grey" v-if="result === JUDGE_RESULT.PD"/>
+    <Icon type="md-checkmark" color="#5cb85c" v-else-if="result === JUDGE_RESULT.AC"/>
+    <Icon type="md-close" color="orange" v-else-if="result === JUDGE_RESULT.CE"/>
+    <Icon type="md-close" color="rebeccapurple" v-else-if="result === JUDGE_RESULT.SE"/>
     <Icon type="md-close" color="#d9534f" v-else-if="result !== -1"/>
     &nbsp;
-    <span :class="judgeResult2Class(result)">{{ judgeResult2Text(result) }}</span>
+    <span :class="judgeResult2Class(result) + ' hover'">{{ judgeResult2Text(result) }}</span>
   </div>
 </template>
 
@@ -33,8 +34,11 @@ export default {
       default: false
     }
   },
+  computed: {
+    JUDGE_RESULT: () => JUDGE_RESULT
+  },
   methods: {
-    judgeResult2Text: function(judgeResult) {
+    judgeResult2Text: function (judgeResult) {
       if (judgeResult === -1) {
         return '';
       }
@@ -52,41 +56,52 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.judge-result {
-  display: inline;
-}
-.verdict-accepted {
-  color: #5cb85c;
-  font-weight: bold;
-}
-.verdict-accepted:hover {
-  cursor: pointer;
-}
+  .judge-result {
+    display: inline;
+  }
 
-// judge failed
-.verdict-failed {
-  color: #d9534f;
-  font-weight: bold;
-}
-.verdict-failed:hover {
-  cursor: pointer;
-}
+  .verdict-accepted {
+    color: #5cb85c;
+    font-weight: bold;
+  }
 
-// judge pending
-.verdict-pending {
-  color: grey;
-  font-weight: bold;
-}
-.verdict-pending:hover {
-  cursor: pointer;
-}
+  /*.verdict-accepted:hover {*/
+  /*  cursor: pointer;*/
+  /*}*/
 
-// judge
-.verdict-compile-error {
-  color: #ffa500;
-  font-weight: bold;
-}
-.verdict-compile-error:hover {
-  cursor: pointer;
-}
+  // judge failed
+  .verdict-failed {
+    color: #d9534f;
+    font-weight: bold;
+  }
+
+  /*.verdict-failed:hover {*/
+  /*  cursor: pointer;*/
+  /*}*/
+
+  // judge pending
+  .verdict-pending {
+    color: grey;
+    font-weight: bold;
+  }
+
+  /*.verdict-pending:hover {*/
+  /*  cursor: pointer;*/
+  /*}*/
+
+  // compile error
+  .verdict-compile-error {
+    color: #ffa500;
+    font-weight: bold;
+  }
+
+  /*.verdict-compile-error:hover {*/
+  /*  cursor: pointer;*/
+  /*}*/
+
+  .verdict-system-error {
+    color: rebeccapurple;
+    font-weight: bold;
+  }
+
 </style>

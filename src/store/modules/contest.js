@@ -181,7 +181,6 @@ const mutations = {
     state.scoreTimer = setInterval(() => {
       this.dispatch('contest/getQuestions');
       this.dispatch('contest/getContestRank');
-      console.log(this);
       if (this.getters['contest/contestStatus'] === CONTEST_STATUS.FINISHED && this.state.contest.scoreTimer) {
         clearInterval(this.state.contest.scoreTimer);
         this.state.contest.scoreTimer = null;
