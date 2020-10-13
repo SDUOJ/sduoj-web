@@ -52,6 +52,9 @@ function get(url, params) {
           Vue.prototype.$Message.error(response.data.message);
           reject(response.data);
         }
+        store.commit('updateNow', {
+          now: response.data.timestamp
+        });
       }, err => {
         if (err.response.data.message) {
           Vue.prototype.$Message.error(err.response.data.message);
@@ -60,6 +63,9 @@ function get(url, params) {
         }
         Vue.prototype.$Loading.finish();
         reject(err.response.data);
+        store.commit('updateNow', {
+          now: err.response.data.timestamp
+        });
       })
   })
 }

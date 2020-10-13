@@ -23,7 +23,7 @@
             <ListItem v-for="contest in contestList" :key="contest.contestId">
               <ListItemMeta>
                 <div slot="avatar" class="contest__date numbox">
-                  <div class="numbox__num__large">{{ contest.gmtStart | timeformat('dd') }}</div>
+                  <div class="numbox__num__large">{{ contest.gmtStart | timeformat('DD') }}</div>
                   <div class="numbox__text">{{ contest.gmtStart | timeformat('yyyy-MM') }}</div>
                 </div>
                 <div class="ivu-list-item-meta-title" slot="title" @click="toContestDetail(contest.contestId)">
@@ -72,15 +72,7 @@
         dis-hover
         v-if="!!upcomingContest.contestId">
         <div class="upcoming-title" @click="toContestDetail(upcomingContest.contestId)">{{ upcomingContest.contestTitle }}</div>
-        <div class="upcoming-countdown">
-          <VueCountdown
-            :time="countdown"
-            class="upcoming-countdown">
-            <template slot-scope="props">
-              <span v-if="props.days > 0">{{ props.days + (props.days > 1 ? ' days' : ' day') }}</span>
-              <span v-else>{{ props.hours }}:{{ props.minutes }}:{{ props.seconds }}</span>
-            </template>
-          </VueCountdown>
+        <div class="upcoming-countdown"><span>{{ countdown }}</span>
         </div>
       </Card>
       <Card title="My participation" :padding="0" dis-hover>
@@ -90,12 +82,11 @@
 </template>
 
 <script>
-import VueCountdown from '@chenfengyuan/vue-countdown';
-import timeformat from '_u/time';
+import { mapState } from 'vuex';
+import moment from 'moment';
 import api from '_u/api';
 
 export default {
-  components: { VueCountdown },
   data: function () {
     return {
       contestList: [],
@@ -107,23 +98,29 @@ export default {
     }
   },
   filters: {
-    timeformat: (timestamp, format) => timeformat(timestamp, format),
+    timeformat: (timestamp, format) => {
+      if (typeof (timestamp) === 'string') {
+        timestamp = parseInt(timestamp);
+      }
+      return moment(new Date(timestamp)).format(format);
+    },
     time2hour: timediff => {
-      timediff /= 1000;
-      let h = parseInt(timediff / 3600);
-      timediff -= h * 3600;
-      let m = parseInt(timediff / 60);
-      timediff -= m * 60;
-      let s = timediff;
-      h = (h < 10 ? '0' : '') + h;
-      m = (m < 10 ? '0' : '') + m;
-      s = (s < 10 ? '0' : '') + s;
-      return [h, m, s].join(':');
+      return moment.utc(timediff).format('hh:mm:ss');
     }
   },
   computed: {
+    ...mapState(['now']),
     countdown: function() {
-      return parseInt((this.upcomingContest.gmtStart - new Date()));
+      const startTime = moment(new Date(parseInt(this.upcomingContest.gmtStart)));
+      if (startTime > this.now) {
+        const duration = moment.duration(startTime.diff(this.now, 'seconds'), 'seconds');
+        if (duration.weeks() > 0) {
+          return duration.humanize();
+        } else {
+          return [Math.floor(duration.asHours()), duration.minutes(), duration.seconds()].join(':');
+        }
+      }
+      return '\b';
     }
   },
   methods: {

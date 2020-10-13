@@ -10,7 +10,7 @@
 
 <template>
   <div class="container">
-    <div v-if="openness === 'private' && $store.getters['contest/needPassword']">
+    <div v-if="contestOpenness === CONTEST_OPENNESS.PRIVATE && !$store.getters['contest/hasParticipatedIn']">
       <Form :model="participateForm" inline>
         <FormItem>
           <Input style="width: 200px;" type="password" v-model="participateForm.password" placeholder="Password">
@@ -22,7 +22,7 @@
         </FormItem>
       </Form>
     </div>
-    <div v-else-if="start">
+    <div v-else-if="contestStarted">
       <div class="overview">
         <Card dis-hover :padding="0">
           <Table
@@ -38,6 +38,7 @@
 <script>
 import JudgeResult from '_c/JudgeResult';
 import { mapGetters, mapState } from 'vuex';
+import { CONTEST_OPENNESS } from '_u/constants';
 import api from '_u/api';
 import utils from '_u';
 
@@ -50,7 +51,6 @@ export default {
         password: '',
         contestId: ''
       },
-      start: false,
       problemColumn: [
         {
           key: 'problemCode',
@@ -63,10 +63,10 @@ export default {
           render: (h, params) => h('span', { class: 'hover' }, params.row.problemTitle)
         },
         {
-          title: 'AC/Submit',
+          title: 'AC / Attemps',
           render: (h, params) => {
-            if (params.row.submitNum > 0) {
-              return h('span', params.row.acceptNum + '/' + params.row.submitNum);
+            if (params.row.attempNum > 0) {
+              return h('span', params.row.acceptNum + ' / ' + params.row.attempNum);
             } else {
               return '';
             }
@@ -75,13 +75,7 @@ export default {
         {
           title: 'Status',
           key: 'judgeResult',
-          render: (h, params) => {
-            if (params.row.judgeResult === 0) {
-              return '';
-            } else {
-              return h(JudgeResult, { props: { result: params.row.judgeResult } });
-            }
-          }
+          render: (h, params) => h(JudgeResult, { props: { result: params.row.judgeResult } })
         }
       ]
     }
@@ -104,17 +98,13 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['username']),
-    ...mapGetters('contest', ['startTime', 'endTime', 'openness']),
-    ...mapState('contest', ['contest', 'questions'])
+    ...mapGetters('contest', ['contestStartTime', 'contestEndTime', 'contestStarted', 'contestOpenness']),
+    ...mapState('contest', ['contest', 'questions']),
+    CONTEST_OPENNESS: () => CONTEST_OPENNESS
   },
   mounted: function () {
-    if (this.openness === 'public') {
+    if (this.contestOpenness === CONTEST_OPENNESS.PUBLIC) {
       this.handleParticipate();
-    }
-    const currentTime = new Date();
-    if (this.startTime <= currentTime) {
-      // start
-      this.start = true;
     }
   }
 }

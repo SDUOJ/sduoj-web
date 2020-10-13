@@ -1,7 +1,6 @@
-import judge from '_u/judge';
+import { JUDGE_RESULT } from '_u/constants';
 
 function calculateProblemResult(submissions, problemNum, endTime) {
-  const problemResults = [];
   const problemSubmissionMap = {};
   for (let i = 1; i <= problemNum; ++i) {
     problemSubmissionMap[i] = [];
@@ -18,17 +17,28 @@ function calculateProblemResult(submissions, problemNum, endTime) {
     }
   });
 
+  const problemResults = [];
   for (let i = 1; i <= problemNum; ++i) {
     // sort by gmtCreate
     problemSubmissionMap[i].sort((a, b) => a.gmtCreate - b.gmtCreate);
-    if (problemResults[i].length) {
-      const lastSubmission = problemResults[i][problemResults[i].length - 1];
+    let numSubmissionsPending = 0;
+    let lastUnPDSubmission = null;
+    for (let i1 = problemSubmissionMap[i].length - 1; i1 >= 0; --i1) {
+      const oneSubmission = problemSubmissionMap[i][i1];
+      if (oneSubmission.judgeResult === JUDGE_RESULT.PD) {
+        lastUnPDSubmission = oneSubmission;
+        break;
+      } else {
+        numSubmissionsPending++;
+      }
+    }
+    if (lastUnPDSubmission) {
       problemResults.push([
-        lastSubmission.gmtCreate,     // gmtCreate
-        lastSubmission.judgeScore,    // judgeScore
-        lastSubmission.judgeResult,   // judgeResult
-        problemSubmissionMap[i].length, // numSubmissions
-        0
+        lastUnPDSubmission.gmtCreate,
+        lastUnPDSubmission.judgeScore,
+        lastUnPDSubmission.judgeResult,
+        problemSubmissionMap[i].length,
+        numSubmissionsPending
       ])
     } else {
       problemResults.push([]);
@@ -65,11 +75,11 @@ function formatProblemResults(_problemResults, startTime) {
       score += judgeScore;
       let css;
       switch (judgeResult) {
-        case judge.judgeResultMap.AC:
+        case JUDGE_RESULT.AC:
           css = 'score_correct';
           solved++;
           break;
-        case judge.judgeResultMap.PD:
+        case JUDGE_RESULT.PD:
           css = 'score_pending';
           break;
         default:
@@ -80,7 +90,8 @@ function formatProblemResults(_problemResults, startTime) {
         css,
         time,
         score: judgeScore,
-        numSubmissions,
+        judgeResult,
+        numSubmissions: numSubmissions - numSubmissionsPending,
         numSubmissionsPending
       });
     }

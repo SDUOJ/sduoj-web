@@ -14,23 +14,24 @@ import Vuex from 'vuex'
 import user from './modules/user';
 import contest from './modules/contest';
 
+import moment from 'moment';
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
     copyright: '',
-    pathComponents: []
+    now: moment()
   },
   mutations: {
-    updateCopyright(state, copyright) {
-      state.copyright = copyright;
+    updateCopyright: function(state, payload) {
+      state.copyright = payload.copyright;
     },
-    updatePathComponents(state, route) {
-      let matched = route.matched;
-      if (matched.length === 0 || matched[0].name !== 'home') {
-        matched = [{ path: '/home', meta: { title: '首页' } }].concat(matched);
-      }
-      state.pathComponents = matched;
+    updateNow: function(state, payload) {
+      state.now = moment(new Date(parseInt(payload.now)));
+    },
+    addOneSecond: function(state) {
+      state.now = moment(state.now.add(1, 'seconds'));
     }
   },
   actions: {

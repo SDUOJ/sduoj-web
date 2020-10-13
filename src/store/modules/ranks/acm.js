@@ -1,4 +1,4 @@
-import judge from '_u/judge';
+import { JUDGE_RESULT } from '_u/constants';
 
 function calculateProblemResult(submissions, problemNum, endTime) {
   const problemResults = [];
@@ -21,22 +21,22 @@ function calculateProblemResult(submissions, problemNum, endTime) {
   for (let i = 1; i <= problemNum; ++i) {
     // sort by gmtCreate
     let ac = false;
-    let pendingNum = 0;
+    let numSubmissionsPending = 0;
     problemSubmissionMap[i].sort((a, b) => a.gmtCreate - b.gmtCreate);
     for (let i1 = 0; i1 < problemSubmissionMap[i].length; ++i1) {
       const oneSubmission = problemSubmissionMap[i][i1];
-      if (judge.judgeResultMap.AC === oneSubmission.judgeResult) {
+      if (JUDGE_RESULT.AC === oneSubmission.judgeResult) {
         problemResults.push([
           oneSubmission.gmtCreate,
           oneSubmission.judgeScore,
           oneSubmission.judgeResult,
           i1 + 1,
-          pendingNum
+          numSubmissionsPending
         ]);
         ac = true;
         break;
-      } else if (judge.judgeResultMap.PD === oneSubmission.judgeResult) {
-        pendingNum++;
+      } else if (JUDGE_RESULT.PD === oneSubmission.judgeResult) {
+        numSubmissionsPending++;
       }
     }
     if (!ac) {
@@ -44,9 +44,9 @@ function calculateProblemResult(submissions, problemNum, endTime) {
         problemResults.push([
           0,  // gmtCreate
           0,  // judgeScore
-          pendingNum > 0 ? judge.judgeResultMap.WA : judge.judgeResultMap.WA, // judgeResult
+          numSubmissionsPending > 0 ? JUDGE_RESULT.PD : JUDGE_RESULT.WA, // judgeResult
           problemSubmissionMap[i].length, // numSubmissions
-          pendingNum  // numSubmissionsPending
+          numSubmissionsPending  // numSubmissionsPending
         ]);
       } else {
         problemResults.push([]);
@@ -83,15 +83,15 @@ function formatProblemResults(_problemResults, startTime) {
       const numSubmissionsPending = parseInt(result[4]);
       let css;
       switch (judgeResult) {
-        case judge.judgeResultMap.AC:
+        case JUDGE_RESULT.AC:
           css = 'score_correct';
           solved++;
           score += time + (numSubmissions - 1) * 20 * 60 * 1000;
           break;
-        case judge.judgeResultMap.WA:
+        case JUDGE_RESULT.WA:
           css = 'score_incorrect';
           break;
-        case judge.judgeResultMap.PD:
+        case JUDGE_RESULT.PD:
           css = 'score_pending';
           break;
         default:
@@ -102,7 +102,8 @@ function formatProblemResults(_problemResults, startTime) {
         css,
         time,
         score: judgeScore,
-        numSubmissions,
+        judgeResult,
+        numSubmissions: numSubmissions - numSubmissionsPending,
         numSubmissionsPending
       });
     }
@@ -132,7 +133,6 @@ function calculateRank(scores) {
       } else {
         score.rank = last.rank;
       }
-      console.log(last, score, rank);
     } else {
       score.rank = -1;
     }
