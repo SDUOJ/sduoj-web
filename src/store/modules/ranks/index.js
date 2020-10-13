@@ -14,7 +14,7 @@ import ioiRankHandler from './ioi';
 
 import { CONTEST_MODE } from '_u/constants';
 
-export function calculateScore(score, startTime, calculateProblemResult, formatProblemResults, endTime) {
+export function calculateScore(score, startTime, problemWeights, calculateProblemResult, formatProblemResults, endTime) {
   const ret = { ...score };
   delete ret.userId;
   delete ret.username;
@@ -28,7 +28,7 @@ export function calculateScore(score, startTime, calculateProblemResult, formatP
     ret.problemResults = calculateProblemResult(score.submissions, score.problemNum, endTime);
   }
 
-  return Object.assign(ret, formatProblemResults(ret.problemResults, startTime));
+  return Object.assign(ret, formatProblemResults(ret.problemResults, problemWeights, startTime));
 }
 
 export default {

@@ -128,10 +128,13 @@ export default {
   isExist: function(params) {
     return get('/user/isExist', params);
   },
-  getUserACProblems: function() {
-    return get('/user/queryACProblem');
+  getParticipatedContests: function() {
+    return get('/user/queryParticipateContest');
   },
   // 提交相关
+  getUserACProblems: function() {
+    return get('/submit/queryACProblem');
+  },
   getSubmissionDetail: function(params) {
     const contestId = getContestId();
     if (contestId) {

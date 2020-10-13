@@ -34,7 +34,7 @@
 <script>
 import ProblemCode from '_c/ProblemCode';
 import JudgeResult from '_c/JudgeResult';
-import utils from '_u';
+import { contestProblemId } from '_u/transform';
 import api from '_u/api';
 import { mapGetters } from 'vuex';
 import store from '@/store';
@@ -69,7 +69,7 @@ export default {
           minWidth: 15,
           render: function(h, params) {
             if (store.state.contest.contest.contestId) {
-              return h('strong', utils.contestProblemId(params.row.problemCode));
+              return h('strong', contestProblemId(params.row.problemCode));
             } else {
               if (params.row.problemCode !== undefined) {
                 if (params.row.problemCode.length > 20) {

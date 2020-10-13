@@ -17,9 +17,18 @@
             {{ contest.contestTitle }}
           </span>
           <span class="contest__subtitle">{{ contest.source }}</span>
-          <Icon type="md-lock" color="#d9534f" size="19" v-if="contestOpenness === CONTEST_OPENNESS.PRIVATE"/>
-          <Icon type="md-lock" color="orange" size="19" v-else-if="contestOpenness === CONTEST_OPENNESS.PROTECTED"/>
+          <template v-if="contestOpenness === CONTEST_OPENNESS.PRIVATE">
+            <Icon type="ios-unlock" color="#d9534f" size="19" v-if="hasParticipatedIn"/>
+            <Icon type="md-lock" color="#d9534f" size="19" v-else />
+          </template>
+          <template v-else-if="contestOpenness === CONTEST_OPENNESS.PROTECTED">
+            <Icon type="ios-unlock" color="orange" size="19" v-if="hasParticipatedIn"/>
+            <Icon type="md-lock" color="orange" size="19" v-else/>
+          </template>
           <ul class="ivu-list-item-action contest__float">
+            <li v-if="hasParticipatedIn" style="color: #5cb85c">
+              <Icon type="md-checkmark" /><span>&nbsp;Participated</span>
+            </li>
             <li>
               <div :class="'contest-type--' + contestMode">
                 <Icon type="md-bulb" color="#fff"/>&nbsp;
@@ -34,6 +43,11 @@
             <li>
               <Icon type="ios-people-outline"/>
               {{ contest.participantNum }}
+            </li>
+            <li>
+              <div class="hover-background" @click="contestSettingsModal=true">
+                <Icon type="md-settings" :size="20"/>
+              </div>
             </li>
           </ul>
         </div>
@@ -70,6 +84,17 @@
           <span>{{ countdown }}</span>
         </div>
       </Menu>
+      <Modal
+        title="Settings"
+        v-model="contestSettingsModal"
+        :mask-closable="false"
+        @on-ok="$store.dispatch('contest/settingso', $store.state.contest.settings)">
+        <Form>
+          <FormItem label="Show Practice">
+            <i-switch v-model="showPractice" />
+          </FormItem>
+        </Form>
+      </Modal>
     </div>
     <transition name="fade" mode="out-in">
       <router-view />
@@ -88,9 +113,18 @@ export default {
   name: 'ContestDetailView',
   components: { MarkdownItVueLight },
   inject: ['reload'],
+  data: function() {
+    return {
+      contestSettingsModal: false,
+      contestSettingsForm: {
+        showPractice: false
+      }
+    }
+  },
   computed: {
     ...mapGetters('user', ['username']),
     ...mapGetters('contest', [
+      'hasParticipatedIn',
       'contestStartTime',
       'contestEndTime',
       'contestDuration',
@@ -101,6 +135,14 @@ export default {
       'countdown'
     ]),
     ...mapState('contest', ['contest']),
+    showPractice: {
+      get: function() {
+        return this.$store.state.contest.settings.showPractice;
+      },
+      set: function(val) {
+        this.$store.dispatch('contest/settings', { showPractice: val })
+      }
+    },
     CONTEST_OPENNESS: () => CONTEST_OPENNESS
   },
   mounted: function() {
@@ -162,5 +204,9 @@ export default {
   .fade-leave-to {
     opacity: 0;
     transform: translateX(30px);
+  }
+  .hover-background i:hover {
+    border-radius: 3px;
+    background: rgba(0, 0, 0, .15);
   }
 </style>

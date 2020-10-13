@@ -8,7 +8,9 @@
  *      https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
-const contestProblemId = function(problemCode) {
+import moment from 'moment';
+
+export function contestProblemId(problemCode) {
   problemCode = parseInt(problemCode) - 1;
   const str = []
   do {
@@ -23,6 +25,9 @@ const contestProblemId = function(problemCode) {
   return str.reverse().join('');
 }
 
-export default {
-  contestProblemId
+export function s2hs(diff) {
+  const duration = moment.duration(diff, 'milliseconds');
+  const minutes = duration.minutes() < 10 ? '0' + duration.minutes() : duration.minutes().toString();
+  const seconds = duration.seconds() < 10 ? '0' + duration.seconds() : duration.seconds().toString();
+  return [Math.floor(duration.asHours()), minutes, seconds].join(':');
 }

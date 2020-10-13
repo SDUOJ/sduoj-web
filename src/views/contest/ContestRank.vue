@@ -51,7 +51,7 @@
           {{ problem.problemCode | contestProblemId }}
           <div class="circle" v-if="problem.ballonColor" :style="'background: ' + problem.ballonColor + ';'"></div>
           <div class="problempoints">
-            {{ problem.acceptNum || 0 }} / {{ problem.attempNum || 0 }}
+            {{ problem.acceptNum || 0 }} / {{ problem.submitNum || 0 }}
           </div>
         </router-link>
        </th>
@@ -197,7 +197,7 @@ import SubmissionList from '_c/SubmissionList';
 import SubmissionDetailView from '@/views/submission/SubmissionDetailView';
 
 import moment from 'moment';
-import utils from '_u';
+import { contestProblemId, s2hs } from '_u/transform';
 import { CONTEST_MODE, CONTEST_STATUS } from '_u/constants';
 
 import { mapState, mapGetters } from 'vuex';
@@ -222,7 +222,7 @@ export default {
     }
   },
   filters: {
-    contestProblemId: problemCode => utils.contestProblemId(problemCode),
+    contestProblemId: problemCode => contestProblemId(problemCode),
     time2minutes: time => {
       if (time === 0) {
         return '\b';
@@ -244,9 +244,7 @@ export default {
     ]),
     ...mapGetters('user', ['profile']),
     elapsed: function() {
-      const now = this.$store.state.now;
-      const duration = moment.duration(now.diff(this.contestStartTime, 'seconds'), 'seconds');
-      return [Math.floor(duration.asHours()), duration.minutes(), duration.seconds()].join(':');
+      return s2hs(this.$store.state.now - this.contestStartTime);
     },
     currentPercent: function() {
       const now = this.$store.state.now;

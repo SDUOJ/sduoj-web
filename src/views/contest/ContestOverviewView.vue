@@ -40,7 +40,7 @@ import JudgeResult from '_c/JudgeResult';
 import { mapGetters, mapState } from 'vuex';
 import { CONTEST_OPENNESS } from '_u/constants';
 import api from '_u/api';
-import utils from '_u';
+import { contestProblemId } from '_u/transform';
 
 export default {
   name: 'ContestOverviewView.vue',
@@ -55,7 +55,7 @@ export default {
         {
           key: 'problemCode',
           maxWidth: 60,
-          render: (h, params) => h('strong', { class: 'hover' }, utils.contestProblemId(params.row.problemCode))
+          render: (h, params) => h('strong', { class: 'hover' }, contestProblemId(params.row.problemCode))
         },
         {
           title: 'Problem Title',
@@ -63,12 +63,10 @@ export default {
           render: (h, params) => h('span', { class: 'hover' }, params.row.problemTitle)
         },
         {
-          title: 'AC / Attemps',
+          title: 'AC / Submits',
           render: (h, params) => {
-            if (params.row.attempNum > 0) {
-              return h('span', params.row.acceptNum + ' / ' + params.row.attempNum);
-            } else {
-              return '';
+            if (params.row.submitNum > 0) {
+              return h('span', params.row.acceptNum + ' / ' + params.row.submitNum);
             }
           }
         },
@@ -98,7 +96,7 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['username']),
-    ...mapGetters('contest', ['contestStartTime', 'contestEndTime', 'contestStarted', 'contestOpenness']),
+    ...mapGetters('contest', ['contestStartTime', 'contestEndTime', 'contestStarted', 'contestOpenness', 'scores']),
     ...mapState('contest', ['contest', 'questions']),
     CONTEST_OPENNESS: () => CONTEST_OPENNESS
   },

@@ -12,6 +12,7 @@ import Vue from 'vue';
 import api from '_u/api';
 import moment from 'moment';
 import { CONTEST_STATUS, CONTEST_OPENNESS, JUDGE_RESULT } from '_u/constants';
+import { s2hs } from '_u/transform';
 import rankHandler, { calculateScore } from './ranks';
 
 const state = {
@@ -24,9 +25,11 @@ const state = {
   questions: [],
   allSubmissions: [],
   likedScoresMap: {},
+  settings: {
+    showPractice: false
+  },
   scoreTimer: null,
-  sliderTime: null,
-  showPractice: false
+  sliderTime: null
 }
 
 const getters = {
@@ -82,11 +85,10 @@ const getters = {
       if (duration.weeks() > 0) {
         return 'Before the contest: ' + duration.humanize();
       } else {
-        return '-' + [Math.floor(duration.asHours()), duration.minutes(), duration.seconds()].join(':');
+        return '-' + s2hs(getters.contestStartTime - rootState.now);
       }
     } else if (getters.contestStatus === CONTEST_STATUS.RUNNING) {
-      const duration = moment.duration(getters.contestEndTime.diff(rootState.now, 'seconds'), 'seconds');
-      return [Math.floor(duration.asHours()), duration.minutes(), duration.seconds()].join(':');
+      return s2hs(getters.contestEndTime - rootState.now);
     } else {
       return 'FINISHED';
     }
@@ -101,7 +103,7 @@ const getters = {
     if (getters.contestStatus === CONTEST_STATUS.FINISHED) {
       if (state.sliderTime) {
         endTime = state.sliderTime;
-      } else if (!state.showPractice) {
+      } else if (!state.settings.showPractice) {
         endTime = getters.contestEndTime;
       }
     }
@@ -111,6 +113,7 @@ const getters = {
         calculateScore(
           score,
           state.contest.gmtStart,
+          state.contest.problems.map(problem => problem.problemWeight),
           handler.calculateProblemResult,
           handler.formatProblemResults,
           endTime
@@ -140,20 +143,12 @@ const getters = {
       }
     });
     for (let i = 0; i < state.contest.problems.length; ++i) {
-      let acceptNum = 0;
-      let attempNum = 0;
       let judgeResult = -1;
       scores.forEach(score => {
-        attempNum += score.problemResults[i].numSubmissions - score.problemResults[i].numSubmissionsPending;
-        if (JUDGE_RESULT.AC === score.problemResults[i].judgeResult) {
-          acceptNum++;
-        }
         if (score.user.userId === rootState.user.profile.userId) {
           judgeResult = score.problemResults[i].judgeResult;
         }
       });
-      Vue.set(state.contest.problems[i], 'acceptNum', acceptNum);
-      Vue.set(state.contest.problems[i], 'attempNum', attempNum);
       Vue.set(state.contest.problems[i], 'judgeResult', judgeResult);
     }
     return scores;
@@ -186,7 +181,8 @@ const mutations = {
     state.scoreTimer = setInterval(() => {
       this.dispatch('contest/getQuestions');
       this.dispatch('contest/getContestRank');
-      if (this.getters.contest.contestStatus === CONTEST_STATUS.FINISHED && this.state.contest.scoreTimer) {
+      console.log(this);
+      if (this.getters['contest/contestStatus'] === CONTEST_STATUS.FINISHED && this.state.contest.scoreTimer) {
         clearInterval(this.state.contest.scoreTimer);
         this.state.contest.scoreTimer = null;
       }
@@ -197,6 +193,11 @@ const mutations = {
   },
   setScoreLiked: function(state, payload) {
     Vue.set(state.likedScoresMap, this.getters['contest/scores'][payload.index].user.userId, payload.status);
+  },
+  setSettings: function(state, payload) {
+    for (const key in payload.settings) {
+      Vue.set(state.settings, key, payload.settings[key]);
+    }
   },
   clearContest: function(state) {
     if (state.scoreTimer) {
@@ -212,6 +213,9 @@ const mutations = {
     state.problems = [];
     state.allSubmissions = [];
     state.likedScoresMap = {};
+    state.settings = {
+      showPractice: false
+    }
   }
 }
 
@@ -243,6 +247,9 @@ const actions = {
         commit('setAllSubmissions', { allSubmissions: ret });
       }, err => (reject(err)));
     })
+  },
+  settings: function({ commit }, settings) {
+    commit('setSettings', { settings });
   }
 }
 
