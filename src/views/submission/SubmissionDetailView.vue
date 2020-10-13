@@ -107,7 +107,7 @@ import JudgeResult from '_c/JudgeResult';
 import { mapGetters } from 'vuex';
 import { sendWebsocket, closeWebsocket } from '_u/socket';
 import api from '_u/api';
-import utils from '_u';
+import { contestProblemId } from '_u/transform';
 
 export default {
   components: {
@@ -150,7 +150,7 @@ export default {
   },
   filters: {
     parseInt: str => parseInt(str),
-    contestProblemId: problemCode => utils.contestProblemId(problemCode)
+    contestProblemId: problemCode => contestProblemId(problemCode)
   },
   methods: {
     wsSuccess: function (data) {

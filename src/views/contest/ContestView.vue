@@ -28,8 +28,14 @@
                 </div>
                 <div class="ivu-list-item-meta-title" slot="title" @click="toContestDetail(contest.contestId)">
                   <span>{{ contest.contestTitle }}</span>
-                  <Icon type="md-lock" color="#d9534f" size="19" v-if="contest.features.openness === 'private'"/>
-                  <Icon type="md-lock" color="orange" size="19" v-else-if="contest.features.openness === 'protected'"/>
+                  <template v-if="contest.features.openness === CONTEST_OPENNESS.PRIVATE">
+                    <Icon type="ios-unlock" color="#d9534f" size="19" v-if="participatedContest.includes(contest.contestId)"/>
+                    <Icon type="md-lock" color="#d9534f" size="19" v-else />
+                  </template>
+                  <template v-else-if="contest.features.openness === CONTEST_OPENNESS.PROTECTED">
+                    <Icon type="ios-unlock" color="orange" size="19" v-if="participatedContest.includes(contest.contestId)"/>
+                    <Icon type="md-lock" color="orange" size="19" v-else/>
+                  </template>
                 </div>
                 <ul slot="description" class="ivu-list-item-action">
                   <li>
@@ -48,6 +54,9 @@
                   <li>
                     <Icon type="ios-people-outline"/>
                     {{ contest.participantNum }}
+                  </li>
+                  <li v-if="participatedContest.includes(contest.contestId)" style="color: #5cb85c">
+                    <Icon type="md-checkmark" /><span>&nbsp;Participated</span>
                   </li>
                 </ul>
               </ListItemMeta>
@@ -75,21 +84,24 @@
         <div class="upcoming-countdown"><span>{{ countdown }}</span>
         </div>
       </Card>
-      <Card title="My participation" :padding="0" dis-hover>
-      </Card>
+<!--      <Card title="My participation" :padding="0" dis-hover>-->
+<!--      </Card>-->
     </Col>
   </Row>
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import moment from 'moment';
+import { mapState } from 'vuex';
+import { s2hs } from '_u/transform';
+import { CONTEST_OPENNESS } from '_u/constants';
 import api from '_u/api';
 
 export default {
   data: function () {
     return {
       contestList: [],
+      participatedContest: [],
       upcomingContest: {},
       selectContestMode: 'All',
       pageNow: 1,
@@ -104,9 +116,7 @@ export default {
       }
       return moment(new Date(timestamp)).format(format);
     },
-    time2hour: timediff => {
-      return moment.utc(timediff).format('hh:mm:ss');
-    }
+    time2hour: timediff => s2hs(timediff)
   },
   computed: {
     ...mapState(['now']),
@@ -117,11 +127,12 @@ export default {
         if (duration.weeks() > 0) {
           return duration.humanize();
         } else {
-          return [Math.floor(duration.asHours()), duration.minutes(), duration.seconds()].join(':');
+          return s2hs(startTime - this.now);
         }
       }
       return '\b';
-    }
+    },
+    CONTEST_OPENNESS: () => CONTEST_OPENNESS
   },
   methods: {
     onPageChange: function (pageNow) {
@@ -157,6 +168,7 @@ export default {
   mounted: function () {
     this.getContestList();
     api.getUpcomingContest().then(ret => (this.upcomingContest = { ...ret }));
+    api.getParticipatedContests().then(ret => (this.participatedContest = ret));
   }
 }
 </script>

@@ -56,7 +56,7 @@ function calculateProblemResult(submissions, problemNum, endTime) {
   return problemResults;
 }
 
-function formatProblemResults(_problemResults, startTime) {
+function formatProblemResults(_problemResults, problemWeights, startTime) {
   const problemResults = [];
   let problemCode = 0;
   let solved = 0;
@@ -81,7 +81,7 @@ function formatProblemResults(_problemResults, startTime) {
       const judgeResult = parseInt(result[2]);
       const numSubmissions = parseInt(result[3]);
       const numSubmissionsPending = parseInt(result[4]);
-      score += judgeScore;
+      score += judgeScore * problemWeights[problemCode - 1];
       let css;
       switch (judgeResult) {
         case JUDGE_RESULT.AC:

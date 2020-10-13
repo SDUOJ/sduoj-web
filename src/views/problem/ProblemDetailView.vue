@@ -101,6 +101,9 @@
               <Cell title="Memory Limit">
                 <span class="mem" slot="extra">{{ problem.memoryLimit }}</span>
               </Cell>
+              <Cell title="Weight" v-if="problem.problemWeight">
+                <span slot="extra">{{ problem.problemWeight }}</span>
+              </Cell>
               <Cell title="Languages">
                 <div slot="label">
                   <span v-for="lang in problem.languages" :key="lang" class="language">{{ lang }}</span>
@@ -173,7 +176,7 @@ import CodeEditor from '_c/CodeEditor';
 import JudgeResult from '_c/JudgeResult';
 
 import api from '_u/api';
-import utils from '_u';
+import { contestProblemId } from '_u/transform';
 
 import { mapGetters, mapState } from 'vuex';
 
@@ -202,7 +205,7 @@ export default {
         {
           key: 'problemCode',
           maxWidth: 60,
-          render: (h, params) => h('strong', utils.contestProblemId(params.row.problemCode))
+          render: (h, params) => h('strong', contestProblemId(params.row.problemCode))
         },
         {
           key: 'problemTitle',
@@ -220,13 +223,7 @@ export default {
         },
         {
           key: 'judgeResult',
-          render: (h, params) => {
-            if (params.row.judgeResult === 0) {
-              return '';
-            } else {
-              return h(JudgeResult, { props: { result: params.row.judgeResult, abbr: true } });
-            }
-          }
+          render: (h, params) => h(JudgeResult, { props: { result: params.row.judgeResult, abbr: true } })
         }
       ],
       problem: {},
@@ -243,7 +240,7 @@ export default {
   },
   filters: {
     parseInt: str => parseInt(str),
-    contestProblemId: problemCode => utils.contestProblemId(problemCode)
+    contestProblemId: problemCode => contestProblemId(problemCode)
   },
   methods: {
     copyToClipboard: function (content) {
