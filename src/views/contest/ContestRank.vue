@@ -1,5 +1,27 @@
 <template>
  <div class="container">
+   <div class="tools clearfix">
+     <div class="clearfix" style="margin: 10px 3px">
+       <div style="float: left">
+         <strong>Begin: </strong>
+         <span>{{ contestStartTime.format('yyyy-MM-DD hh:mm:ss') }}</span>
+       </div>
+       <div style="float: right">
+         <strong>End: <span>{{ contestEndTime.format('yyyy-MM-DD hh:mm:ss') }}</span></strong>
+       </div>
+     </div>
+
+     <CProgress ref="prog" :width="1256" :percent="currentPercent" @percentChange="handleProgressChange" :disable="contestStatus === CONTEST_STATUS.RUNNING"></CProgress>
+     <div style="margin: 10px 10px 0 10px; text-align: center">
+         <template v-if="contestStatus === CONTEST_STATUS.FINISHED">
+             <strong>Finished</strong>
+         </template>
+         <template v-else>
+           <strong>{{ elapsed }}</strong>
+         </template>
+     </div>
+
+   </div>
    <table class="scoreboard">
      <colgroup>
        <col id="scorerank" />
@@ -28,30 +50,30 @@
         }">
           {{ problem.problemCode | contestProblemId }}
           <div class="circle" v-if="problem.ballonColor" :style="'background: ' + problem.ballonColor + ';'"></div>
-          <span class="problempoints">
-            {{ problem.weight }}
-          </span>
+          <div class="problempoints">
+            {{ problem.acceptNum || 0 }} / {{ problem.attempNum || 0 }}
+          </div>
         </router-link>
        </th>
      </tr>
      </thead>
      <tbody>
      <tr
-       v-for="(score, index) in scoresLiked"
+       v-for="(score, index) in likedScores"
        :key="-score.user.userId"
        :class="{
           sortorderswitch: index === 0,
-          scoreliked: score.liked,
+          scoreliked: likedScoresMap[score.user.userId],
           scorethisisme: score.user.userId === profile.userId
         }"
-       :style="index === scoresLiked.length - 1 ? 'border-bottom: thick solid black;' : ''"
+       :style="index === likedScores.length - 1 ? 'border-bottom: thick solid black;' : ''"
        :id="'user:' + score.user.userId">
 
        <td class="scorepl">
          {{ displayRank ? score.rank : '?' }}
        </td>
        <td class="scoreaf" style="background: #ffffff">
-         <Icon v-if="score.liked" class="heart fas" type="md-heart" @click="setUserLiked(index, false)"/>
+         <Icon v-if="likedScoresMap[score.user.userId]" class="heart fas" type="md-heart" @click="setUserLiked(index, false)"/>
          <Icon v-else class="heart" type="md-heart-outline" @click="setUserLiked(index, true)" />
        </td>
        <td class="scoretn" style="background: #ffffff" :title="score.user.username">
@@ -59,11 +81,11 @@
          <span v-if="score.user.affiliation || false" class="forceWidth univ">{{ score.user.affiliation }}</span>
        </td>
        <td class="scorenc">{{ score.solved }}</td>
-       <td class="scorett" v-if="mode === 'acm'">{{ score.score | time2minutes }}</td>
+       <td class="scorett" v-if="contestMode === CONTEST_MODE.ACM">{{ score.score | time2minutes }}</td>
        <td class="scorett" v-else>{{ score.score }}</td>
 
        <td class="score_cell" v-for="problem in score.problemResults" :key="problem.problemCode">
-         <a v-if="mode === 'acm'">
+         <a v-if="contestMode === CONTEST_MODE.ACM">
            <div
              :class="problem.css"
              v-if="(problem.numSubmissions + problem.numSubmissionsPending) > 0"
@@ -74,7 +96,7 @@
             </span>
            </div>
          </a>
-         <a v-else-if="mode === 'oi'">
+         <a v-else-if="contestMode === CONTEST_MODE.OI">
            <div
              :class="problem.css"
              v-if="problem.numSubmissions > 0"
@@ -82,7 +104,7 @@
              {{ problem.score }}
            </div>
          </a>
-         <a v-else-if="mode === 'ioi'">
+         <a v-else-if="contestMode === CONTEST_MODE.IOI">
            <div
              :class="problem.css"
              v-if="problem.numSubmissions > 0"
@@ -102,7 +124,7 @@
       :class="{
         sortorderswitch: index === 0,
         scorethisisme: score.user.userId === profile.userId,
-        scoreliked: score.liked
+        scoreliked: likedScoresMap[score.user.userId]
       }"
       :id="'user:' + score.user.userId">
 
@@ -110,7 +132,7 @@
         {{ displayRank ? score.rank : '?' }}
       </td>
       <td class="scoreaf" style="background: #ffffff">
-        <Icon v-if="score.liked" class="heart fas" type="md-heart" @click="setUserLiked(index, false)"/>
+        <Icon v-if="likedScoresMap[score.user.userId]" class="heart fas" type="md-heart" @click="setUserLiked(index, false)"/>
         <Icon v-else class="heart" type="md-heart-outline" @click="setUserLiked(index, true)" />
       </td>
       <td class="scoretn" style="background: #ffffff" :title="score.user.username">
@@ -118,11 +140,11 @@
           <span v-if="score.user.affiliation || false" class="forceWidth univ">{{ score.user.affiliation }}</span>
       </td>
       <td class="scorenc">{{ score.solved }}</td>
-      <td class="scorett" v-if="mode === 'acm'">{{ score.score | time2minutes }}</td>
+      <td class="scorett" v-if="contestMode === CONTEST_MODE.ACM">{{ score.score | time2minutes }}</td>
       <td class="scorett" v-else>{{ score.score }}</td>
 
       <td class="score_cell" v-for="problem in score.problemResults" :key="problem.problemCode">
-        <a v-if="mode === 'acm'">
+        <a v-if="contestMode === CONTEST_MODE.ACM">
           <div
             :class="problem.css"
             v-if="(problem.numSubmissions + problem.numSubmissionsPending) > 0"
@@ -133,7 +155,7 @@
             </span>
           </div>
         </a>
-        <a v-else-if="mode === 'oi'">
+        <a v-else-if="contestMode === CONTEST_MODE.OI">
           <div
             :class="problem.css"
             v-if="problem.numSubmissions > 0"
@@ -141,7 +163,7 @@
             {{ problem.score }}
           </div>
         </a>
-        <a v-else-if="mode === 'ioi'">
+        <a v-else-if="contestMode === CONTEST_MODE.IOI">
           <div
             :class="problem.css"
             v-if="problem.numSubmissions > 0"
@@ -170,11 +192,13 @@
 </template>
 
 <script>
+import CProgress from '_c/CProgress';
 import SubmissionList from '_c/SubmissionList';
 import SubmissionDetailView from '@/views/submission/SubmissionDetailView';
-import rankHandler from '@/views/contest/ranks';
+
+import moment from 'moment';
 import utils from '_u';
-import api from '_u/api';
+import { CONTEST_MODE, CONTEST_STATUS } from '_u/constants';
 
 import { mapState, mapGetters } from 'vuex';
 
@@ -182,16 +206,14 @@ import '@/styles/domjudge.css';
 
 export default {
   name: 'ContestRank',
-  components: { SubmissionList, SubmissionDetailView },
+  components: { SubmissionList, SubmissionDetailView, CProgress },
   data: function() {
     return {
-      scores: [],
       modelSubmissions: false,
       modelSubmissionDetail: false,
-      displayRank: true,
       showSubmissions: true,
       showFlags: false,
-      intervalInstance: null,
+      displayRank: true,
       showOnesAllSubmission: {
         username: '',
         problemCode: ''
@@ -209,24 +231,47 @@ export default {
     }
   },
   computed: {
-    ...mapState('contest', ['contest', 'problems']),
-    ...mapGetters('contest', ['mode', 'contestId', 'startTime', 'endTime']),
+    ...mapState('contest', ['contest', 'problems', 'likedScoresMap']),
+    ...mapGetters('contest', [
+      'contestId',
+      'contestMode',
+      'contestStatus',
+      'contestStartTime',
+      'contestEndTime',
+      'contestDuration',
+      'scores',
+      'likedScores'
+    ]),
     ...mapGetters('user', ['profile']),
-    rankHandler: function() {
-      return rankHandler[this.mode];
+    elapsed: function() {
+      const now = this.$store.state.now;
+      const duration = moment.duration(now.diff(this.contestStartTime, 'seconds'), 'seconds');
+      return [Math.floor(duration.asHours()), duration.minutes(), duration.seconds()].join(':');
     },
-    scoresLiked: function() {
-      return this.scores.filter(score => {
-        return score.liked || score.user.userId === this.profile.userId
-      });
-    }
+    currentPercent: function() {
+      const now = this.$store.state.now;
+      const duration = moment(now - this.contestStartTime);
+      return Math.min(100, parseInt(duration / this.contestDuration * 100));
+    },
+    CONTEST_MODE: () => CONTEST_MODE,
+    CONTEST_STATUS: () => CONTEST_STATUS
   },
   methods: {
-    setUserLiked: function(index, state) {
-      this.$set(this.scores[index], 'liked', state);
+    handleProgressChange: function(percent) {
+      console.log(percent);
+      if (percent === 100) {
+        this.$store.commit('contest/setSliderTime', { sliderTime: null });
+      } else {
+        this.$store.commit('contest/setSliderTime', {
+          sliderTime: this.contestStartTime + parseInt(this.contestDuration * percent / 100)
+        });
+      }
+    },
+    setUserLiked: function(index, status) {
+      this.$store.commit('contest/setScoreLiked', { index, status });
     },
     showAllSubmissions: function(username, problemCode) {
-      if (this.endTime < new Date() || username === this.profile.username) {
+      if (this.contestStatus === CONTEST_STATUS.FINISHED || username === this.profile.username) {
         this.showOnesAllSubmission = {
           username,
           problemCode
@@ -239,66 +284,18 @@ export default {
         this.submissionId = row.submissionId;
         this.modelSubmissionDetail = true;
       }
-    },
-    calculateScore: function(score) {
-      const ret = { ...score };
-      delete ret.userId;
-      delete ret.username;
-      delete ret.submissions;
-
-      ret.user = {
-        userId: score.userId,
-        username: score.username
-      };
-      ret.liked = false;
-
-      if (score.submissions) {
-        ret.problemResults = this.rankHandler.calculateProblemResult(score.submissions, score.problemNum);
-      }
-
-      return Object.assign(ret, this.rankHandler.formatProblemResults(ret.problemResults, this.startTime));
-    },
-    getContestRank: function() {
-      api.getContestRank(this.contestId).then(ret => {
-        const scores = [];
-        ret.forEach(score => (scores.push(this.calculateScore(score))));
-        this.scores = this.rankHandler.calculateRank(scores);
-
-        // first blood
-        const firstSolvedMap = {};
-        this.scores.forEach(score => {
-          for (const result in score.problemResults) {
-            if (utils.judgeResultMap.AC === result.judgeResult) {
-              if (!firstSolvedMap[result.problemCode] || firstSolvedMap[result.problemCode] > result.gmtCreate) {
-                firstSolvedMap[result.problemCode] = result.gmtCreate;
-              }
-            }
-          }
-        });
-        this.scores.forEach(score => {
-          for (const result in score.problemResults) {
-            if (utils.judgeResultMap.AC === result.judgeResult && firstSolvedMap[result.problemCode] === result.gmtCreate) {
-              result.css = 'score_first';
-            }
-          }
-        });
-      })
-    }
-  },
-  mounted: function() {
-    this.getContestRank();
-
-    this.intervalInstance = setInterval(() => {
-      this.getContestRank();
-    }, 30000);
-  },
-  beforeDestroy: function() {
-    if (this.intervalInstance) {
-      clearInterval(this.intervalInstance);
     }
   }
 }
 </script>
 
 <style scoped>
+  .tools {
+    margin: 10px auto;
+    padding: 5px 10px;
+    background: #f9f9f9;
+  }
+  .practice__switch {
+    float: right;
+  }
 </style>

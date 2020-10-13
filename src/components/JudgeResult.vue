@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import utils from '_u';
+import { JUDGE_RESULT } from '_u/constants';
 
 export default {
   props: {
@@ -38,21 +38,13 @@ export default {
       if (judgeResult === -1) {
         return '';
       }
-      return this.abbr ? utils.judgeResultStrAbbrMap[judgeResult] : utils.judgeResultStrMap[judgeResult];
+      return JUDGE_RESULT[judgeResult][this.abbr ? 'abbr' : 'name'];
     },
     judgeResult2Class: judgeResult => {
       if (judgeResult === -1) {
         return '';
       }
-      if (judgeResult === 0) {
-        return 'verdict-pending';
-      } else if (judgeResult === 1) {
-        return 'verdict-accepted';
-      } else if (judgeResult === 8) {
-        return 'verdict-compile-error';
-      } else {
-        return 'verdict-failed';
-      }
+      return JUDGE_RESULT[judgeResult].css;
     }
   }
 

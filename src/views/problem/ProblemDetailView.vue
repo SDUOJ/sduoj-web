@@ -67,7 +67,7 @@
             <Input
               style="float: right; width: 200px; margin: 8px 0;"
               placeholder="Contest Password"
-              v-if="contestId && needPassword"
+              v-if="contestId && !hasParticipatedIn"
               size="small"
               v-model="contestPassword" />
           </div>
@@ -293,14 +293,18 @@ export default {
           language: this.language,
           code: this.code
         };
-        if (this.contestId) {
-          if (this.$store.getters['contest/needPassword']) {
-            try {
-              await api.participateIn({
-                contestId: this.contestId,
-                password: this.contestPassword
-              });
-            } catch (_) {}
+        if (this.contestId && !this.hasParticipatedIn) {
+          if (this.contestPassword === '') {
+            this.$Message.error('Please input contest password');
+            return;
+          }
+          try {
+            await api.participateIn({
+              contestId: this.contestId,
+              password: this.contestPassword
+            });
+          } catch (_) {
+            return;
           }
         }
         this.submitBtnLoading = true;
@@ -350,7 +354,7 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['username', 'isLogin']),
-    ...mapGetters('contest', ['needPassword', 'contestId']),
+    ...mapGetters('contest', ['hasParticipatedIn', 'contestId']),
     ...mapState('contest', ['contest']),
     problemDescription: function () {
       return this.problem.problemDescriptionDTO;

@@ -31,6 +31,7 @@ export default {
   },
   data: function() {
     return {
+      secondsTimer: null,
       isRouterAlive: true
     }
   },
@@ -43,14 +44,24 @@ export default {
   computed: {
     ...mapState(['copyright'])
   },
-  async created() {
-    this.$store.commit('updateCopyright', await api.getCopyright());
+  created: async function() {
     if (sessionStorage.getItem('store')) {
       this.$store.replaceState(Object.assign({}, this.$store.state, JSON.parse(sessionStorage.getItem('store'))))
     }
+    this.$store.commit('updateCopyright', {
+      copyright: await api.getCopyright()
+    });
+    this.secondsTimer = setInterval(() => {
+      this.$store.commit('addOneSecond');
+    }, 1000);
     window.addEventListener('beforeunload', () => {
       sessionStorage.setItem('store', JSON.stringify(this.$store.state))
     })
+  },
+  beforeDestroy: function() {
+    if (this.secondsTimer) {
+      clearInterval(this.secondsTimer);
+    }
   }
 };
 </script>

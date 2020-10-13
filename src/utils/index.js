@@ -8,9 +8,6 @@
  *      https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
-import judge from './judge';
-import time from './time';
-
 const contestProblemId = function(problemCode) {
   problemCode = parseInt(problemCode) - 1;
   const str = []
@@ -27,7 +24,5 @@ const contestProblemId = function(problemCode) {
 }
 
 export default {
-  ...judge,
-  time,
   contestProblemId
 }

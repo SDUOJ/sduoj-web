@@ -1,4 +1,4 @@
-import judge from '_u/judge';
+import { JUDGE_RESULT } from '_u/constants';
 
 function calculateProblemResult(submissions, problemNum, endTime) {
   const problemResults = [];
@@ -20,20 +20,24 @@ function calculateProblemResult(submissions, problemNum, endTime) {
 
   for (let i = 1; i <= problemNum; ++i) {
     // sort by gmtCreate
+    let numSubmissionsPending = 0;
     let maxScoreSubmission = null;
     for (let i1 = 0; i1 < problemSubmissionMap[i].length; ++i1) {
       const oneSubmission = problemSubmissionMap[i][i1];
       if (!maxScoreSubmission || oneSubmission.judgeScore > maxScoreSubmission.judgeScore) {
         maxScoreSubmission = oneSubmission;
       }
+      if (oneSubmission.judgeResult === JUDGE_RESULT.PD) {
+        numSubmissionsPending++;
+      }
     }
     if (maxScoreSubmission) {
       problemResults.push([
         maxScoreSubmission.gmtCreate,  // gmtCreate
         maxScoreSubmission.judgeScore,  // judgeScore
-        maxScoreSubmission.judgeResult,
+        maxScoreSubmission.judgeResult, // judgeResult
         problemSubmissionMap[i].length, // numSubmissions
-        0
+        numSubmissionsPending           // numSubmissionsPending
       ]);
     } else {
       problemResults.push([]);
@@ -70,14 +74,14 @@ function formatProblemResults(_problemResults, startTime) {
       score += judgeScore;
       let css;
       switch (judgeResult) {
-        case judge.judgeResultMap.AC:
+        case JUDGE_RESULT.AC:
           css = 'score_correct';
           solved++;
           break;
-        case judge.judgeResultMap.WA:
+        case JUDGE_RESULT.WA:
           css = 'score_incorrect';
           break;
-        case judge.judgeResultMap.PD:
+        case JUDGE_RESULT.PD:
           css = 'score_pending';
           break;
         default:
@@ -88,7 +92,8 @@ function formatProblemResults(_problemResults, startTime) {
         css,
         time,
         score: judgeScore,
-        numSubmissions,
+        judgeResult,
+        numSubmissions: numSubmissions - numSubmissionsPending,
         numSubmissionsPending
       });
     }
