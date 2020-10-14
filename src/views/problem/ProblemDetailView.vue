@@ -153,7 +153,7 @@
           <!-- 近期提交记录 -->
           <Card class="display__card"
                 title="Recent Submissions"
-                v-if="isLogin && submissions.length > 0"
+                v-if="isLogin && submissions && submissions.length > 0"
                 dis-hover :padding="0">
             <Table
               size="small"
