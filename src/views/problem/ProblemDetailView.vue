@@ -153,7 +153,7 @@
           <!-- 近期提交记录 -->
           <Card class="display__card"
                 title="Recent Submissions"
-                v-if="submissions && submissions.length > 0"
+                v-if="isLogin && submissions.length > 0"
                 dis-hover :padding="0">
             <Table
               size="small"
@@ -235,10 +235,7 @@ export default {
       submitBtnLoading: false,
       submitColdDown: false,
       showTags: true,
-      showContestProblems: false,
-      problemDescription: {
-        markdownDescription: ''
-      }
+      showContestProblems: false
     }
   },
   filters: {
@@ -339,7 +336,6 @@ export default {
         ...params
       }).then(ret => {
         this.problem = ret;
-        this.problemDescription = this.problem.problemDescriptionDTO;
         this.language = this.problem.languages[0] || '';
         // 查最多5个提交记录
         api.getSubmissionList({
@@ -356,10 +352,10 @@ export default {
   computed: {
     ...mapGetters('user', ['username', 'isLogin']),
     ...mapGetters('contest', ['hasParticipatedIn', 'contestId']),
-    ...mapState('contest', ['contest'])
-    // problemDescription: function () {
-    //   return this.problem.problemDescriptionDTO || {};
-    // }
+    ...mapState('contest', ['contest']),
+    problemDescription: function () {
+      return this.problem.problemDescriptionDTO || {};
+    }
   },
   watch: {
     $route: function() {
