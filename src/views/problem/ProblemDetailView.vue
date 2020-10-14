@@ -235,7 +235,10 @@ export default {
       submitBtnLoading: false,
       submitColdDown: false,
       showTags: true,
-      showContestProblems: false
+      showContestProblems: false,
+      problemDescription: {
+        markdownDescription: ''
+      }
     }
   },
   filters: {
@@ -336,6 +339,7 @@ export default {
         ...params
       }).then(ret => {
         this.problem = ret;
+        this.problemDescription = this.problem.problemDescriptionDTO;
         this.language = this.problem.languages[0] || '';
         // 查最多5个提交记录
         api.getSubmissionList({
@@ -352,17 +356,17 @@ export default {
   computed: {
     ...mapGetters('user', ['username', 'isLogin']),
     ...mapGetters('contest', ['hasParticipatedIn', 'contestId']),
-    ...mapState('contest', ['contest']),
-    problemDescription: function () {
-      return this.problem.problemDescriptionDTO;
-    }
+    ...mapState('contest', ['contest'])
+    // problemDescription: function () {
+    //   return this.problem.problemDescriptionDTO || {};
+    // }
   },
   watch: {
     $route: function() {
       this.getProblem();
     }
   },
-  mounted: function () {
+  created: function () {
     this.getProblem();
   }
 }
