@@ -157,7 +157,8 @@ export default {
       if (typeof data === 'string') {
         data = JSON.parse(data);
       }
-      for (const item in data) {
+      for (let i = 0; i < data.length; ++i) {
+        const item = data[i];
         if (Array.isArray(item)) {
           this.fillCheckpointResults(item);
         } else {

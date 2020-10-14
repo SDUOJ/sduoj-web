@@ -269,7 +269,6 @@ export default {
   },
   methods: {
     handleProgressChange: function(percent) {
-      console.log(percent);
       if (percent === 100) {
         this.$store.commit('contest/setSliderTime', { sliderTime: null });
       } else {

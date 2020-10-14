@@ -29,14 +29,20 @@ function post(url, data) {
           Vue.prototype.$Message.error(response.data.message);
           reject(response.data);
         }
+        store.commit('updateNow', {
+          now: response.data.timestamp
+        });
       }, err => {
-        if (err.response.data.message) {
-          Vue.prototype.$Message.error(err.response.data.message);
-        } else {
-          Vue.prototype.$Message.error(err.toString());
-        }
+        // if (err.response.data.message) {
+        //   Vue.prototype.$Message.error(err.response.data.message);
+        // } else {
+        //   Vue.prototype.$Message.error(err.toString());
+        // }
         Vue.prototype.$Loading.finish();
         reject(err.response.data);
+        store.commit('updateNow', {
+          now: err.response.data.timestamp
+        });
       })
   });
 }
@@ -56,11 +62,11 @@ function get(url, params) {
           now: response.data.timestamp
         });
       }, err => {
-        if (err.response.data.message) {
-          Vue.prototype.$Message.error(err.response.data.message);
-        } else {
-          Vue.prototype.$Message.error(err.toString());
-        }
+        // if (err.response.data.message) {
+        //   Vue.prototype.$Message.error(err.response.data.message);
+        // } else {
+        //   Vue.prototype.$Message.error(err.toString());
+        // }
         Vue.prototype.$Loading.finish();
         reject(err.response.data);
         store.commit('updateNow', {

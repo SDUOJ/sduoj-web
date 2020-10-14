@@ -66,8 +66,7 @@ export default {
     handleLogin: function(name) {
       this.$refs[name].validate(valid => {
         if (valid) {
-          const dataForm = Object.assign({}, this.loginForm);
-          api.login(dataForm).then(ret => {
+          api.login(this.loginForm).then(ret => {
             this.setProfile(ret);
             this.$router.replace(this.$route.query.to || '/');
           }).catch(err => {

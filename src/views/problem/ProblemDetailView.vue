@@ -153,7 +153,7 @@
           <!-- 近期提交记录 -->
           <Card class="display__card"
                 title="Recent Submissions"
-                v-if="submissions && submissions.length > 0"
+                v-if="isLogin && submissions && submissions.length > 0"
                 dis-hover :padding="0">
             <Table
               size="small"
@@ -354,7 +354,7 @@ export default {
     ...mapGetters('contest', ['hasParticipatedIn', 'contestId']),
     ...mapState('contest', ['contest']),
     problemDescription: function () {
-      return this.problem.problemDescriptionDTO;
+      return this.problem.problemDescriptionDTO || {};
     }
   },
   watch: {
@@ -362,7 +362,7 @@ export default {
       this.getProblem();
     }
   },
-  mounted: function () {
+  created: function () {
     this.getProblem();
   }
 }
