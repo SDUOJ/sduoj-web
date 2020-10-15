@@ -26,8 +26,9 @@
               class="data-table"></Table>
           </Card>
           <Card v-if="showJudgerLog" class="box" :title="compilerLogTitle" dis-hover>
-            <pre v-highlightjs="submission.judgeLog"><code style="font-family: Menlo, Monaco, 'Courier New', monospace;"
-                                                           class="plaintext"/></pre>
+            <div class="judge-log">
+              {{ submission.judgeLog }}
+            </div>
           </Card>
           <Card v-if="showCode" class="box" title="Your Code" icon="md-code" dis-hover :padding="5">
             <pre v-highlightjs="submission.code"><code style="font-family: Menlo, Monaco, 'Courier New', monospace;"
@@ -279,5 +280,12 @@ export default {
   .title {
     line-height: 35px;
     font-size: 1.7rem;
+  }
+
+  .judge-log {
+    white-space: pre;
+    word-wrap: break-word;
+    word-break: break-all;
+    overflow-x: scroll;
   }
 </style>

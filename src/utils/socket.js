@@ -11,7 +11,7 @@
 let websocket = null;
 let successCallback = null;
 let errorCallback = null;
-const baseUrl = 'ws://api.oj.sdu.edu.cn:8080';
+const baseUrl = 'ws://api.oj.cs.sdu.edu.cn:8080';
 let wsUrl = '';
 
 function websocketMessage(ret) {
