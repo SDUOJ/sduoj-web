@@ -13,8 +13,7 @@ import axios from 'axios';
 import store from '@/store';
 
 const ver1 = '/api';
-// axios.defaults.baseURL = 'http://api.oj.xrvitd.com:8080' + ver1;
-axios.defaults.baseURL = 'http://api.oj.sdu.edu.cn:8080' + ver1;
+axios.defaults.baseURL = 'http://api.oj.cs.sdu.edu.cn:8080' + ver1;
 axios.defaults.withCredentials = true;
 
 function post(url, data) {

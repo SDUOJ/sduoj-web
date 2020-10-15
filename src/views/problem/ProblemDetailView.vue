@@ -174,6 +174,7 @@ import 'markdown-it-vue/dist/markdown-it-vue-light.css'
 import ProblemCode from '_c/ProblemCode';
 import CodeEditor from '_c/CodeEditor';
 import JudgeResult from '_c/JudgeResult';
+import moment from 'moment';
 
 import api from '_u/api';
 import { contestProblemId } from '_u/transform';
@@ -193,12 +194,13 @@ export default {
         {
           title: 'Result',
           key: 'judgeResult',
+          minWidth: 60,
           render: (h, params) => h(JudgeResult, { props: { result: params.row.judgeResult } })
         },
         {
           title: 'Submit time',
           key: 'gmtCreate',
-          render: (h, params) => h('Time', { props: { time: parseInt(params.row.gmtCreate) } })
+          render: (h, params) => h('span', moment(parseInt(params.row.gmtCreate)).fromNow())
         }
       ],
       problemColumn: [
