@@ -19,7 +19,12 @@ const getters = {
   username: state => state.profile.username || '',
   avatar: state => 'https://www.gravatar.com/avatar/' + md5(state.profile.email || '') + '?s=200&d=mp&r=g',
   isLogin: state => !!state.profile.userId,
-  isVerified: state => !!state.profile.emailVerified
+  isVerified: state => !!state.profile.emailVerified,
+  isAdmin: state => {
+    let isAdmin = false;
+    state.profile.roles.forEach(role => (isAdmin |= (role.indexOf('admin') !== -1)));
+    return isAdmin;
+  }
 }
 
 const mutations = {

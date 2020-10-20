@@ -18,15 +18,21 @@
       :columns="filteredColumns"
       :data="submissions"
       :loading="loading"
+      @on-selection-change="onSelectionChange"
       @on-sort-change="onSort"
       @on-cell-click="onCellClick"></Table>
-    <div class="pages">
-      <Page
-        size="small" show-elevator show-sizer
-        :total="total"
-        :current.sync="pageNow"
-        @on-change="onPageChange"
-        @on-page-size-change="onPageSizeChange"/>
+    <div>
+      <div v-if="doRejudge" class="left btns">
+        <Button @click="onRejudge"><Icon type="md-refresh" />&nbsp;Rejudge</Button>
+      </div>
+      <div class="right pages">
+        <Page
+          size="small" show-elevator show-sizer
+          :total="total"
+          :current.sync="pageNow"
+          @on-change="onPageChange"
+          @on-page-size-change="onPageSizeChange"/>
+      </div>
     </div>
   </Card>
 </template>
@@ -50,6 +56,10 @@ export default {
       type: Boolean,
       default: true
     },
+    doRejudge: {
+      type: Boolean,
+      default: false
+    },
     noDataText: {
       type: String,
       default: ''
@@ -61,7 +71,7 @@ export default {
     columns: {
       type: Array,
       default: () => [
-        { title: '#', key: 'submissionId', minWidth: 70 },
+        { title: '#', key: 'submissionId', minWidth: 60 },
         { title: 'Username', key: 'username' },
         {
           title: 'Problem Code',
@@ -109,7 +119,7 @@ export default {
         {
           title: 'Judge Result',
           key: 'judgeResult',
-          minWidth: 100,
+          minWidth: 95,
           render: (h, params) => h(JudgeResult, { props: { result: params.row.judgeResult } })
         },
         { title: 'Time', key: 'usedTime', sortable: true, maxWidth: 90 },
@@ -139,6 +149,7 @@ export default {
     return {
       filteredColumns: [],
       submissions: [],
+      selectedSubmissions: [],
       total: 0,
       pageNow: 1,
       pageSize: 10,
@@ -168,6 +179,12 @@ export default {
     },
     onCellClick: function(row, col, data, event) {
       this.$emit('on-cell-click', row, col, data, event);
+    },
+    onSelectionChange: function(selection) {
+      this.selectedSubmissions = selection;
+    },
+    onRejudge: function() {
+      this.$emit('on-rejudge', this.selectedSubmissions);
     },
     querySubmissionList: function() {
       this.loading = true;
@@ -202,18 +219,31 @@ export default {
     }
   },
   created: function() {
-    this.filteredColumns = this.columns.filter(col => !this.bannedKey.includes(col.key));
+    let _columns = [...this.columns];
+    if (this.doRejudge) {
+      _columns = [
+        {
+          type: 'selection',
+          width: 60,
+          align: 'center'
+        }
+      ].concat(_columns);
+    }
+    this.filteredColumns = _columns.filter(col => !this.bannedKey.includes(col.key));
   }
 }
 </script>
 
 <style scoped>
   .data-table {
-    user-select: none;
   }
+
+  .btns {
+    margin: 15px;
+  }
+
   .pages {
-    float: right;
-    margin: 20px auto;
+    margin: 15px auto;
     padding-right: 15px;
   }
 </style>

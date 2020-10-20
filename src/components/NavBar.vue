@@ -37,6 +37,7 @@
               </div>
               <DropdownMenu slot="list">
                 <DropdownItem name="home">Profile</DropdownItem>
+                <DropdownItem name="manage" v-if="isAdmin">Manage</DropdownItem>
                 <DropdownItem name="logout" divided>Logout</DropdownItem>
               </DropdownMenu>
             </Dropdown>
@@ -76,6 +77,8 @@ export default {
         this.handleLogout();
       } else if (name === 'home') {
         this.toHome();
+      } else if (name === 'manage') {
+        window.location.replace('//manage.oj.cs.sdu.edu.cn');
       }
     },
     handleLogout: function () {
@@ -88,7 +91,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('user', ['isLogin', 'username', 'avatar'])
+    ...mapGetters('user', ['isLogin', 'username', 'avatar', 'isAdmin'])
   },
   mounted: function () {
     api.getProfile();

@@ -12,8 +12,8 @@ import Vue from 'vue';
 import axios from 'axios';
 import store from '@/store';
 
-const ver1 = '/api';
-axios.defaults.baseURL = 'http://api.oj.cs.sdu.edu.cn:8080' + ver1;
+const API_VERSION = '/api';
+axios.defaults.baseURL = 'http://api.oj.cs.sdu.edu.cn:8080' + API_VERSION;
 axios.defaults.withCredentials = true;
 
 function post(url, data) {
@@ -32,11 +32,6 @@ function post(url, data) {
           now: response.data.timestamp
         });
       }, err => {
-        // if (err.response.data.message) {
-        //   Vue.prototype.$Message.error(err.response.data.message);
-        // } else {
-        //   Vue.prototype.$Message.error(err.toString());
-        // }
         Vue.prototype.$Loading.finish();
         reject(err.response.data);
         store.commit('updateNow', {
@@ -61,11 +56,6 @@ function get(url, params) {
           now: response.data.timestamp
         });
       }, err => {
-        // if (err.response.data.message) {
-        //   Vue.prototype.$Message.error(err.response.data.message);
-        // } else {
-        //   Vue.prototype.$Message.error(err.toString());
-        // }
         Vue.prototype.$Loading.finish();
         reject(err.response.data);
         store.commit('updateNow', {
@@ -215,5 +205,11 @@ export default {
   },
   getContestRank: function(contestId) {
     return get('/contest/rank', { contestId });
+  },
+  rejudge: function(data) {
+    return post('/contest/rejudge', data);
+  },
+  invalidate: function(submissionId) {
+
   }
 }
