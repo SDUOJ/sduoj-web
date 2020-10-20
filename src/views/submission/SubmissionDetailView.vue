@@ -38,18 +38,23 @@
       </Col>
       <Col span="7">
         <Card title="Submission" icon="ios-options" dis-hover :padding="0">
-          <CellGroup>
+          <CellGroup @on-click="onCellClick">
             <div style="margin-top: 24px;">
               <Cell title="Public" v-if="submission.username === username">
                 <i-switch v-model="submission.isPublic" slot="extra" true-color="#19be6b"/>
               </Cell>
+              <Divider size="small"/>
               <template v-if="contestId">
-                <Cell
-                  title="Problem Code"
-                  :extra="submission.problemCode | contestProblemId"
-                  :to="{ name: 'contest-problem', params: {
-                      problemCode: submission.problemCode,
-                    }}"/>
+                <template v-if="canDoRejudge">
+                  <Cell name="rejudge">
+                    <strong>Rejudge</strong>
+                    <Icon slot="icon" type="md-refresh" color="#2d8cf0" />
+                  </Cell>
+                  <Cell name="invalidate">
+                    <strong>Invalidate</strong>
+                    <Icon slot="icon" type="md-close-circle" color="#d9534f" />
+                  </Cell>
+                </template>
                 <Cell
                   title="Contest"
                   :extra="$store.state.contest.contest.contestTitle"
@@ -57,6 +62,12 @@
                         name: 'contest-overview',
                         params: { contestId }
                       }"/>
+                <Cell
+                  title="Problem Code"
+                  :extra="submission.problemCode | contestProblemId"
+                  :to="{ name: 'contest-problem', params: {
+                      problemCode: submission.problemCode,
+                    }}"/>
               </template>
               <template v-else>
                 <Cell
@@ -64,8 +75,8 @@
                   :to="{ name: 'problem-detail', params: { problemCode: submission.problemCode }}">
                   <ProblemCode slot="extra" :problemCode="submission.problemCode"/>
                 </Cell>
-                <Cell title="Problem ID" :extra="submission.problemId"/>
               </template>
+              <Cell title="Problem Title" :extra="submission.problemTitle"/>
             </div>
             <Divider size="small"/>
             <div style="margin-bottom: 24px;">
@@ -105,7 +116,7 @@
 <script>
 import ProblemCode from '_c/ProblemCode';
 import JudgeResult from '_c/JudgeResult';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import { sendWebsocket, closeWebsocket } from '_u/socket';
 import api from '_u/api';
 import { contestProblemId } from '_u/transform';
@@ -210,11 +221,24 @@ export default {
           }
         }
       });
+    },
+    onCellClick: function(name) {
+      if (name === 'rejudge') {
+        // doRejudge
+        api.rejudge({
+          contestId: this.contestId,
+          submissionIds: [this.submission.submissionId]
+        });
+      } else if (name === 'invalidate') {
+        // invalidate the grade
+        api.invalidate(this.submission.submissionId);
+      }
     }
   },
   computed: {
-    ...mapGetters('user', ['username']),
+    ...mapGetters('user', ['username', 'isAdmin']),
     ...mapGetters('contest', ['contestId']),
+    ...mapState('contest', ['contest']),
     showCode: function () {
       return !!this.submission.code;
     },
@@ -232,6 +256,9 @@ export default {
         return 'Compiler Log'
       }
       return ''
+    },
+    canDoRejudge: function() {
+      return !!(this.contestId && (this.isAdmin || this.username === this.contest.username));
     }
   },
   created: function () {

@@ -11,14 +11,14 @@
 <template>
   <div class="container">
     <Card class="filter" dis-hover :padding="0">
-        <h3 slot="title" style="display: inline">过滤</h3>
+        <h3 slot="title" style="display: inline">Filter</h3>
         <div slot="extra" class="btns card-extra">
-          <Button type="text" @click="onFiltering">过滤</Button>
-          <Button type="text" @click="onReset">重置</Button>
+          <Button type="text" @click="onFiltering">Filter</Button>
+          <Button type="text" @click="onReset">Reset</Button>
         </div>
       <div class="clearfix filter-sets">
         <div>
-          <div class="filter-title">由用户</div>
+          <div class="filter-title">By Username</div>
           <Input v-model="filterForm.username"
             placeholder="Username"
             style="width: 200px;"
@@ -26,7 +26,7 @@
           </Input>
         </div>
         <div>
-          <div class="filter-title">由题目</div>
+          <div class="filter-title">By Problem Code</div>
           <Input v-model="filterForm.problemCode"
             placeholder="Problem Code"
             style="width: 200px;"
@@ -34,7 +34,7 @@
           </Input>
         </div>
         <div>
-          <div class="filter-title">由评测结果</div>
+          <div class="filter-title">By Judge Result</div>
           <Input v-model="filterForm.judgeResult"
             placeholder="Status"
             style="width: 200px;"
@@ -42,7 +42,7 @@
           </Input>
         </div>
         <div>
-          <div class="filter-title">由语言</div>
+          <div class="filter-title">By Language</div>
           <Input v-model="filterForm.lang"
             placeholder="Language"
             style="width: 200px;"
@@ -51,13 +51,18 @@
         </div>
       </div>
     </Card>
-    <SubmissionList :filter="filterOption" @on-cell-click="onSubmissionListCellClick"/>
+    <SubmissionList
+      :filter="filterOption"
+      :doRejudge="canDoRejudge"
+      @on-rejudge="handleRejudge"
+      @on-cell-click="onSubmissionListCellClick"/>
   </div>
 </template>
 
 <script>
 import SubmissionList from '_c/SubmissionList';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
+import api from '_u/api';
 
 export default {
   name: 'SubmissionView',
@@ -65,7 +70,8 @@ export default {
   data: function() {
     return {
       filterOption: {},
-      filterForm: {}
+      filterForm: {},
+      selectedSubmissions: []
     }
   },
   methods: {
@@ -85,9 +91,7 @@ export default {
       if (col.key === 'judgeResult') {
         this.$router.push({
           name,
-          params: {
-            submissionId: row.submissionId
-          }
+          params: { submissionId: row.submissionId }
         });
       }
       if (col.key === 'problemCode') {
@@ -98,10 +102,21 @@ export default {
           }
         })
       }
+    },
+    handleRejudge: function(submissions) {
+      api.rejudge({
+        contestId: this.contestId,
+        submissionIds: submissions.map(item => item.submissionId)
+      });
     }
   },
   computed: {
-    ...mapGetters('contest', ['contestId'])
+    ...mapState('contest', ['contest']),
+    ...mapGetters('contest', ['contestId']),
+    ...mapGetters('user', ['isAdmin', 'username']),
+    canDoRejudge: function() {
+      return !!(this.contestId && (this.isAdmin || this.contest.username === this.username));
+    }
   },
   mounted: function() {
     this.filterForm = { ...this.$route.params };

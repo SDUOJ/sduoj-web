@@ -75,13 +75,11 @@ export default {
       },
       carouselImgs: [
         // test imgs
-        'https://www.sdu.edu.cn/images/2020091103.jpg',
-        'https://www.sdu.edu.cn/images/2020091405.jpg'
+        'https://www.cs.sdu.edu.cn/images/ban1news.jpg'
       ],
       announcements: [
-        { title: '薛定谔的腾腾喵', time: '2020-09-22', url: '1' },
-        { title: '臭东东再不学前端就把你干掉', time: '2020-09-21', url: '2' },
-        { title: '憨憨瑞瑞喵', time: '2020-09-20', url: '3' }
+        { title: 'SDUOJ 于 2020年10月26日成功入塔', time: '2020-10-26', url: '1' },
+        { title: 'SDUOJ 国庆期间项目进度推进', time: '2020-10-01', url: '2' }
       ]
     }
   }
