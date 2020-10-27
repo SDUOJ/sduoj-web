@@ -28,8 +28,8 @@
           </div>
         </Card>
         <!--  -->
-        <!-- 样例输入输出 -->
-        <Card class="box" :title="`Case ${index + 1}`" dis-hover :padding="10" v-for="(problemCase, index) in problem.problemCaseDTOList" :key="index">
+<!--        &lt;!&ndash; 样例输入输出 &ndash;&gt;-->
+        <Card class="box" :title="`Case ${problemCase.id}`" dis-hover :padding="10" v-for="problemCase in problem.problemCaseDTOList" :key="problemCase.id">
             <div class="problem-example">
               <Tooltip style="display: inline-block" content="Copy" placement="right">
                 <span class="clip hover" @click="copyToClipboard(problemCase.input)"> Input </span>
@@ -53,9 +53,8 @@
             <CodeEditor
               :code.sync="code"
               :file.sync="file"
-              :language="language"
-              :languageSet="problem.languages"
-              @changeLanguage="onChangeLanguage">
+              :judgeTemplateSet="problem.judgeTemplates"
+              @changeJudgeTemplate="onChangeJudgeTemplate">
             </CodeEditor>
             <Button
               style="float: right; margin: 5px 0 5px 10px;"
@@ -103,9 +102,9 @@
               <Cell title="Weight" v-if="problem.problemWeight">
                 <span slot="extra">{{ problem.problemWeight }}</span>
               </Cell>
-              <Cell title="Languages">
+              <Cell title="Judge Templates">
                 <div slot="label">
-                  <span v-for="lang in problem.languages" :key="lang" class="language">{{ lang }}</span>
+                  <span v-for="lang in problem.judgeTemplates" :key="lang.id" class="judgeTemplate">{{ lang.title }}</span>
                 </div>
               </Cell>
               <Cell title="Source" :extra="problem.source"/>
@@ -232,7 +231,7 @@ export default {
       submissions: null,
       code: '',
       file: null,
-      language: '',
+      judgeTemplate: '',
       submitBtnLoading: false,
       submitColdDown: false,
       showTags: true,
@@ -267,8 +266,8 @@ export default {
         });
       }
     },
-    onChangeLanguage: function (newLanguage) {
-      this.language = newLanguage;
+    onChangeJudgeTemplate: function (newJudgeTemplate) {
+      this.judgeTemplate = newJudgeTemplate;
     },
     switchContestProblem: function(problemCode) {
       this.$router.push({
@@ -279,8 +278,9 @@ export default {
       });
     },
     onSubmit: async function () {
-      if (this.language === '') {
-        this.$Message.error('Choose your language');
+      console.log(this.judgeTemplate);
+      if (this.judgeTemplate === '') {
+        this.$Message.error('Choose one judge template');
         return;
       }
       if (this.file) {
@@ -288,7 +288,7 @@ export default {
       } else {
         const dataForm = {
           problemCode: this.problem.problemCode,
-          language: this.language,
+          judgeTemplateId: this.judgeTemplate,
           code: this.code
         };
         if (this.contestId && !this.hasParticipatedIn) {
@@ -336,8 +336,8 @@ export default {
         ...this.$route.query,
         ...params
       }).then(ret => {
+        ret.problemCaseDTOList.forEach((problemCase, index) => (problemCase.id = index + 1));
         this.problem = ret;
-        this.language = this.problem.languages[0] || '';
         // 查最多5个提交记录
         api.getSubmissionList({
           pageNow: 1,
@@ -411,11 +411,11 @@ export default {
     }
   }
 
-  .language::after {
+  .judgeTemplate::after {
     content: ", ";
   }
 
-  .language:last-child {
+  .judgeTemplate:last-child {
     &:after {
       content: "";
     }
