@@ -29,23 +29,22 @@
         </Card>
         <!--  -->
         <!-- 样例输入输出 -->
-        <!-- <Card class="box" v-for="ex in problemDescription.examples" :key="ex.id">
-          <div slot="header" class="box-header">
-            Example {{ ex.id }}
-          </div>
+        <Card class="box" :title="`Case ${index + 1}`" dis-hover :padding="10" v-for="(problemCase, index) in problem.problemCaseDTOList" :key="index">
             <div class="problem-example">
-              <Tooltip content="Copy" placement="right">
-                <h3 class="clip" @click="copyToClipboard(ex.input)"> Input </h3>
+              <Tooltip style="display: inline-block" content="Copy" placement="right">
+                <span class="clip hover" @click="copyToClipboard(problemCase.input)"> Input </span>
+                <Icon type="ios-copy-outline" />
               </Tooltip>
-              <markdown-it-vue-light :content="'```text\n' + ex.input + '\n```'"></markdown-it-vue-light>
+              <markdown-it-vue-light :content="`\`\`\`text\n${problemCase.input}\n\`\`\``" />
             </div>
             <div class="problem-example">
               <Tooltip content="Copy" placement="right">
-                <h3 class="clip" @click="copyToClipboard(ex.output)"> Output </h3>
+                <span class="clip hover" @click="copyToClipboard(problemCase.output)"> Output </span>
+                <Icon type="ios-copy-outline" />
               </Tooltip>
-              <markdown-it-vue-light :content="'```text\n' + ex.output + '\n```'"></markdown-it-vue-light>
+              <markdown-it-vue-light :content="`\`\`\`text\n${problemCase.output}\n\`\`\``" />
             </div>
-        </Card> -->
+        </Card>
         </div>
         <!--  -->
         <!-- 代码编辑器 -->
@@ -388,8 +387,9 @@ export default {
   .problem-example {
     padding: 12px 0;
 
-    .clip:hover {
-      cursor: pointer;
+    .clip{
+      font-size: 100%;
+      font-weight: bold;
     }
   }
 
