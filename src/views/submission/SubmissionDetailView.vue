@@ -100,6 +100,7 @@
               <Cell v-if="submission.judgeScore" title="Score">
                 <span slot="extra">{{ submission.judgeScore || 0 }}</span>
               </Cell>
+<!-- 这里待定，等待后端同步 -->
               <Cell title="Judge Template" :extra="submission.judgeTemplateTitle"/>
               <Cell v-if="submission.codeLength" title="Code Length">
                 <span slot="extra">{{ submission.codeLength || 0 }}</span>
