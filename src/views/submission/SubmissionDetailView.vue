@@ -17,22 +17,27 @@
           <Card class="box" dis-hover :padding="0">
             <JudgeResult class="title" slot="title" :result="submission.judgeResult"/>
             <Table
-              disabled-hover
               v-if="submission.checkpointResults"
+              disabled-hover
               no-data-text=""
               size="small"
               :columns="columns"
               :data="submission.checkpointResults"
-              class="data-table"></Table>
+              class="data-table" />
           </Card>
           <Card v-if="showJudgerLog" class="box" :title="compilerLogTitle" dis-hover>
             <div class="judge-log">
               {{ submission.judgeLog }}
             </div>
           </Card>
-          <Card v-if="showCode" class="box" title="Your Code" icon="md-code" dis-hover :padding="5">
-            <pre v-highlightjs="submission.code"><code style="font-family: Menlo, Monaco, 'Courier New', monospace;"
-                                                       :class="submission.lang"/></pre>
+          <Card v-if="showCode" class="box" title="Your Code" icon="md-code" dis-hover :padding="10">
+            <p slot="title">
+              <span>Your Code</span>
+              <Tooltip content="copy" placement="left" style="float: right">
+                <Icon class="hover" type="md-copy" @click="copyToClipboard(submission.code)" />
+              </Tooltip>
+            </p>
+            <pre v-highlightjs="submission.code"><code style="font-family: Menlo, Monaco, 'Courier New', monospace;" /></pre>
           </Card>
         </div>
       </Col>
@@ -95,7 +100,7 @@
               <Cell v-if="submission.judgeScore" title="Score">
                 <span slot="extra">{{ submission.judgeScore || 0 }}</span>
               </Cell>
-              <Cell title="Language" :extra="submission.language"/>
+              <Cell title="Judge Template" :extra="submission.judgeTemplateTitle"/>
               <Cell v-if="submission.codeLength" title="Code Length">
                 <span slot="extra">{{ submission.codeLength || 0 }}</span>
               </Cell>
@@ -139,23 +144,19 @@ export default {
         checkpointResults: []
       },
       columns: [
+        { title: '#', key: 'id' },
         {
-          title: '#',
-          key: 'id'
-        },
-        {
-          title: '评测结果',
-          key: 'judgeResult',
+          title: 'Result',
           minWidth: 50,
           render: (h, params) => h(JudgeResult, { props: { result: params.row.judgeResult } })
         },
         {
-          title: '用时',
-          key: 'usedTime'
+          title: 'Time',
+          render: (h, params) => h('span', { class: 'time' }, params.row.usedTime)
         },
         {
-          title: '内存',
-          key: 'usedMemory'
+          title: 'Memory',
+          render: (h, params) => h('span', { class: 'mem' }, params.row.usedMemory)
         }
       ]
     }
@@ -165,6 +166,9 @@ export default {
     contestProblemId: problemCode => contestProblemId(problemCode)
   },
   methods: {
+    copyToClipboard: function (content) {
+      this.$copyText(content).then(_ => this.$Message.success('已复制到剪切板'));
+    },
     wsSuccess: function (data) {
       if (typeof data === 'string') {
         data = JSON.parse(data);
