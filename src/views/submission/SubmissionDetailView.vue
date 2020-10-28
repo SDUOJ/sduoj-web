@@ -190,7 +190,7 @@ export default {
       }
     },
     wsRequest: function () {
-      sendWebsocket('/ws/submission', { id: this.submission.submissionId }, this.wsSuccess, _ => (closeWebsocket()));
+      sendWebsocket('/submission', { id: this.submission.submissionId }, this.wsSuccess, _ => (closeWebsocket()));
     },
     gotoProblem: function (problemCode) {
       this.$router.push({

@@ -85,7 +85,6 @@ export default {
       this.$emit('update:code', newCode);
     },
     onJudgeTemplateChange: function(newVal) {
-     
       this.$emit('changeJudgeTemplate', newVal);
     },
     onFileUpload: function(newFile) {
