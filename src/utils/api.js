@@ -12,7 +12,6 @@ import Vue from 'vue';
 import axios from 'axios';
 import store from '@/store';
 
-// axios.defaults.baseURL = 'http://api.oj.cs.sdu.edu.cn:8080' + API_VERSION;
 axios.defaults.baseURL = '/api';
 axios.defaults.withCredentials = true;
 
