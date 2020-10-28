@@ -78,7 +78,8 @@ export default {
       } else if (name === 'home') {
         this.toHome();
       } else if (name === 'manage') {
-        window.location.replace('//manage.oj.cs.sdu.edu.cn');
+        console.log(window.location)
+        window.location.href = '//manage.oj.cs.sdu.edu.cn:8081';
       }
     },
     handleLogout: function () {
@@ -104,8 +105,8 @@ export default {
     user-select: none;
     position: fixed;
     height: 50px;
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
     right: auto;
     bottom: auto;
     background-color: #fff;

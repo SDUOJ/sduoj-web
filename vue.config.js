@@ -1,4 +1,19 @@
 const resolve = dir => require('path').join(__dirname, dir);
+
+const apiProxyTable = {
+  onProxyReq: proxyReq => {
+    proxyReq.setHeader('Referer', process.env.OJ_SERVER)
+  },
+  target: `http://${process.env.OJ_SERVER}`,
+  changeOrigin: true,
+  xfwd: false
+};
+const wsProxyTable = {
+  target: `ws://${process.env.OJ_WS || process.env.OJ_SERVER}`,
+  changeOrigin: true,
+  ws: true
+};
+
 module.exports = {
   chainWebpack: config => {
     config.resolve.alias
@@ -22,6 +37,10 @@ module.exports = {
     }
   },
   devServer: {
-    disableHostCheck: true
+    disableHostCheck: true,
+    proxy: {
+      '/api': apiProxyTable,
+      '/ws': wsProxyTable
+    }
   }
 }

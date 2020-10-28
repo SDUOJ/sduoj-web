@@ -12,8 +12,8 @@ import Vue from 'vue';
 import axios from 'axios';
 import store from '@/store';
 
-const API_VERSION = '/api';
-axios.defaults.baseURL = 'http://api.oj.cs.sdu.edu.cn:8080' + API_VERSION;
+// axios.defaults.baseURL = 'http://api.oj.cs.sdu.edu.cn:8080' + API_VERSION;
+axios.defaults.baseURL = '/api';
 axios.defaults.withCredentials = true;
 
 function post(url, data) {
