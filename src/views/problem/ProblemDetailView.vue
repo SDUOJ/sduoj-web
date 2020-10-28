@@ -28,24 +28,23 @@
           </div>
         </Card>
         <!--  -->
-        <!-- 样例输入输出 -->
-        <!-- <Card class="box" v-for="ex in problemDescription.examples" :key="ex.id">
-          <div slot="header" class="box-header">
-            Example {{ ex.id }}
-          </div>
+<!--        &lt;!&ndash; 样例输入输出 &ndash;&gt;-->
+        <Card class="box" :title="`Case ${problemCase.id}`" dis-hover :padding="10" v-for="problemCase in problem.problemCaseDTOList" :key="problemCase.id">
             <div class="problem-example">
-              <Tooltip content="Copy" placement="right">
-                <h3 class="clip" @click="copyToClipboard(ex.input)"> Input </h3>
+              <Tooltip style="display: inline-block" content="Copy" placement="right">
+                <span class="clip hover" @click="copyToClipboard(problemCase.input)"> Input </span>
+                <Icon type="ios-copy-outline" />
               </Tooltip>
-              <markdown-it-vue-light :content="'```text\n' + ex.input + '\n```'"></markdown-it-vue-light>
+              <markdown-it-vue-light :content="`\`\`\`text\n${problemCase.input}\n\`\`\``" />
             </div>
             <div class="problem-example">
               <Tooltip content="Copy" placement="right">
-                <h3 class="clip" @click="copyToClipboard(ex.output)"> Output </h3>
+                <span class="clip hover" @click="copyToClipboard(problemCase.output)"> Output </span>
+                <Icon type="ios-copy-outline" />
               </Tooltip>
-              <markdown-it-vue-light :content="'```text\n' + ex.output + '\n```'"></markdown-it-vue-light>
+              <markdown-it-vue-light :content="`\`\`\`text\n${problemCase.output}\n\`\`\``" />
             </div>
-        </Card> -->
+        </Card>
         </div>
         <!--  -->
         <!-- 代码编辑器 -->
@@ -54,9 +53,8 @@
             <CodeEditor
               :code.sync="code"
               :file.sync="file"
-              :language="language"
-              :languageSet="problem.languages"
-              @changeLanguage="onChangeLanguage">
+              :judgeTemplateSet="problem.judgeTemplates"
+              @changeJudgeTemplate="onChangeJudgeTemplate">
             </CodeEditor>
             <Button
               style="float: right; margin: 5px 0 5px 10px;"
@@ -104,9 +102,9 @@
               <Cell title="Weight" v-if="problem.problemWeight">
                 <span slot="extra">{{ problem.problemWeight }}</span>
               </Cell>
-              <Cell title="Languages">
+              <Cell title="Judge Templates">
                 <div slot="label">
-                  <span v-for="lang in problem.languages" :key="lang" class="language">{{ lang }}</span>
+                  <span v-for="lang in problem.judgeTemplates" :key="lang.id" class="judgeTemplate">{{ lang.title }}</span>
                 </div>
               </Cell>
               <Cell title="Source" :extra="problem.source"/>
@@ -233,7 +231,7 @@ export default {
       submissions: null,
       code: '',
       file: null,
-      language: '',
+      judgeTemplate: '',
       submitBtnLoading: false,
       submitColdDown: false,
       showTags: true,
@@ -268,8 +266,8 @@ export default {
         });
       }
     },
-    onChangeLanguage: function (newLanguage) {
-      this.language = newLanguage;
+    onChangeJudgeTemplate: function (newJudgeTemplate) {
+      this.judgeTemplate = newJudgeTemplate;
     },
     switchContestProblem: function(problemCode) {
       this.$router.push({
@@ -280,8 +278,9 @@ export default {
       });
     },
     onSubmit: async function () {
-      if (this.language === '') {
-        this.$Message.error('Choose your language');
+      console.log(this.judgeTemplate);
+      if (this.judgeTemplate === '') {
+        this.$Message.error('Choose one judge template');
         return;
       }
       if (this.file) {
@@ -289,7 +288,7 @@ export default {
       } else {
         const dataForm = {
           problemCode: this.problem.problemCode,
-          language: this.language,
+          judgeTemplateId: this.judgeTemplate,
           code: this.code
         };
         if (this.contestId && !this.hasParticipatedIn) {
@@ -337,8 +336,8 @@ export default {
         ...this.$route.query,
         ...params
       }).then(ret => {
+        ret.problemCaseDTOList.forEach((problemCase, index) => (problemCase.id = index + 1));
         this.problem = ret;
-        this.language = this.problem.languages[0] || '';
         // 查最多5个提交记录
         api.getSubmissionList({
           pageNow: 1,
@@ -388,8 +387,9 @@ export default {
   .problem-example {
     padding: 12px 0;
 
-    .clip:hover {
-      cursor: pointer;
+    .clip{
+      font-size: 100%;
+      font-weight: bold;
     }
   }
 
@@ -411,11 +411,11 @@ export default {
     }
   }
 
-  .language::after {
+  .judgeTemplate::after {
     content: ", ";
   }
 
-  .language:last-child {
+  .judgeTemplate:last-child {
     &:after {
       content: "";
     }

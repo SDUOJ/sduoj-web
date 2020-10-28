@@ -124,7 +124,7 @@ export default {
         },
         { title: 'Time', key: 'usedTime', sortable: true, maxWidth: 90 },
         { title: 'Memory', key: 'usedMemory', sortable: true, maxWidth: 120 },
-        { title: 'Language', key: 'language' },
+        { title: 'Template', key: 'judgeTemplate' },
         {
           title: 'Submit Time',
           key: 'gmtCreate',

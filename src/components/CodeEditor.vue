@@ -12,11 +12,14 @@
   <div>
     <div class="utils clearfix">
       <div class="lang">
-        <span>Languages: </span>
-        <Select :value="language" @on-change="onLanguageChange" class="adjust">
-          <Option v-for="item in languageSet" :key="item" :value="item">
-            {{item}}
-          </Option>
+        <span>Judge Templates: </span>
+        <Select @on-change="onJudgeTemplateChange" class="adjust">
+          <Tooltip v-for="template in judgeTemplateSet" :key="template.id" :content="template.comment" style="width: 100%"  placement="right" transfer>
+            <Option :value="template.id" :label="template.title">
+              <span>{{ `${template.id}:${template.title}` }}</span>
+              <span style="float:right;color:#ccc">{{ template.type | judgeTemplateTypeName }}</span>
+            </Option>
+          </Tooltip>
         </Select>
       </div>
       <Upload class="upload" :before-upload="onFileUpload" action="">
@@ -30,22 +33,9 @@
   </div>
 </template>
 <script>
-// Thanks for @QingdaoU
 import { codemirror } from 'vue-codemirror-lite'
-// mode
-import 'codemirror/mode/clike/clike.js'
-import 'codemirror/mode/python/python.js'
-// active-line.js
 import 'codemirror/addon/selection/active-line.js'
-
-const modeMap = {
-  'c++': 'text/x-c++src',
-  cpp: 'text/x-c++src',
-  cc: 'text/x-c++src',
-  c: 'text/x-csrc',
-  py: 'text/x-python',
-  java: 'text/x-java'
-};
+import { judgeTemplateProperity } from '_u/constants';
 
 export default {
   name: 'CodeMirror',
@@ -61,21 +51,19 @@ export default {
       type: File,
       default: null
     },
-    languageSet: {
+    judgeTemplateSet: {
       type: Array,
-      default: () => ['C', 'C++', 'Java', 'Python2', 'Python3']
-    },
-    language: {
-      type: String,
-      default: 'C++'
+      default: () => []
     }
   },
-  data () {
+  filters: {
+    judgeTemplateTypeName: type => judgeTemplateProperity[type].name
+  },
+  data: function () {
     return {
       options: {
         // codemirror options
         tabSize: 2,
-        mode: 'text/x-csrc',
         theme: 'default',
         lineNumbers: true,
         line: true,
@@ -89,24 +77,16 @@ export default {
       filename: ''
     }
   },
-  mounted () {
-    for (const lang in this.languageSet) {
-      for (const key in modeMap) {
-        if (lang.toLowerCase().indexOf(key) !== -1) {
-          this.mode[lang] = modeMap[key];
-        }
-      }
-    }
-    this.$refs.myEditor.editor.setOption('mode', this.mode[this.language]);
-    this.$refs.myEditor.editor.focus()
+  mounted: function() {
+    this.$refs.myEditor.editor.focus();
   },
   methods: {
     onEditorCodeChange: function(newCode) {
-      this.$emit('update:code', newCode)
+      this.$emit('update:code', newCode);
     },
-    onLanguageChange: function(newVal) {
-      this.$refs.myEditor.editor.setOption('mode', this.mode[newVal])
-      this.$emit('changeLanguage', newVal)
+    onJudgeTemplateChange: function(newVal) {
+     
+      this.$emit('changeJudgeTemplate', newVal);
     },
     onFileUpload: function(newFile) {
       this.filename = newFile.name;

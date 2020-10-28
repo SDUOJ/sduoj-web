@@ -36,15 +36,15 @@
         <div>
           <div class="filter-title">By Judge Result</div>
           <Input v-model="filterForm.judgeResult"
-            placeholder="Status"
+            placeholder="Judge Result"
             style="width: 200px;"
             @on-enter="onFiltering">
           </Input>
         </div>
         <div>
-          <div class="filter-title">By Language</div>
-          <Input v-model="filterForm.lang"
-            placeholder="Language"
+          <div class="filter-title">By Judge Template</div>
+          <Input v-model="filterForm.judgeTemplate"
+            placeholder="Judge Template"
             style="width: 200px;"
             @on-enter="onFiltering">
           </Input>
@@ -97,9 +97,7 @@ export default {
       if (col.key === 'problemCode') {
         this.$router.push({
           name,
-          params: {
-            problemCode: row.problemCode
-          }
+          params: { problemCode: row.problemCode }
         })
       }
     },
