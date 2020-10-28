@@ -78,7 +78,6 @@ export default {
       } else if (name === 'home') {
         this.toHome();
       } else if (name === 'manage') {
-        console.log(window.location)
         window.location.href = '//manage.oj.cs.sdu.edu.cn:8081';
       }
     },
