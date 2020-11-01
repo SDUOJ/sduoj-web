@@ -94,7 +94,7 @@ export default {
     ...mapGetters('user', ['isLogin', 'username', 'avatar', 'isAdmin']),
     manageUrl: function() {
       if (process.env.NODE_ENV === 'production') {
-        return `${location.protocol}//${location.host}${process.env.VUE_APP_OJ_MANAGE}`;
+        return `${location.origin}${process.env.VUE_APP_OJ_MANAGE}`;
       } else {
         return process.env.VUE_APP_OJ_MANAGE;
       }
