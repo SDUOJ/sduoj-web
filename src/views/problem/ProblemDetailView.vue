@@ -342,7 +342,8 @@ export default {
       }).then(ret => {
         ret.problemCaseDTOList.forEach((problemCase, index) => (problemCase.id = index + 1));
         this.problem = ret;
-        this.judgeTemplate = ret.judgeTemplates[0];
+        if (ret.judgeTemplates.length > 0)
+            this.judgeTemplate = ret.judgeTemplates[0];
         // 查最多5个提交记录
         api.getSubmissionList({
           pageNow: 1,
