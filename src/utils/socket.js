@@ -11,8 +11,22 @@
 let websocket = null;
 let successCallback = null;
 let errorCallback = null;
-const baseUrl = `ws://${location.host}/ws`;
 let wsUrl = '';
+
+function getWsURL() {
+  if (process.env.NODE_ENV === 'production') {
+    return `ws://${location.host}/ws`;
+  }
+  if (process.env.VUE_APP_OJ_WS) {
+    return process.env.VUE_APP_OJ_WS;
+  }
+  const OJ_SERVER = new URL(process.env.VUE_APP_OJ_SERVER);
+  if (OJ_SERVER.protocol === 'https:') {
+    return `ws://${OJ_SERVER.host}/ws`;
+  } else {
+    return `ws://${OJ_SERVER.host}/ws`;
+  }
+}
 
 function websocketMessage(ret) {
   successCallback(JSON.parse(ret.data));
@@ -38,11 +52,11 @@ function websocketInit() {
 }
 
 export function sendWebsocket(url, params, success, error) {
-  wsUrl = baseUrl + url;
+  wsUrl = getWsURL() + url;
   if (params) {
     const arr = [];
     for (const key in params) {
-      arr.push(`${key}=${params[key]}`)
+      arr.push(`${key}=${params[key]}`);
     }
     wsUrl += '?' + arr.join('&');
   }

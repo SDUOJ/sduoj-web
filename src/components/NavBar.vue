@@ -78,7 +78,7 @@ export default {
       } else if (name === 'home') {
         this.toHome();
       } else if (name === 'manage') {
-        window.location.href = '//manage.oj.cs.sdu.edu.cn:8081';
+        window.open(this.manageUrl, '_blank');
       }
     },
     handleLogout: function () {
@@ -91,7 +91,14 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('user', ['isLogin', 'username', 'avatar', 'isAdmin'])
+    ...mapGetters('user', ['isLogin', 'username', 'avatar', 'isAdmin']),
+    manageUrl: function() {
+      if (process.env.NODE_ENV === 'production') {
+        return `${location.origin}${process.env.VUE_APP_OJ_MANAGE}`;
+      } else {
+        return process.env.VUE_APP_OJ_MANAGE;
+      }
+    }
   },
   mounted: function () {
     api.getProfile();
