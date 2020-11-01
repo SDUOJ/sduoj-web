@@ -26,9 +26,6 @@
     <Row class="main">
       <Col span="16" class="main-lf">
         <Card title="Announcements" icon="ios-alert-outline" dis-hover :padding="10">
-          <!-- <template slot="header">
-            <Icon type="ios-alert-outline" />&nbsp; 公告
-          </template> -->
           <div style="margin: 0 10px">
             <Row class="announce-subtitle">
               <Col span="18">标题</Col>
@@ -43,9 +40,6 @@
       </Col>
       <Col span="8" class="main-ri">
       <Card dis-hover title="Search" icon="ios-search">
-        <!-- <template slot="header">
-          <Icon type="ios-search" />&nbsp; 搜索
-        </template> -->
         <template>
           <div class="global-search">
             <Input style="width: 100%; display: block;" type="text" autocomplete="off" placeholder="ID" />
@@ -58,10 +52,8 @@
 </template>
 
 <script>
-// import Card from '../components/Card';
 
 export default {
-  // components: { Card },
   data: function() {
     return {
       carouselSettings: {

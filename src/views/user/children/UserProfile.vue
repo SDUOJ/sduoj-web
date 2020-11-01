@@ -51,14 +51,16 @@
             </FormItem>
             <FormItem label="Email">
               <Tooltip v-if="isVerified" content="You are verified" placement="right">
-                <span class="email-verified" v-text="profile.email"></span>
+                <span class="email-verified" v-text="profile.email" />
               </Tooltip>
               <Tooltip v-else content="Click to send an email" placement="right">
-                <span class="email-unverified" v-text="profile.email" @click="sendEmail"></span>
+                <span class="email-unverified" v-text="profile.email" @click="sendEmail" />
               </Tooltip>
             </FormItem>
             <FormItem label="Roles">
-              <span class="roles" v-for="role in profile.roles" :key="role">{{ role }}</span>
+              <span class="roles" v-for="role in profile.roles" :key="role">
+                <Tag :color="USER_ROLE[role].color">{{ role }}</Tag>
+              </span>
             </FormItem>
           </Col>
         </Row>
@@ -70,6 +72,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 import api from '_u/api';
+import { USER_ROLE } from '_u/constants';
 
 export default {
   data: function() {
@@ -104,7 +107,7 @@ export default {
     sendEmail: function() {
       if (!this.isVerified) {
         api.sendVerificationEmail(this.username).then(ret => {
-          this.$Message.success('An verification email has sent to ' + ret.data);
+          this.$Message.success(`An verification email has sent to ${ret.data}`);
         }).catch(err => {
           this.$Message.error(err.message);
         })
@@ -113,7 +116,8 @@ export default {
   },
   computed: {
     ...mapState('user', ['profile']),
-    ...mapGetters('user', ['isVerified', 'username'])
+    ...mapGetters('user', ['isVerified', 'username']),
+    USER_ROLE: () => USER_ROLE
   },
   mounted: function() {
     api.getProfile(ret => {
@@ -127,14 +131,6 @@ export default {
 <style lang="less" scoped>
 .form {
   margin-top: 25px;
-}
-.roles {
-  ::after {
-    content: ", "
-  }
-  ::after:last-child {
-    content: "";
-  }
 }
 
 .email-verified::after {

@@ -137,7 +137,7 @@ export default {
             delete dataForm.email;
           }
           api.forgetPassword(dataForm).then(ret => {
-            this.$Message.success('重置密码链接已发送到 ' + ret);
+            this.$Message.success(`重置密码链接已发送到 ${ret}`);
           }).catch(err => {
             this.$Message.error(err.message);
             this.getCaptcha();

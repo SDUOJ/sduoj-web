@@ -13,7 +13,7 @@
     <div class="utils clearfix">
       <div class="lang">
         <span>Judge Templates: </span>
-        <Select @on-change="onJudgeTemplateChange" class="adjust">
+        <Select @on-change="onJudgeTemplateChange" :value="judgeTemplate.id" class="adjust">
           <Tooltip v-for="template in judgeTemplateSet" :key="template.id" :content="template.comment" style="width: 100%"  placement="right" transfer>
             <Option :value="template.id" :label="template.title">
               <span>{{ `${template.id}:${template.title}` }}</span>
@@ -22,9 +22,22 @@
           </Tooltip>
         </Select>
       </div>
-      <Upload class="upload" :before-upload="onFileUpload" action="">
-        <Button icon="ios-cloud-upload-outline" v-if="filename === ''">Upload</Button>
-        <Button icon="ios-cloud-upload-outline" v-else>{{ filename }}</Button>
+      <Upload
+        class="upload"
+        :show-upload-list="false"
+        :format="judgeTemplate.acceptFileExtensions"
+        :accept="judgeTemplate.acceptFileExtensions.map(o => `.${o}`).join(',')"
+        :file-list.sync="fileList">
+        <Tooltip>
+          <div slot="content">
+            {{ judgeTemplate.acceptFileExtensions }} ALLOWED
+          </div>
+          <Button icon="ios-cloud-upload-outline" v-if="fileList.length === 0">
+            Upload
+          </Button>
+          <Button icon="ios-cloud-upload-outline" v-else>{{ fileList[0].name }}</Button>
+        </Tooltip>
+
       </Upload>
     </div>
     <div class="editor">
@@ -36,11 +49,13 @@
 import { codemirror } from 'vue-codemirror-lite'
 import 'codemirror/addon/selection/active-line.js'
 import { judgeTemplateProperity } from '_u/constants';
+import Upload from '_c/upload/upload';
 
 export default {
   name: 'CodeMirror',
   components: {
-    codemirror
+    codemirror,
+    Upload
   },
   props: {
     code: {
@@ -50,6 +65,10 @@ export default {
     file: {
       type: File,
       default: null
+    },
+    judgeTemplate: {
+      type: Object,
+      default: () => {}
     },
     judgeTemplateSet: {
       type: Array,
@@ -74,7 +93,7 @@ export default {
         highlightSelectionMatches: { showToken: /\w/, annotateScrollbar: true }
       },
       mode: {},
-      filename: ''
+      fileList: []
     }
   },
   mounted: function() {
@@ -85,12 +104,16 @@ export default {
       this.$emit('update:code', newCode);
     },
     onJudgeTemplateChange: function(newVal) {
-      this.$emit('changeJudgeTemplate', newVal);
-    },
-    onFileUpload: function(newFile) {
-      this.filename = newFile.name;
-      this.$emit('update:file', newFile);
-      return false;
+      for (let i = 0; i < this.judgeTemplateSet.length; ++i) {
+        if (this.judgeTemplateSet[i].id === newVal) {
+          this.$emit('changeJudgeTemplate', this.judgeTemplateSet[i]);
+        }
+      }
+    }
+  },
+  watch: {
+    fileList: function() {
+      this.$emit('update:file', this.fileList[0].file);
     }
   }
 }

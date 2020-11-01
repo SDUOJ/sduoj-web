@@ -109,3 +109,18 @@ export const judgeTemplateProperity = {
     zipFile: true
   }
 }
+
+export const USER_ROLE = {
+  user: {
+    color: 'default',
+    isAdmin: false
+  },
+  admin: {
+    color: 'gold',
+    isAdmin: true
+  },
+  superadmin: {
+    color: 'volcano',
+    isAdmin: true
+  }
+};

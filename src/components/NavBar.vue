@@ -37,10 +37,13 @@
               </div>
               <DropdownMenu slot="list">
                 <DropdownItem name="home">Profile</DropdownItem>
-                <DropdownItem name="manage" v-if="isAdmin">Manage</DropdownItem>
                 <DropdownItem name="logout" divided>Logout</DropdownItem>
               </DropdownMenu>
             </Dropdown>
+            <template v-if="isAdmin">
+              <Divider type="vertical" />
+              <a :href="manageUrl" target="_blank">To Manage</a>
+            </template>
           </template>
           <template v-else>
             <Button type="text" @click="toLogin">
@@ -77,8 +80,6 @@ export default {
         this.handleLogout();
       } else if (name === 'home') {
         this.toHome();
-      } else if (name === 'manage') {
-        window.open(this.manageUrl, '_blank');
       }
     },
     handleLogout: function () {

@@ -9,6 +9,7 @@
  */
 
 import md5 from '_u/md5';
+import { USER_ROLE } from '_u/constants';
 
 const state = {
   profile: {}
@@ -17,12 +18,12 @@ const state = {
 const getters = {
   profile: state => state.profile || {},
   username: state => state.profile.username || '',
-  avatar: state => 'https://www.gravatar.com/avatar/' + md5(state.profile.email || '') + '?s=200&d=mp&r=g',
+  avatar: state => `https://www.gravatar.com/avatar/${md5(state.profile.email || '')}?s=200&d=mp&r=g`,
   isLogin: state => !!state.profile.userId,
   isVerified: state => !!state.profile.emailVerified,
   isAdmin: state => {
     let isAdmin = false;
-    state.profile.roles.forEach(role => (isAdmin |= (role.indexOf('admin') !== -1)));
+    state.profile.roles.forEach(role => (isAdmin |= USER_ROLE[role].isAdmin));
     return isAdmin;
   }
 }

@@ -10,7 +10,7 @@
 
 <template>
   <div class="container">
-    <Row class="main">
+    <Row class="main" v-if="problemLoaded">
       <Col span="17" class="main-lf">
         <div class="problem-title">
           <ProblemCode v-if="!contestId" :problemCode="problem.problemCode" />
@@ -53,6 +53,7 @@
             <CodeEditor
               :code.sync="code"
               :file.sync="file"
+              :judgeTemplate="judgeTemplate"
               :judgeTemplateSet="problem.judgeTemplates"
               @changeJudgeTemplate="onChangeJudgeTemplate">
             </CodeEditor>
@@ -215,7 +216,7 @@ export default {
         {
           render: (h, params) => {
             if (params.row.submitNum > 0) {
-              return h('span', params.row.acceptNum + '/' + params.row.submitNum);
+              return h('span', `${params.row.acceptNum}/${params.row.submitNum}`);
             } else {
               return '';
             }
@@ -231,11 +232,14 @@ export default {
       submissions: null,
       code: '',
       file: null,
-      judgeTemplate: '',
+      judgeTemplate: {
+        id: ''
+      },
       submitBtnLoading: false,
       submitColdDown: false,
       showTags: true,
-      showContestProblems: false
+      showContestProblems: false,
+      problemLoaded: false
     }
   },
   filters: {
@@ -288,7 +292,7 @@ export default {
       } else {
         const dataForm = {
           problemCode: this.problem.problemCode,
-          judgeTemplateId: this.judgeTemplate,
+          judgeTemplateId: this.judgeTemplate.id,
           code: this.code
         };
         if (this.contestId && !this.hasParticipatedIn) {
@@ -338,6 +342,8 @@ export default {
       }).then(ret => {
         ret.problemCaseDTOList.forEach((problemCase, index) => (problemCase.id = index + 1));
         this.problem = ret;
+        if (ret.judgeTemplates.length > 0)
+            this.judgeTemplate = ret.judgeTemplates[0];
         // 查最多5个提交记录
         api.getSubmissionList({
           pageNow: 1,
@@ -346,6 +352,7 @@ export default {
           problemCode: this.problem.problemCode
         }).then(ret => {
           this.submissions = ret.rows;
+          this.problemLoaded = true;
         });
       });
     }
