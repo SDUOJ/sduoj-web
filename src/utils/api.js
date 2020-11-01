@@ -12,7 +12,8 @@ import Vue from 'vue';
 import axios from 'axios';
 import store from '@/store';
 
-axios.defaults.baseURL = '/api';
+console.log(process.env);
+axios.defaults.baseURL = `${process.env.VUE_APP_OJ_SERVER}/api`;
 axios.defaults.withCredentials = true;
 
 function post(url, data) {

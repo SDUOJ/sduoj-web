@@ -7,10 +7,10 @@ Make sure that `node v12.18.2` and `npm v6.14.5` or their higher version are ins
 ```
 npm install
 
-# Your server address
-export OJ_SERVER=oj.xxxx.com.cn
-# Your server address that listen webSocket, it is not required and can be same as `OJ_SERVER`
-# export OJ_WS=
+# You should custom the file `.env.development` in the root directory and change your hosts to avoid CORS
+# `VUE_APP_OJ_SERVER` is where your real backend locates at
+# leave `VUE_APP_OJ_WS` blank if your Websocket setvice locates at the same place as your backend
+# `VUE_APP_OJ_MANAGE` is where sduoj-manage locates at
 
 # serve with hot reload at localhost:8080
 npm run serve
