@@ -28,11 +28,12 @@
         :format="judgeTemplate.acceptFileExtensions"
         :accept="judgeTemplate.acceptFileExtensions.map(o => `.${o}`).join(',')"
         :file-list.sync="fileList">
-        <Tooltip>
+<!--        TODO: 上传文件暂不可用-->
+        <Tooltip :disabled="true">
           <div slot="content">
             {{ judgeTemplate.acceptFileExtensions }} ALLOWED
           </div>
-          <Button icon="ios-cloud-upload-outline" v-if="fileList.length === 0">
+          <Button icon="ios-cloud-upload-outline" v-if="fileList.length === 0" :disabled="true">
             Upload
           </Button>
           <Button icon="ios-cloud-upload-outline" v-else>{{ fileList[0].name }}</Button>

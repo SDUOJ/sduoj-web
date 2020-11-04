@@ -21,10 +21,11 @@
               <span class="problem-set-header-name">题库</span>
             </div>
             <div slot="extra">
-              <i-switch size="large" @on-change="switchTag">
-                <span slot="open">标签</span>
-                <span slot="close">标签</span>
-              </i-switch>
+<!--              TODO: 有bug 暂不可用-->
+<!--              <i-switch size="large" @on-change="switchTag">-->
+<!--                <span slot="open">标签</span>-->
+<!--                <span slot="close">标签</span>-->
+<!--              </i-switch>-->
             </div>
             <!-- 题库 header -->
 
