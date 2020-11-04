@@ -20,7 +20,17 @@
       :loading="loading"
       @on-selection-change="onSelectionChange"
       @on-sort-change="onSort"
-      @on-cell-click="onCellClick"></Table>
+      @on-cell-click="onCellClick">
+      <template slot-scope="{ row }" slot="judge-result">
+        <JudgeResult :result="row.judgeResult" />
+      </template>
+      <template slot-scope="{ row }" slot="time">
+        <span class="time">{{ row.usedTime }}</span>
+      </template>
+      <template slot-scope="{ row }" slot="mem">
+        <span class="mem">{{ row.usedMemory }}</span>
+      </template>
+    </Table>
     <div>
       <div v-if="doRejudge" class="left btns">
         <Button @click="onRejudge"><Icon type="md-refresh" />&nbsp;Rejudge</Button>
@@ -47,6 +57,7 @@ import store from '@/store';
 
 export default {
   name: 'SubmissionList',
+  components: { JudgeResult },
   props: {
     size: {
       type: String,
@@ -117,14 +128,16 @@ export default {
           }
         },
         {
-          title: 'Judge Result',
-          key: 'judgeResult',
-          minWidth: 95,
-          render: (h, params) => h(JudgeResult, { props: { result: params.row.judgeResult } })
+          title: 'Title',
+          key: 'problemTitle',
+          render: (h, params) => {
+            return h('span', { class: 'hover' }, params.row.problemTitle);
+          }
         },
-        { title: 'Time', key: 'usedTime', sortable: true, maxWidth: 90 },
-        { title: 'Memory', key: 'usedMemory', sortable: true, maxWidth: 120 },
-        { title: 'Template', key: 'judgeTemplate' },
+        { title: 'Judge Result', slot: 'judge-result', minWidth: 95 },
+        { title: 'Time', slot: 'time', sortable: true, maxWidth: 100 },
+        { title: 'Memory', slot: 'mem', sortable: true, maxWidth: 120 },
+        { title: 'Template', key: 'judgeTemplateTitle' },
         {
           title: 'Submit Time',
           key: 'gmtCreate',
@@ -234,7 +247,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
   .data-table {
   }
 
@@ -245,5 +258,14 @@ export default {
   .pages {
     margin: 15px auto;
     padding-right: 15px;
+  }
+  .time::after {
+    content: " ms";
+    white-space: pre;
+  }
+
+  .mem::after {
+    content: " KB";
+    white-space: pre;
   }
 </style>

@@ -88,17 +88,20 @@ export default {
     },
     onSubmissionListCellClick: function(row, col) {
       const name = this.contestId ? 'contest-submission-detail' : 'submission-detail';
-      if (col.key === 'judgeResult') {
-        this.$router.push({
-          name,
-          params: { submissionId: row.submissionId }
-        });
-      }
-      if (col.key === 'problemCode') {
-        this.$router.push({
-          name,
-          params: { problemCode: row.problemCode }
-        })
+      switch (col.key) {
+        case 'judgeResult':
+          this.$router.push({
+            name,
+            params: { submissionId: row.submissionId }
+          });
+          break;
+        case 'problemCode':
+        case 'problemTitle':
+          this.$router.push({
+            name: 'problem-detail',
+            params: { problemCode: row.problemCode }
+          });
+          break;
       }
     },
     handleRejudge: function(submissions) {

@@ -14,10 +14,8 @@
       <div style="margin-right: 20px">
         <Card title="Contest List" :padding="0" dis-hover>
           <Select size="small" v-model="selectContestMode" style="width: 100px" slot="extra">
-            <Option value="All">All</Option>
-            <Option value="ACM">ACM</Option>
-            <Option value="OI">OI</Option>
-            <Option value="IOI">IOI</Option>
+            <Option value="all" label="All" />
+            <Option v-for="mode in CONTEST_MODE" :key="mode" :value="mode" :label="mode.toUpperCase()" />
           </Select>
           <List size="large" item-layout="vertical">
             <ListItem v-for="contest in contestList" :key="contest.contestId">
@@ -45,7 +43,7 @@
                     </div>
                   </li>
                   <li>
-                    {{ contest.gmtStart | timeformat('hh:mm:ss') }}
+                    {{ contest.gmtStart | timeformat('HH:mm:ss') }}
                   </li>
                   <li>
                     <Icon type="ios-time-outline"/>
@@ -94,7 +92,7 @@
 import moment from 'moment';
 import { mapState } from 'vuex';
 import { s2hs } from '_u/transform';
-import { CONTEST_OPENNESS } from '_u/constants';
+import { CONTEST_OPENNESS, CONTEST_MODE } from '_u/constants';
 import api from '_u/api';
 
 export default {
@@ -103,7 +101,7 @@ export default {
       contestList: [],
       participatedContest: [],
       upcomingContest: {},
-      selectContestMode: 'All',
+      selectContestMode: 'all',
       pageNow: 1,
       pageSize: 10,
       total: 0
@@ -132,7 +130,8 @@ export default {
       }
       return '\b';
     },
-    CONTEST_OPENNESS: () => CONTEST_OPENNESS
+    CONTEST_OPENNESS: () => CONTEST_OPENNESS,
+    CONTEST_MODE: () => CONTEST_MODE
   },
   methods: {
     onPageChange: function (pageNow) {
@@ -150,7 +149,8 @@ export default {
     getContestList: function() {
       api.getContestList({
         pageNow: this.pageNow,
-        pageSize: this.pageSize
+        pageSize: this.pageSize,
+        mode: this.selectContestMode === 'all' ? '' : this.selectContestMode
       }).then(ret => {
         this.total = parseInt(ret.total);
         this.contestList = ret.rows;
@@ -162,6 +162,9 @@ export default {
       this.getContestList();
     },
     pageSize: function () {
+      this.getContestList();
+    },
+    selectContestMode: function () {
       this.getContestList();
     }
   },

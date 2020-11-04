@@ -10,13 +10,10 @@
 
 <template>
   <div class="judge-result">
-    <Icon type="md-information" color="grey" v-if="result === JUDGE_RESULT.PD"/>
-    <Icon type="md-checkmark" color="#5cb85c" v-else-if="result === JUDGE_RESULT.AC"/>
-    <Icon type="md-close" color="orange" v-else-if="result === JUDGE_RESULT.CE"/>
-    <Icon type="md-close" color="rebeccapurple" v-else-if="result === JUDGE_RESULT.SE"/>
-    <Icon type="md-close" color="#d9534f" v-else-if="result !== -1"/>
-    &nbsp;
-    <span :class="judgeResult2Class(result) + ' hover'">{{ judgeResult2Text(result) }}</span>
+    <template v-if="result !== -1">
+      <Icon :type="JUDGE_RESULT[result].icon" :color="JUDGE_RESULT[result].color" />
+      <span :class="`${judgeResult2Class(result)} hover`">{{ judgeResult2Text(result) }}</span>
+    </template>
   </div>
 </template>
 
@@ -51,7 +48,6 @@ export default {
       return JUDGE_RESULT[judgeResult].css;
     }
   }
-
 }
 </script>
 

@@ -30,47 +30,79 @@ export const JUDGE_RESULT = {
   0: {
     name: 'Pending',
     abbr: 'PD',
-    css: 'verdict-pending'
+    css: 'verdict-pending',
+    color: 'grey',
+    icon: 'md-information'
   },
   1: {
     name: 'Accepted',
     abbr: 'AC',
-    css: 'verdict-accepted'
+    css: 'verdict-accepted',
+    color: '#5cb85c',
+    icon: 'md-checkmark'
   },
   2: {
     name: 'Time Limit Exceeded',
     abbr: 'TLE',
-    css: 'verdict-failed'
+    css: 'verdict-failed',
+    color: '#d9534f',
+    icon: 'md-close'
   },
   3: {
     name: 'Memory Limit Exceeded',
     abbr: 'MLE',
-    css: 'verdict-failed'
+    css: 'verdict-failed',
+    color: '#d9534f',
+    icon: 'md-close'
   },
   4: {
     name: 'Runtime Error',
     abbr: 'RE',
-    css: 'verdict-failed'
+    css: 'verdict-failed',
+    color: '#d9534f',
+    icon: 'md-close'
   },
   5: {
     name: 'System Error',
     abbr: 'SE',
-    css: 'verdict-system-error'
+    css: 'verdict-system-error',
+    color: 'rebeccapurple',
+    icon: 'md-close'
   },
   6: {
     name: 'Wrong Answer',
     abbr: 'WA',
-    css: 'verdict-failed'
+    css: 'verdict-failed',
+    color: '#d9534f',
+    icon: 'md-close'
   },
   7: {
     name: 'Presentation Error',
     abbr: 'PE',
-    css: 'verdict-failed'
+    css: 'verdict-failed',
+    color: '#d9534f',
+    icon: 'md-close'
   },
   8: {
     name: 'Compile Error',
     abbr: 'CE',
-    css: 'verdict-compile-error'
+    css: 'verdict-compile-error',
+    color: 'orange',
+    icon: 'md-close'
+  },
+  9: {
+    name: 'Compiling',
+    abbr: 'CP',
+    css: 'verdict-compile-error',
+    color: 'orange',
+    icon: 'md-information'
+  },
+  10: {
+    name: 'Judging',
+    abbr: 'JG',
+    css: 'verdict-compile-error',
+    color: 'orange',
+    icon: 'md-information'
   },
   PD: 0,
   AC: 1,
@@ -80,7 +112,9 @@ export const JUDGE_RESULT = {
   SE: 5,
   WA: 6,
   PE: 7,
-  CE: 8
+  CE: 8,
+  CP: 9,
+  JG: 10
 };
 
 export const judgeTemplateType = {
@@ -109,6 +143,12 @@ export const judgeTemplateProperity = {
     zipFile: true
   }
 }
+
+export const JUDGE_STATUS = {
+  COMPILING: -3,
+  JUDGING: -2,
+  END: -1
+};
 
 export const USER_ROLE = {
   user: {

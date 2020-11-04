@@ -18,7 +18,7 @@ function getWsURL() {
     return `ws://${location.host}/ws`;
   }
   if (process.env.VUE_APP_OJ_WS) {
-    return process.env.VUE_APP_OJ_WS;
+    return `${process.env.VUE_APP_OJ_WS}/ws`;
   }
   const OJ_SERVER = new URL(process.env.VUE_APP_OJ_SERVER);
   if (OJ_SERVER.protocol === 'https:') {
@@ -36,7 +36,7 @@ function websocketOpen() {}
 
 function websocketClose(e) {
   if (e && e.code !== 1000) {
-    errorCallback();
+    errorCallback(e.reason);
   }
 }
 

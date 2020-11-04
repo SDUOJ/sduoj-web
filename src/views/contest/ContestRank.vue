@@ -4,10 +4,11 @@
      <div class="clearfix" style="margin: 10px 3px">
        <div style="float: left">
          <strong>Begin: </strong>
-         <span>{{ contestStartTime.format('yyyy-MM-DD hh:mm:ss') }}</span>
+         <span>{{ contestStartTime.format('yyyy-MM-DD HH:mm:ss') }}</span>
        </div>
        <div style="float: right">
-         <strong>End: <span>{{ contestEndTime.format('yyyy-MM-DD hh:mm:ss') }}</span></strong>
+         <strong>End: </strong>
+         <span>{{ contestEndTime.format('yyyy-MM-DD HH:mm:ss') }}</span>
        </div>
      </div>
      <div>
@@ -184,7 +185,7 @@
      <SubmissionList
        size="small"
        :filter="showOnesAllSubmission"
-       :bannedKey="['problemCode', 'username']"
+       :bannedKey="['problemCode', 'username', 'problemTitle']"
        @on-cell-click="onSubmissionListCellClick" />
    </Modal>
    <Modal v-model="modelSubmissionDetail" width="1000px" footer-hide :closable="false">

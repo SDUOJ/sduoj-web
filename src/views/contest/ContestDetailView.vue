@@ -35,10 +35,10 @@
                 <span>{{ contestMode.toUpperCase() }}</span>
               </div>
             </li>
-            <li>{{ contestStartTime.format('yyyy-MM-DD hh:mm:ss') }}</li>
+            <li>{{ contestStartTime.format('yyyy-MM-DD HH:mm:ss') }}</li>
             <li>
               <Icon type="ios-time-outline"/>
-              {{ contestDuration.format('hh:mm:ss') }}
+              {{ contestDuration.format('HH:mm:ss') }}
             </li>
             <li>
               <Icon type="ios-people-outline"/>

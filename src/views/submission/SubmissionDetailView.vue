@@ -15,15 +15,25 @@
         <div style="margin-right: 20px;">
           <!-- websocket -->
           <Card class="box" dis-hover :padding="0">
-            <JudgeResult class="title" slot="title" :result="submission.judgeResult"/>
+            <JudgeResult class="title" slot="title" v-bind:result="submission.judgeResult"/>
             <Table
-              v-if="submission.checkpointResults"
+              v-if="showCheckpointResults"
               disabled-hover
               no-data-text=""
               size="small"
               :columns="columns"
               :data="submission.checkpointResults"
-              class="data-table" />
+              class="data-table">
+              <template slot-scope="{ row }" slot="judge-result">
+                <JudgeResult :result="row.judgeResult" />
+              </template>
+              <template slot-scope="{ row }" slot="time">
+                <span class="time">{{ row.usedTime }}</span>
+              </template>
+              <template slot-scope="{ row }" slot="mem">
+                <span class="mem">{{ row.usedMemory }}</span>
+              </template>
+            </Table>
           </Card>
           <Card v-if="showJudgerLog" class="box" :title="compilerLogTitle" dis-hover>
             <div class="judge-log">
@@ -123,9 +133,10 @@
 import ProblemCode from '_c/ProblemCode';
 import JudgeResult from '_c/JudgeResult';
 import { mapGetters, mapState } from 'vuex';
-import { sendWebsocket, closeWebsocket } from '_u/socket';
 import api from '_u/api';
+import { sendWebsocket, closeWebsocket } from '_u/socket';
 import { contestProblemId } from '_u/transform';
+import { JUDGE_STATUS, JUDGE_RESULT } from '_u/constants';
 
 export default {
   components: {
@@ -146,19 +157,10 @@ export default {
       },
       columns: [
         { title: '#', key: 'id' },
-        {
-          title: 'Result',
-          minWidth: 50,
-          render: (h, params) => h(JudgeResult, { props: { result: params.row.judgeResult } })
-        },
-        {
-          title: 'Time',
-          render: (h, params) => h('span', { class: 'time' }, params.row.usedTime)
-        },
-        {
-          title: 'Memory',
-          render: (h, params) => h('span', { class: 'mem' }, params.row.usedMemory)
-        }
+        { title: 'Result', minWidth: 50, slot: 'judge-result' },
+        { title: 'Score', key: 'judgeScore' },
+        { title: 'Time', slot: 'time' },
+        { title: 'Memory', slot: 'mem' }
       ]
     }
   },
@@ -175,22 +177,50 @@ export default {
         data = JSON.parse(data);
       }
       for (let i = 0; i < data.length; ++i) {
-        const item = data[i];
-        if (Array.isArray(item)) {
-          this.fillCheckpointResults(item);
-        } else {
-          if (data[0] === -1) {
-            closeWebsocket();
-            this.reload();
-            break;
+        // data[i]不是数组的话就是单独的一个数：表示评测状态 -3 compiling -2 judging
+        // 如果data[i]是数组但是只有一个元素也是表示评测状态，此时 fileCheckpointResults 会返回false
+        if ((Array.isArray(data[i]) && !this.fillCheckpointResults(data[i]))) {
+          switch (data[i][0]) {
+            case JUDGE_STATUS.COMPILING:
+              this.$set(this.submission, 'judgeResult', JUDGE_RESULT.CP);
+              break;
+            case JUDGE_STATUS.JUDGING:
+              this.submission.checkpointResults.forEach(o => {
+                this.$set(o, 'judgeResult', JUDGE_RESULT.JG);
+              });
+              this.$set(this.submission, 'judgeResult', JUDGE_RESULT.JG);
+              break;
+            case JUDGE_STATUS.END:
+              closeWebsocket();
+              this.reload();
+              break;
           }
-          this.fillCheckpointResults(data);
+        } else if (!Array.isArray(data[i]) && !this.fillCheckpointResults(data)) {
+          switch (data[0]) {
+            case JUDGE_STATUS.COMPILING:
+              this.$set(this.submission, 'judgeResult', JUDGE_RESULT.CP);
+              break;
+            case JUDGE_STATUS.JUDGING:
+              this.submission.checkpointResults.forEach(o => {
+                this.$set(o, 'judgeResult', JUDGE_RESULT.JG);
+              });
+              this.$set(this.submission, 'judgeResult', JUDGE_RESULT.JG);
+              break;
+            case JUDGE_STATUS.END:
+              closeWebsocket();
+              this.reload();
+              break;
+          }
           break;
         }
       }
     },
     wsRequest: function () {
-      sendWebsocket('/submission', { id: this.submission.submissionId }, this.wsSuccess, _ => (closeWebsocket()));
+      sendWebsocket('/submission', { id: this.submission.submissionId },
+        this.wsSuccess,
+        err => {
+          this.$Message.error(err);
+        });
     },
     gotoProblem: function (problemCode) {
       this.$router.push({
@@ -199,31 +229,37 @@ export default {
       });
     },
     fillCheckpointResults: function (oneJudge) {
-      this.submission.checkpointResults.splice(oneJudge[0], 1, {
-        id: parseInt(oneJudge[0]) + 1,
-        judgeResult: parseInt(oneJudge[1]),
-        usedTime: oneJudge[2].toString(),
-        usedMemory: oneJudge[3].toString()
-      })
+      if (oneJudge.length === 5) {
+        this.submission.checkpointResults.splice(oneJudge[0], 1, {
+          id: parseInt(oneJudge[0]) + 1,
+          judgeResult: parseInt(oneJudge[1]),
+          judgeScore: parseInt(oneJudge[2]),
+          usedTime: oneJudge[3].toString(),
+          usedMemory: oneJudge[4].toString()
+        });
+        return true;
+      }
+      return false;
     },
     getSubmissionDetail: function(submissionId) {
       api.getSubmissionDetail({ submissionId }).then(ret => {
         this.submission = { ...ret };
         this.submission.checkpointResults = [];
-        if (ret.checkpointResults === null || ret.checkpointResults.length === 0) {
-          for (let i = 0; i < this.submission.checkpointNum; ++i) {
+        if (ret.judgeResult <= 0) {
+          for (let i = 0; i < ret.checkpointNum; ++i) {
             this.submission.checkpointResults.push({
               id: i + 1,
               judgeResult: 0,
+              judgeScore: 0,
               usedTime: 0,
               usedMemory: 0
             });
           }
           this.wsRequest();
         } else {
-          for (let i = 0; i < this.submission.checkpointNum; ++i) {
-            this.fillCheckpointResults([i, ...ret.checkpointResults[i]]);
-          }
+          ret.checkpointResults.forEach((o, i) => {
+            this.fillCheckpointResults([i, ...o])
+          });
         }
       });
     },
@@ -248,13 +284,22 @@ export default {
       return !!this.submission.code;
     },
     showJudgerLog: function () {
-      return !!this.submission.judgeLog || this.submission.judgeResult === 5 || this.submission.judgeResult === 8;
+      return !!this.submission.judgeLog;
+    },
+    showCheckpointResults: function() {
+      if (!this.submission.judgeResult || this.submission.checkpointResults.length === 0) {
+        return false;
+      }
+      if (this.submission.judgeResult > 0) {
+        return !(this.submission.judgeResult === JUDGE_RESULT.CE || this.submissionId.judgeResult === JUDGE_RESULT.SE);
+      }
+      return this.submission.judgeResult === JUDGE_RESULT.JG;
     },
     compilerLogTitle: function () {
-      if (this.submission.judgeResult === 5) {
+      if (this.submission.judgeResult === JUDGE_RESULT.SE) {
         // system error
         return 'System Error'
-      } else if (this.submission.judgeResult === 8) {
+      } else if (this.submission.judgeResult === JUDGE_RESULT.CE) {
         // compile error
         return 'Compile Error'
       } else if (this.showJudgerLog) {
