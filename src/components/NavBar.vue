@@ -64,6 +64,7 @@ import api from '_u/api';
 import { mapGetters } from 'vuex';
 
 export default {
+  inject: ['reload'],
   methods: {
     toLogin: function () {
       this.$router.push({
@@ -84,11 +85,10 @@ export default {
     },
     handleLogout: function () {
       api.logout().then(_ => this.$store.dispatch('user/clearProfile'));
+      this.reload();
     },
     toHome: function () {
-      this.$router.push({
-        name: 'user'
-      });
+      this.$router.push({ name: 'user' });
     }
   },
   computed: {

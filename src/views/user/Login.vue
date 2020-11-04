@@ -24,7 +24,7 @@
             <Input v-model="loginForm.username" placeholder="Username" style="width: 220px" />
           </FormItem>
           <FormItem prop="password" label="Password">
-            <Input type="password" v-model="loginForm.password" placeholder="Password" style="width: 220px" />
+            <Input type="password" v-model="loginForm.password" placeholder="Password" style="width: 220px" @on-enter="handleLogin('loginForm')"/>
           </FormItem>
         </Form>
       </div>
