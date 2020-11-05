@@ -18,7 +18,7 @@
           <Card class="problem-set" :padding="0" dis-hover>
             <!-- 题库 header -->
             <div class="problem-set-header clearfix" slot="title">
-              <span class="problem-set-header-name">题库</span>
+              <span class="problem-set-header-name">Problem</span>
             </div>
             <div slot="extra">
 <!--              TODO: 有bug 暂不可用-->
@@ -56,16 +56,14 @@
         <Col span="5" class="main-rf">
           <!-- 搜索框 -->
           <div class="problem-search">
-            <Input suffix="ios-search" placeholder="题目查询"/>
+            <Input suffix="ios-search" placeholder="Search"/>
           </div>
           <!-- 搜索框 -->
 
           <!-- 标签分类 -->
           <div class="problem-tags">
             <!-- header -->
-            <div class="problem-tags-header">
-              分类
-            </div>
+            <div class="problem-tags-header">Tags</div>
             <!-- header -->
             <!-- 标签内容 -->
             <div class="problem-tags-content">
@@ -118,7 +116,7 @@ export default {
     return {
       problemTableColumns: [
         {
-          title: '题目编码',
+          title: 'Problem Code',
           key: 'problemCode',
           width: 210,
           render: (h, params) => {
@@ -155,7 +153,7 @@ export default {
           }
         },
         {
-          title: '标题',
+          title: 'Title',
           key: 'problemTitle',
           minWidth: 150,
           render: (h, params) => {
@@ -180,7 +178,7 @@ export default {
           }
         },
         {
-          title: '通过数',
+          title: 'Accept',
           key: 'acceptNum',
           width: 100,
           sortable: 'custom'
@@ -212,49 +210,20 @@ export default {
             '背包'
           ]
         },
-        {
-          name: '数据结构',
-          children: []
-        },
-        {
-          name: '数论'
-        },
-        {
-          name: '树结构'
-        },
-        {
-          name: '图结构'
-        },
-        {
-          name: '组合数学'
-        },
-        {
-          name: '贪心'
-        },
-        {
-          name: '字符串'
-        },
-        {
-          name: '模拟'
-        },
-        {
-          name: '高精度'
-        },
-        {
-          name: '概率论'
-        },
-        {
-          name: '线性代数'
-        },
-        {
-          name: '交互题'
-        },
-        {
-          name: '计算几何'
-        },
-        {
-          name: '其他'
-        }
+        { name: '数据结构', children: [] },
+        { name: '数论' },
+        { name: '树结构' },
+        { name: '图结构' },
+        { name: '组合数学' },
+        { name: '贪心' },
+        { name: '字符串' },
+        { name: '模拟' },
+        { name: '高精度' },
+        { name: '概率论' },
+        { name: '线性代数' },
+        { name: '交互题' },
+        { name: '计算几何' },
+        { name: '其他' }
       ],
       total: 0,
       pageNow: 1,
@@ -271,7 +240,7 @@ export default {
         this.problemTableColumns = [
           ...this.problemTableColumns.slice(0, 2),
           {
-            title: '标签',
+            title: 'Tags',
             key: 'problemTagDTOList',
             align: 'right',
             minWidth: 270,

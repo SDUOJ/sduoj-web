@@ -21,14 +21,25 @@
       @on-selection-change="onSelectionChange"
       @on-sort-change="onSort"
       @on-cell-click="onCellClick">
+      <template slot-scope="{ row }" slot="id">
+        <span class="underline">{{ row.submissionId }}</span>
+      </template>
+      <template slot-scope="{ row }" slot="title">
+        <span class="underline">{{ row.problemTitle }}</span>
+      </template>
       <template slot-scope="{ row }" slot="judge-result">
         <JudgeResult :result="row.judgeResult" />
       </template>
       <template slot-scope="{ row }" slot="time">
-        <span class="time">{{ row.usedTime }}</span>
+        <span class="time">{{ row.usedTime || 0 }}</span>
       </template>
       <template slot-scope="{ row }" slot="mem">
-        <span class="mem">{{ row.usedMemory }}</span>
+        <span class="mem">{{ row.usedMemory || 0 }}</span>
+      </template>
+      <template slot-scope="{ row }" slot="submit-time">
+        <Tooltip :content="row.gmtCreate | timeformat('yyyy-MM-DD HH:mm:ss')" transfer>
+          <span>{{ row.gmtCreate | fromnow }}</span>
+        </Tooltip>
       </template>
     </Table>
     <div>
@@ -54,6 +65,7 @@ import { contestProblemId } from '_u/transform';
 import api from '_u/api';
 import { mapGetters } from 'vuex';
 import store from '@/store';
+import moment from 'moment';
 
 export default {
   name: 'SubmissionList',
@@ -82,7 +94,7 @@ export default {
     columns: {
       type: Array,
       default: () => [
-        { title: '#', key: 'submissionId', minWidth: 60 },
+        { title: '#', key: 'submissionId', minWidth: 60, slot: 'id' },
         { title: 'Username', key: 'username' },
         {
           title: 'Problem Code',
@@ -127,22 +139,15 @@ export default {
             }
           }
         },
-        {
-          title: 'Title',
-          key: 'problemTitle',
-          render: (h, params) => {
-            return h('span', { class: 'hover' }, params.row.problemTitle);
-          }
-        },
-        { title: 'Judge Result', slot: 'judge-result', minWidth: 95 },
+        { title: 'Title', key: 'problemTitle', slot: 'title' },
+        { title: 'Judge Result', key: 'judgeResult', slot: 'judge-result', minWidth: 95 },
         { title: 'Time', slot: 'time', sortable: true, maxWidth: 100 },
         { title: 'Memory', slot: 'mem', sortable: true, maxWidth: 120 },
         { title: 'Template', key: 'judgeTemplateTitle' },
         {
           title: 'Submit Time',
           key: 'gmtCreate',
-          minWidth: 55,
-          render: (h, params) => h('Time', { props: { time: parseInt(params.row.gmtCreate), type: 'datetime' } })
+          slot: 'submit-time'
         }
       ]
     },
@@ -156,6 +161,20 @@ export default {
           language: ''
         }
       }
+    }
+  },
+  filters: {
+    timeformat: function(timestamp, format) {
+      if (typeof (timestamp) === 'string') {
+        timestamp = parseInt(timestamp);
+      }
+      return moment(new Date(timestamp)).format(format);
+    },
+    fromnow: function(timestamp) {
+      if (typeof (timestamp) === 'string') {
+        timestamp = parseInt(timestamp);
+      }
+      return moment(new Date(timestamp)).fromNow();
     }
   },
   data: function() {
@@ -248,9 +267,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  .data-table {
-  }
-
   .btns {
     margin: 15px;
   }
@@ -268,4 +284,13 @@ export default {
     content: " KB";
     white-space: pre;
   }
+
+  .underline {
+    color: #2D8cF0;
+    &:hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+
 </style>
