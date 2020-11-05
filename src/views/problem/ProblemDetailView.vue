@@ -334,6 +334,7 @@ export default {
       });
     },
     getProblem: function(params) {
+      params = params || {};
       api.problemQuery({
         ...this.$route.params,
         ...this.$route.query,
@@ -352,9 +353,9 @@ export default {
           problemCode: this.problem.problemCode
         }).then(ret => {
           this.submissions = ret.rows;
-          this.problemLoaded = true;
         });
-      });
+        this.problemLoaded = true;
+      }).finally(() => this.$Spin.hide());
     }
   },
   computed: {
@@ -371,6 +372,7 @@ export default {
     }
   },
   created: function () {
+    this.$Spin.show();
     this.getProblem();
   }
 }

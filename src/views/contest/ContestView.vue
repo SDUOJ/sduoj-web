@@ -19,13 +19,18 @@
           </Select>
           <List size="large" item-layout="vertical">
             <ListItem v-for="contest in contestList" :key="contest.contestId">
+              <div slot="extra" style="margin-right: 10px">
+                <div v-if="participatedContest.includes(contest.contestId)" style="color: #5cb85c">
+                  <Icon type="md-checkmark" /><strong>&nbsp;Participated</strong>
+                </div>
+              </div>
               <ListItemMeta>
                 <div slot="avatar" class="contest__date numbox">
                   <div class="numbox__num__large">{{ contest.gmtStart | timeformat('DD') }}</div>
                   <div class="numbox__text">{{ contest.gmtStart | timeformat('yyyy-MM') }}</div>
                 </div>
-                <div class="ivu-list-item-meta-title" slot="title" @click="toContestDetail(contest.contestId)">
-                  <span>{{ contest.contestTitle }}</span>
+                <div slot="title">
+                  <span class="ivu-list-item-meta-title" @click="toContestDetail(contest.contestId)">{{ contest.contestTitle }}</span>
                   <template v-if="contest.features.openness === CONTEST_OPENNESS.PRIVATE">
                     <Icon type="ios-unlock" color="#d9534f" size="19" v-if="participatedContest.includes(contest.contestId)"/>
                     <Icon type="md-lock" color="#d9534f" size="19" v-else />
@@ -37,7 +42,7 @@
                 </div>
                 <ul slot="description" class="ivu-list-item-action">
                   <li>
-                    <div :class="'contest-type--' + contest.features.mode">
+                    <div :class="`contest-type--${contest.features.mode}`">
                       <Icon type="md-bulb" color="#fff"/>&nbsp;
                       <span>{{ contest.features.mode.toUpperCase() }}</span>
                     </div>
@@ -53,8 +58,9 @@
                     <Icon type="ios-people-outline"/>
                     {{ contest.participantNum }}
                   </li>
-                  <li v-if="participatedContest.includes(contest.contestId)" style="color: #5cb85c">
-                    <Icon type="md-checkmark" /><span>&nbsp;Participated</span>
+                  <li>
+                    <Tag  v-if="$store.state.now > contest.gmtEnd" color="green">Finished</Tag>
+                    <Tag  v-else-if="contest.gmtStart < $store.state.now && $store.state.now < contest.gmtEnd" color="gold">Running</Tag>
                   </li>
                 </ul>
               </ListItemMeta>
@@ -92,7 +98,7 @@
 import moment from 'moment';
 import { mapState } from 'vuex';
 import { s2hs } from '_u/transform';
-import { CONTEST_OPENNESS, CONTEST_MODE } from '_u/constants';
+import { CONTEST_OPENNESS, CONTEST_MODE, CONTEST_STATUS } from '_u/constants';
 import api from '_u/api';
 
 export default {
@@ -114,7 +120,17 @@ export default {
       }
       return moment(new Date(timestamp)).format(format);
     },
-    time2hour: timediff => s2hs(timediff)
+    time2hour: timediff => s2hs(timediff),
+    contestStatus: contest => {
+      const now = this.$store.store.now;
+      if (contest.contestStartTime > now) {
+        return CONTEST_STATUS.UPCOMING;
+      } else if (contest.contestEndTime < now) {
+        return CONTEST_STATUS.FINISHED;
+      } else {
+        return CONTEST_STATUS.RUNNING;
+      }
+    }
   },
   computed: {
     ...mapState(['now']),
@@ -131,7 +147,8 @@ export default {
       return '\b';
     },
     CONTEST_OPENNESS: () => CONTEST_OPENNESS,
-    CONTEST_MODE: () => CONTEST_MODE
+    CONTEST_MODE: () => CONTEST_MODE,
+    CONTEST_STATUS: () => CONTEST_STATUS
   },
   methods: {
     onPageChange: function (pageNow) {

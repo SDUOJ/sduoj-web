@@ -93,15 +93,15 @@ export const JUDGE_RESULT = {
   9: {
     name: 'Compiling',
     abbr: 'CP',
-    css: 'verdict-compile-error',
-    color: 'orange',
+    css: 'verdict-pending',
+    color: 'grey',
     icon: 'md-information'
   },
   10: {
     name: 'Judging',
     abbr: 'JG',
-    css: 'verdict-compile-error',
-    color: 'orange',
+    css: 'verdict-pending',
+    color: 'grey',
     icon: 'md-information'
   },
   PD: 0,

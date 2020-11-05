@@ -89,6 +89,7 @@ export default {
     onSubmissionListCellClick: function(row, col) {
       const name = this.contestId ? 'contest-submission-detail' : 'submission-detail';
       switch (col.key) {
+        case 'submissionId':
         case 'judgeResult':
           this.$router.push({
             name,

@@ -219,7 +219,9 @@ export default {
       sendWebsocket('/submission', { id: this.submission.submissionId },
         this.wsSuccess,
         err => {
-          this.$Message.error(err);
+          if (err !== '') {
+            this.$Message.error(err);
+          }
         });
     },
     gotoProblem: function (problemCode) {
@@ -261,7 +263,7 @@ export default {
             this.fillCheckpointResults([i, ...o])
           });
         }
-      });
+      }).finally(() => this.$Spin.hide());
     },
     onCellClick: function(name) {
       if (name === 'rejudge') {
@@ -313,6 +315,7 @@ export default {
   },
   created: function () {
     if (this.$route.params.submissionId) {
+      this.$Spin.show();
       this.getSubmissionDetail(this.$route.params.submissionId);
     }
   },

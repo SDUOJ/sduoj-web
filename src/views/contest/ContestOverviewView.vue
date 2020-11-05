@@ -82,7 +82,7 @@ export default {
     handleParticipate: function() {
       this.participateForm.contestId = this.contest.contestId;
       if (this.openness !== 'protected' && !this.contest.participants.includes(this.username)) {
-        api.participateIn(this.participateForm).then(() => (this.reload()));
+        api.participateIn(this.participateForm).then(() => (this.reload()), err => (this.$Message.error(err.message)));
       }
     },
     handleCellClick: function(row, col) {

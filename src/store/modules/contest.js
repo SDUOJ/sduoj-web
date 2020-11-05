@@ -77,7 +77,7 @@ const getters = {
     return moment(new Date(parseInt(state.contest.gmtEnd)));
   },
   contestDuration: (state, getters) => {
-    return moment(getters.contestEndTime - getters.contestStartTime);
+    return getters.contestEndTime - getters.contestStartTime;
   },
   countdown: (state, getters, rootState) => {
     if (getters.contestStatus === CONTEST_STATUS.UPCOMING) {
@@ -165,6 +165,7 @@ const getters = {
 const mutations = {
   setContest: function(state, payload) {
     state.contest = payload.contest;
+    state.problems = [];
     for (let i = 1; i <= payload.contest.problems.length; ++i) {
       state.problems.push({
         problemCode: i.toString()
