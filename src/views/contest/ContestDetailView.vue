@@ -13,9 +13,7 @@
     <div class="contest__header clearfix">
       <div class="contest__title">
         <div style="margin-bottom: 15px">
-          <span class="title">
-            {{ contest.contestTitle }}
-          </span>
+          <span class="title">{{ contest.contestTitle }}</span>
           <span class="contest__subtitle">{{ contest.source }}</span>
           <template v-if="contestOpenness === CONTEST_OPENNESS.PRIVATE">
             <Icon type="ios-unlock" color="#d9534f" size="19" v-if="hasParticipatedIn"/>
@@ -30,15 +28,14 @@
               <Icon type="md-checkmark" /><span>&nbsp;Participated</span>
             </li>
             <li>
-              <div :class="'contest-type--' + contestMode">
+              <div :class="`contest-type--${contestMode}`">
                 <Icon type="md-bulb" color="#fff"/>&nbsp;
                 <span>{{ contestMode.toUpperCase() }}</span>
               </div>
             </li>
-            <li>{{ contestStartTime.format('yyyy-MM-DD HH:mm:ss') }}</li>
             <li>
               <Icon type="ios-time-outline"/>
-              {{ contestDuration.format('HH:mm:ss') }}
+              {{ contestDuration | time2hour }}
             </li>
             <li>
               <Icon type="ios-people-outline"/>
@@ -52,7 +49,8 @@
           </ul>
         </div>
         <div>
-          <markdown-it-vue-light :content="contest.markdownDescription" />
+          <markdown-it-vue-light :content="contest.markdownDescription || ''" />
+          <ContestProcess />
         </div>
       </div>
       <Menu mode="horizontal" theme="light" :active-name="$route.path.split('/')[3]" class="contest__menu">
@@ -61,7 +59,7 @@
         }">
           <span class="span__menu">Overview</span>
         </MenuItem>
-        <template v-if="contestStarted  && $store.getters['contest/hasParticipatedIn']">
+        <template v-if="contestStarted && ($store.getters['contest/hasParticipatedIn'] || contestOpenness === CONTEST_OPENNESS.PROTECTED)">
           <MenuItem name="problem" :to="{
             name: 'contest-problem',
             params: { problemCode: '1' }
@@ -81,7 +79,13 @@
           </MenuItem>
         </template>
         <div class="contest__countdown">
-          <span>{{ countdown }}</span>
+          <template v-if="contestStatus === CONTEST_STATUS.FINISHED">
+            <strong v-if="sliderTime"> {{ (sliderTime - contestStartTime) | time2hour }}</strong>
+            <strong v-else>Finished</strong>
+          </template>
+          <template v-else>
+            <strong>{{ countdown }}</strong>
+          </template>
         </div>
       </Menu>
       <Modal
@@ -107,11 +111,14 @@ import MarkdownItVueLight from 'markdown-it-vue/dist/markdown-it-vue-light.umd.m
 import 'markdown-it-vue/dist/markdown-it-vue-light.css'
 
 import { mapGetters, mapState } from 'vuex';
-import { CONTEST_OPENNESS } from '_u/constants';
+import { CONTEST_OPENNESS, CONTEST_STATUS } from '_u/constants';
+import { s2hs } from '_u/transform';
+
+import ContestProcess from '_c/ContestProcess';
 
 export default {
   name: 'ContestDetailView',
-  components: { MarkdownItVueLight },
+  components: { MarkdownItVueLight, ContestProcess },
   inject: ['reload'],
   data: function() {
     return {
@@ -121,12 +128,16 @@ export default {
       }
     }
   },
+  filters: {
+    time2hour: diff => s2hs(diff)
+  },
   computed: {
+    ...mapState('contest', ['contest', 'sliderTime']),
     ...mapGetters('user', ['username']),
     ...mapGetters('contest', [
       'hasParticipatedIn',
+      'contestStatus',
       'contestStartTime',
-      'contestEndTime',
       'contestDuration',
       'contestLoaded',
       'contestMode',
@@ -134,7 +145,6 @@ export default {
       'contestOpenness',
       'countdown'
     ]),
-    ...mapState('contest', ['contest']),
     showPractice: {
       get: function() {
         return this.$store.state.contest.settings.showPractice;
@@ -143,10 +153,12 @@ export default {
         this.$store.dispatch('contest/settings', { showPractice: val })
       }
     },
-    CONTEST_OPENNESS: () => CONTEST_OPENNESS
+    CONTEST_OPENNESS: () => CONTEST_OPENNESS,
+    CONTEST_STATUS: () => CONTEST_STATUS
   },
   mounted: function() {
-    this.$store.dispatch('contest/getContest', this.$route.params.contestId)
+    this.$Spin.show();
+    this.$store.dispatch('contest/getContest', this.$route.params.contestId).finally(() => this.$Spin.hide());
   },
   beforeDestroy: function () {
     this.$store.commit('contest/clearContest');
@@ -161,9 +173,11 @@ export default {
   }
   .contest__title {
     background-color: @bgc;
-    font-size: 20px;
-    font-weight: 600;
-    padding: 15px 15px;
+    .title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    padding: 15px 15px 0 15px;
     /*padding-bottom: 0;*/
   }
 
