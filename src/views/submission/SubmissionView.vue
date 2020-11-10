@@ -53,9 +53,29 @@
     </Card>
     <SubmissionList
       :filter="filterOption"
-      :doRejudge="canDoRejudge"
-      @on-rejudge="handleRejudge"
-      @on-cell-click="onSubmissionListCellClick"/>
+      :pageSize="pageSize"
+      :pageNow="pageNow"
+      :sortBy="sortBy"
+      :ascending="ascending"
+      @update-total="total=$event"
+      @on-sort="onSort"
+      @on-cell-click="onSubmissionListCellClick">
+      <template>
+        <div v-if="canDoRejudge" class="left footer-btns">
+          <Button @click="handleRejudge"><Icon type="md-refresh" />&nbsp;Rejudge</Button>
+        </div>
+        <div class="right footer-pages">
+          <Page
+            size="small" show-elevator show-sizer
+            :total="total"
+            :current.sync="pageNow"
+            :page-size="pageSize"
+            :page-size-opts="pageSizeOpts"
+            @on-change="onPageChange"
+            @on-page-size-change="onPageSizeChange"/>
+        </div>
+      </template>
+    </SubmissionList>
   </div>
 </template>
 
@@ -64,9 +84,12 @@ import SubmissionList from '_c/SubmissionList';
 import { mapGetters, mapState } from 'vuex';
 import api from '_u/api';
 
+import { Page } from '_c/mixins';
+
 export default {
   name: 'SubmissionView',
   components: { SubmissionList },
+  mixins: [Page],
   data: function() {
     return {
       filterOption: {},
@@ -147,6 +170,15 @@ export default {
   .ivu-btn:hover {
     background: rgba(0, 0, 0, .05);
   }
+}
+
+.footer-btns {
+  margin: 15px;
+}
+
+.footer-pages {
+  margin: 15px auto;
+  padding-right: 15px;
 }
 
 </style>

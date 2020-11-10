@@ -71,6 +71,8 @@
               size="small" show-elevator show-sizer
               :total="total"
               :current.sync="pageNow"
+              :page-size="pageSize"
+              :page-size-opts="pageSizeOpts"
               @on-change="onPageChange"
               @on-page-size-change="onPageSizeChange"/>
           </div>
@@ -101,16 +103,16 @@ import { s2hs } from '_u/transform';
 import { CONTEST_OPENNESS, CONTEST_MODE, CONTEST_STATUS } from '_u/constants';
 import api from '_u/api';
 
+import { Page } from '_c/mixins';
+
 export default {
+  mixins: [Page],
   data: function () {
     return {
       contestList: [],
       participatedContest: [],
       upcomingContest: {},
-      selectContestMode: 'all',
-      pageNow: 1,
-      pageSize: 10,
-      total: 0
+      selectContestMode: 'all'
     }
   },
   filters: {
@@ -151,12 +153,6 @@ export default {
     CONTEST_STATUS: () => CONTEST_STATUS
   },
   methods: {
-    onPageChange: function (pageNow) {
-      this.pageNow = pageNow;
-    },
-    onPageSizeChange: function (pageSize) {
-      this.pageSize = pageSize;
-    },
     toContestDetail: function(contestId) {
       this.$router.push({
         name: 'contest-detail',
@@ -169,19 +165,16 @@ export default {
         pageSize: this.pageSize,
         mode: this.selectContestMode === 'all' ? '' : this.selectContestMode
       }).then(ret => {
-        this.total = parseInt(ret.total);
         this.contestList = ret.rows;
+        this.total = parseInt(ret.totalPage) * this.pageSize;
       });
     }
   },
   watch: {
-    pageNow: function () {
-      this.getContestList();
-    },
-    pageSize: function () {
-      this.getContestList();
-    },
     selectContestMode: function () {
+      this.getContestList();
+    },
+    $route: function() {
       this.getContestList();
     }
   },

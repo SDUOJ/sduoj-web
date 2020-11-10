@@ -37,13 +37,15 @@
                 :loading="loading"
                 class="problem-set-content-table"
                 @on-cell-click="onProblemClick"
-                @on-sort-change="onProblemSort">
+                @on-sort-change="onSort">
               </Table>
               <Page
                 class="problem-set-content-page"
                 size="small" show-elevator show-sizer
                 :total="total"
                 :current.sync="pageNow"
+                :page-size="pageSize"
+                :page-size-opts="pageSizeOpts"
                 @on-change="onPageChange"
                 @on-page-size-change="onPageSizeChange"/>
             </div>
@@ -111,7 +113,10 @@
 import ProblemCode from '_c/ProblemCode';
 import api from '_u/api';
 
+import { Page } from '_c/mixins';
+
 export default {
+  mixins: [Page],
   data: function() {
     return {
       problemTableColumns: [
@@ -225,12 +230,6 @@ export default {
         { name: '计算几何' },
         { name: '其他' }
       ],
-      total: 0,
-      pageNow: 1,
-      pageSize: 10,
-      pageNum: 1,
-      sortBy: '',
-      ascending: false,
       loading: false
     }
   },
@@ -260,12 +259,7 @@ export default {
         this.problemTableColumns = this.problemTableColumns.filter(item => item.key !== 'problemTagDTOList');
       }
     },
-    onPageChange: function (pageNow) {
-      this.pageNow = pageNow;
-    },
-    onPageSizeChange: function (pageSize) {
-      this.pageSize = pageSize;
-    },
+
     onProblemClick: function (row, col) {
       if (col.key === 'problemTitle') {
         this.$router.push({
@@ -276,16 +270,6 @@ export default {
         });
       }
     },
-    onProblemSort: function ({ column, key, order }) {
-      if (order === 'normal') {
-        this.sortBy = '';
-        this.ascending = false
-      } else {
-        this.sortBy = key;
-        this.ascending = order === 'asc';
-      }
-      this.getProblemList();
-    },
     getProblemList: function () {
       this.loading = true;
       api.getProblemList({
@@ -295,23 +279,20 @@ export default {
         ascending: this.ascending
       }).then(ret => {
         this.problems = ret.rows;
-        this.pageNum = parseInt(ret.totalPage);
-        this.total = parseInt(ret.total);
+        this.total = parseInt(ret.totalPage) * this.pageSize;
       }).finally(() => {
         this.loading = false;
       });
       api.getUserACProblems().then(acproblems => (this.acproblems = acproblems));
     }
   },
-  watch: {
-    pageNow: function () {
-    },
-    pageSize: function () {
-      this.getProblemList();
-    }
-  },
   mounted: function () {
     this.getProblemList();
+  },
+  watch: {
+    $route: function() {
+      this.getProblemList();
+    }
   }
 }
 </script>
