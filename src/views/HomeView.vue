@@ -28,8 +28,8 @@
         <Card title="Announcements" icon="ios-alert-outline" dis-hover :padding="10">
           <div style="margin: 0 10px">
             <Row class="announce-subtitle">
-              <Col span="18">标题</Col>
-              <Col span="6">时间</Col>
+              <Col span="18">Title</Col>
+              <Col span="6">Time</Col>
             </Row>
             <Row class="announce-item" v-for="item in announcements" :key="item.url">
               <Col span="18">{{ item.title }}</Col>
