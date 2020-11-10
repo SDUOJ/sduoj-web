@@ -23,20 +23,24 @@
           <div class="avatar-box">
             <img :src="avatar" />
           </div>
-          <div class="statistic clearfix">
-            <div>
-              <span>Submissions</span>
-              <p class="emphasis">{{ profile.submissions || 0 }}</p>
-            </div>
-            <div>
-              <span>Solved</span>
-              <span class="emphasis">{{ profile.solved || 0 }}</span>
-            </div>
-            <div>
-              <span>Unsolved</span>
-              <span class="emphasis">{{ profile.unsolved || 0 }}</span>
-            </div>
+          <div style="text-align: center;">
+            <span style="color: #aaa;">We use <a href="https://en.gravatar.com/" target="_blank">Gravatar</a> to present your avatar icon</span>
           </div>
+          <!--          TODO：暂不可用 需要后端支持-->
+<!--          <div class="statistic clearfix">-->
+<!--            <div>-->
+<!--              <span>Submissions</span>-->
+<!--              <p class="emphasis">{{ profile.submissions || 0 }}</p>-->
+<!--            </div>-->
+<!--            <div>-->
+<!--              <span>Solved</span>-->
+<!--              <span class="emphasis">{{ profile.solved || 0 }}</span>-->
+<!--            </div>-->
+<!--            <div>-->
+<!--              <span>Unsolved</span>-->
+<!--              <span class="emphasis">{{ profile.unsolved || 0 }}</span>-->
+<!--            </div>-->
+<!--          </div>-->
         </Card>
       </Col>
     </Row>
@@ -59,6 +63,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.center {
+  margin: 0 auto;
+}
+
 /deep/.ivu-menu-item:hover {
   background: rgba(0, 0, 0, .05);
 }

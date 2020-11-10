@@ -25,9 +25,12 @@
           </Col>
           <Col span="12">
             <FormItem label="New Email" prop="newEmail">
-              <Input type="email" v-model="emailForm.newEmail" style="width: 200px;">
-                <Icon type="ios-mail-outline" slot="prepend"/>
-              </Input>
+              <div>
+                <Input type="email" v-model="emailForm.newEmail" style="width: 200px;">
+                  <Icon type="ios-mail-outline" slot="prepend"/>
+                </Input>
+                <span style="color: #aaa">Your email will be used at <a href="" target="_blank">Gravatar.com</a></span>
+              </div>
             </FormItem>
           </Col>
         </Row>
