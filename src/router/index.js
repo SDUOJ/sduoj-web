@@ -16,10 +16,13 @@ import api from '_u/api';
 Vue.use(VueRouter);
 const originalPush = VueRouter.prototype.push;
 VueRouter.prototype.push = function push(location) {
-  return originalPush.call(this, location).catch(err => err)
+  location.query = Object.assign(location.query || {}, { _t: Date.now() });
+  return originalPush.call(this, location)
 };
 
 const router = new VueRouter({
+  // 路由中的 #
+  // mode: 'history',
   routes
 });
 

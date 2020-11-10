@@ -87,8 +87,10 @@ export default {
       }
     },
     handleLogout: function () {
-      api.logout().then(_ => this.$store.dispatch('user/clearProfile'));
-      this.reload();
+      api.logout().then(_ => {
+        this.$store.dispatch('user/clearProfile');
+        this.reload();
+      });
     },
     toHome: function () {
       this.$router.push({ name: 'user' });

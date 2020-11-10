@@ -340,11 +340,9 @@ export default {
     },
     getProblem: function(params) {
       params = params || {};
-      api.problemQuery({
-        ...this.$route.params,
-        ...this.$route.query,
-        ...params
-      }).then(ret => {
+      Object.assign(params, params, this.$route.params, this.$route.query);
+      delete params._t;
+      api.problemQuery(params).then(ret => {
         ret.problemCaseDTOList.forEach((problemCase, index) => (problemCase.id = index + 1));
         this.problem = ret;
         if (ret.judgeTemplates.length > 0) {
