@@ -63,10 +63,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.center {
-  margin: 0 auto;
-}
-
 /deep/.ivu-menu-item:hover {
   background: rgba(0, 0, 0, .05);
 }
