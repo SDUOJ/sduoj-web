@@ -155,14 +155,10 @@
    </table>
    <Modal v-model="modelSubmissions" width="900px" footer-hide :closable="false">
      <SubmissionList
+       ref="SubmissionList"
        size="small"
-       :filter="showOnesAllSubmission"
        :bannedKey="['problemCode', 'username', 'problemTitle']"
-       :pageSize="pageSize"
-       :pageNow="pageNow"
-       :sortBy="sortBy"
-       :ascending="ascending"
-       @update-total="total=$event"
+       @update-total-page="total=$event"
        @on-sort="onSort"
        @on-cell-click="onSubmissionListCellClick">
        <template>
@@ -258,15 +254,22 @@ export default {
         this.ascending = (order === 'asc');
       }
     },
+    onUpdateTotal: function(totalPage) {
+      this.total = totalPage * this.pageSize;
+    },
     setUserLiked: function(index, status) {
       this.$store.commit('contest/setScoreLiked', { index, status });
     },
     showAllSubmissions: function(username, problemCode) {
       if (this.contestStatus === CONTEST_STATUS.FINISHED || username === this.profile.username) {
-        this.showOnesAllSubmission = {
+        this.$refs.SubmissionList.querySubmissionList({
           username,
-          problemCode
-        };
+          problemCode,
+          pageSize: this.pageSize,
+          pageNow: this.pageNow,
+          sortBy: this.sortBy,
+          ascending: this.ascending
+        });
         this.modelSubmissions = true;
       }
     },

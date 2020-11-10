@@ -247,6 +247,9 @@ export default {
       api.getSubmissionDetail({ submissionId }).then(ret => {
         this.submission = { ...ret };
         this.submission.checkpointResults = [];
+        if (!this.showCode) {
+          return;
+        }
         if (ret.judgeResult <= 0) {
           for (let i = 0; i < ret.checkpointNum; ++i) {
             this.submission.checkpointResults.push({

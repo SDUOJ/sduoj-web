@@ -44,17 +44,6 @@
     </Table>
     <div>
       <slot></slot>
-<!--      <div v-if="doRejudge" class="left btns">-->
-<!--        <Button @click="onRejudge"><Icon type="md-refresh" />&nbsp;Rejudge</Button>-->
-<!--      </div>-->
-<!--      <div class="right pages">-->
-<!--        <Page-->
-<!--          size="small" show-elevator show-sizer-->
-<!--          :total="total"-->
-<!--          :current.sync="pageNow"-->
-<!--          @on-change="onPageChange"-->
-<!--          @on-page-size-change="onPageSizeChange"/>-->
-<!--      </div>-->
     </div>
   </Card>
 </template>
@@ -72,6 +61,10 @@ export default {
   name: 'SubmissionList',
   components: { JudgeResult },
   props: {
+    selection: {
+      type: Boolean,
+      default: false
+    },
     size: {
       type: String,
       default: 'default'
@@ -98,7 +91,7 @@ export default {
         { title: '#', key: 'submissionId', minWidth: 60, slot: 'id' },
         { title: 'Username', key: 'username' },
         {
-          title: 'Problem Code',
+          title: 'Problem',
           key: 'problemCode',
           minWidth: 15,
           render: function(h, params) {
@@ -147,33 +140,6 @@ export default {
         { title: 'Template', key: 'judgeTemplateTitle' },
         { title: 'Submit Time', key: 'gmtCreate', sortable: true, slot: 'submit-time' }
       ]
-    },
-    filter: {
-      type: Object,
-      default: () => {
-        return {
-          username: '',
-          problemCode: '',
-          judgeResult: '',
-          language: ''
-        }
-      }
-    },
-    pageSize: {
-      type: Number,
-      default: 15
-    },
-    pageNow: {
-      type: Number,
-      default: 1
-    },
-    sortBy: {
-      type: String,
-      default: ''
-    },
-    ascending: {
-      type: [String, Boolean],
-      default: ''
     }
   },
   filters: {
@@ -210,37 +176,24 @@ export default {
     onSelectionChange: function(selection) {
       this.$emit('on-selection-change', selection);
     },
-    querySubmissionList: function() {
+    querySubmissionList: function(params) {
       this.loading = true;
       api.getSubmissionList({
-        ...this.filter,
-        contestId: this.contestId,
-        sortBy: this.sortBy,
-        ascending: this.ascending,
-        pageNow: this.pageNow,
-        pageSize: this.pageSize
+        ...params,
+        contestId: this.contestId
       }).then(ret => {
         this.submissions = ret.rows;
-        this.$emit('update-total', parseInt(ret.totalPage) * this.pageSize);
+        this.$emit('update-total-page', parseInt(ret.totalPage));
       }).finally(() => (this.loading = false));
     }
   },
   created: function() {
     this.filteredColumns = this.columns.filter(col => !this.bannedKey.includes(col.key));
-    this.querySubmissionList();
-  },
-  watch: {
-    pageNow: function() {
-      this.querySubmissionList();
-    },
-    pageSize: function() {
-      this.querySubmissionList();
-    },
-    sortBy: function() {
-      this.querySubmissionList();
-    },
-    ascending: function() {
-      this.querySubmissionList();
+    if (this.selection) {
+      this.filteredColumns = [{
+        type: 'selection',
+        width: 60
+      }].concat(this.filteredColumns);
     }
   }
 }
