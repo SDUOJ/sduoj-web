@@ -43,17 +43,7 @@
       </template>
     </Table>
     <div>
-      <div v-if="doRejudge" class="left btns">
-        <Button @click="onRejudge"><Icon type="md-refresh" />&nbsp;Rejudge</Button>
-      </div>
-      <div class="right pages">
-        <Page
-          size="small" show-elevator show-sizer
-          :total="total"
-          :current.sync="pageNow"
-          @on-change="onPageChange"
-          @on-page-size-change="onPageSizeChange"/>
-      </div>
+      <slot></slot>
     </div>
   </Card>
 </template>
@@ -63,14 +53,18 @@ import ProblemCode from '_c/ProblemCode';
 import JudgeResult from '_c/JudgeResult';
 import { contestProblemId } from '_u/transform';
 import api from '_u/api';
-import { mapGetters } from 'vuex';
 import store from '@/store';
+import { mapGetters } from 'vuex';
 import moment from 'moment';
 
 export default {
   name: 'SubmissionList',
   components: { JudgeResult },
   props: {
+    selection: {
+      type: Boolean,
+      default: false
+    },
     size: {
       type: String,
       default: 'default'
@@ -97,7 +91,7 @@ export default {
         { title: '#', key: 'submissionId', minWidth: 60, slot: 'id' },
         { title: 'Username', key: 'username' },
         {
-          title: 'Problem Code',
+          title: 'Problem',
           key: 'problemCode',
           minWidth: 15,
           render: function(h, params) {
@@ -141,26 +135,11 @@ export default {
         },
         { title: 'Title', key: 'problemTitle', slot: 'title' },
         { title: 'Judge Result', key: 'judgeResult', slot: 'judge-result', minWidth: 95 },
-        { title: 'Time', slot: 'time', sortable: true, maxWidth: 100 },
-        { title: 'Memory', slot: 'mem', sortable: true, maxWidth: 120 },
+        { title: 'Time', key: 'usedTime', slot: 'time', sortable: true, maxWidth: 100 },
+        { title: 'Memory', key: 'usedMemory', slot: 'mem', sortable: true, maxWidth: 120 },
         { title: 'Template', key: 'judgeTemplateTitle' },
-        {
-          title: 'Submit Time',
-          key: 'gmtCreate',
-          slot: 'submit-time'
-        }
+        { title: 'Submit Time', key: 'gmtCreate', sortable: true, slot: 'submit-time' }
       ]
-    },
-    filter: {
-      type: Object,
-      default: () => {
-        return {
-          username: '',
-          problemCode: '',
-          judgeResult: '',
-          language: ''
-        }
-      }
     }
   },
   filters: {
@@ -181,12 +160,6 @@ export default {
     return {
       filteredColumns: [],
       submissions: [],
-      selectedSubmissions: [],
-      total: 0,
-      pageNow: 1,
-      pageSize: 10,
-      sortBy: '',
-      ascending: false,
       loading: false
     }
   },
@@ -194,87 +167,40 @@ export default {
     ...mapGetters('contest', ['contestId'])
   },
   methods: {
-    onPageChange: function(pageNow) {
-      this.pageNow = pageNow;
-    },
-    onPageSizeChange: function (pageSize) {
-      this.pageSize = pageSize;
-    },
-    onSort: function({ key, order }) {
-      if (order === 'normal') {
-        this.sortBy = '';
-        this.ascending = false;
-      }  else {
-        this.sortBy = key;
-        this.ascending = (order === 'asc');
-      }
+    onSort: function(e) {
+      this.$emit('on-sort', e);
     },
     onCellClick: function(row, col, data, event) {
       this.$emit('on-cell-click', row, col, data, event);
     },
     onSelectionChange: function(selection) {
-      this.selectedSubmissions = selection;
+      this.$emit('on-selection-change', selection);
     },
-    onRejudge: function() {
-      this.$emit('on-rejudge', this.selectedSubmissions);
-    },
-    querySubmissionList: function() {
+    querySubmissionList: function(params) {
       this.loading = true;
       api.getSubmissionList({
-        ...this.filter,
-        contestId: this.contestId,
-        sortBy: this.sortBy,
-        ascending: this.ascending,
-        pageNow: this.pageNow,
-        pageSize: this.pageSize
+        ...params,
+        contestId: this.contestId
       }).then(ret => {
         this.submissions = ret.rows;
-        this.total = parseInt(this.pageSize) * parseInt(ret.totalPage);
+        this.$emit('update-total-page', parseInt(ret.totalPage));
       }).finally(() => (this.loading = false));
     }
   },
-  watch: {
-    filter: function() {
-      this.querySubmissionList();
-    },
-    pageNow: function () {
-      this.querySubmissionList();
-    },
-    pageSize: function() {
-      this.querySubmissionList();
-    },
-    sortBy: function () {
-      this.querySubmissionList();
-    },
-    ascending: function() {
-      this.querySubmissionList();
-    }
-  },
   created: function() {
-    let _columns = [...this.columns];
-    if (this.doRejudge) {
-      _columns = [
-        {
-          type: 'selection',
-          width: 60,
-          align: 'center'
-        }
-      ].concat(_columns);
+    this.filteredColumns = this.columns.filter(col => !this.bannedKey.includes(col.key));
+    if (this.selection) {
+      this.filteredColumns = [{
+        type: 'selection',
+        width: 60
+      }].concat(this.filteredColumns);
     }
-    this.filteredColumns = _columns.filter(col => !this.bannedKey.includes(col.key));
   }
 }
 </script>
 
 <style lang="less" scoped>
-  .btns {
-    margin: 15px;
-  }
 
-  .pages {
-    margin: 15px auto;
-    padding-right: 15px;
-  }
   .time::after {
     content: " ms";
     white-space: pre;
@@ -292,5 +218,4 @@ export default {
       text-decoration: underline;
     }
   }
-
 </style>

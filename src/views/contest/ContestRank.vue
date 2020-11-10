@@ -155,10 +155,25 @@
    </table>
    <Modal v-model="modelSubmissions" width="900px" footer-hide :closable="false">
      <SubmissionList
+       ref="SubmissionList"
        size="small"
-       :filter="showOnesAllSubmission"
        :bannedKey="['problemCode', 'username', 'problemTitle']"
-       @on-cell-click="onSubmissionListCellClick" />
+       @update-total-page="total=$event"
+       @on-sort="onSort"
+       @on-cell-click="onSubmissionListCellClick">
+       <template>
+         <div class="right footer-pages">
+           <Page
+             size="small" show-elevator show-sizer
+             :total="total"
+             :current.sync="pageNow"
+             :page-size="pageSize"
+             :page-size-opts="pageSizeOpts"
+             @on-change="onPageChange"
+             @on-page-size-change="onPageSizeChange"/>
+         </div>
+       </template>
+     </SubmissionList>
    </Modal>
    <Modal v-model="modelSubmissionDetail" width="1000px" footer-hide :closable="false">
      <SubmissionDetailView :submission-id="submissionId" />
@@ -191,7 +206,14 @@ export default {
         username: '',
         problemCode: ''
       },
-      submissionId: ''
+      submissionId: '',
+
+      total: 0,
+      pageNow: 1,
+      pageSize: 15,
+      pageSizeOpts: [15, 30, 50],
+      ascending: '',
+      sortBy: ''
     }
   },
   filters: {
@@ -200,7 +222,7 @@ export default {
       if (time === 0) {
         return '\b';
       }
-      return parseInt(time / 60 / 1000).toString();
+      return parseInt(time / 60000).toString();
     }
   },
   computed: {
@@ -217,15 +239,37 @@ export default {
     CONTEST_MODE: () => CONTEST_MODE
   },
   methods: {
+    onPageChange: function (pageNow) {
+      this.pageNow = pageNow;
+    },
+    onPageSizeChange: function (pageSize) {
+      this.pageSize = pageSize;
+    },
+    onSort: function({ key, order }) {
+      if (order === 'normal') {
+        this.sortBy = '';
+        this.ascending = false;
+      }  else {
+        this.sortBy = key;
+        this.ascending = (order === 'asc');
+      }
+    },
+    onUpdateTotal: function(totalPage) {
+      this.total = totalPage * this.pageSize;
+    },
     setUserLiked: function(index, status) {
       this.$store.commit('contest/setScoreLiked', { index, status });
     },
     showAllSubmissions: function(username, problemCode) {
       if (this.contestStatus === CONTEST_STATUS.FINISHED || username === this.profile.username) {
-        this.showOnesAllSubmission = {
+        this.$refs.SubmissionList.querySubmissionList({
           username,
-          problemCode
-        };
+          problemCode,
+          pageSize: this.pageSize,
+          pageNow: this.pageNow,
+          sortBy: this.sortBy,
+          ascending: this.ascending
+        });
         this.modelSubmissions = true;
       }
     },
@@ -245,4 +289,12 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.footer-btns {
+  margin: 15px;
+}
+
+.footer-pages {
+  margin: 15px auto;
+  padding-right: 15px;
+}
 </style>

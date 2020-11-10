@@ -66,10 +66,7 @@
           }">
             <span class="span__menu">Problem</span>
           </MenuItem>
-          <MenuItem name="submission" :to="{
-            name: 'contest-submission',
-            params: { username }
-          }">
+          <MenuItem name="submission" :to="{ name: 'contest-submission' }">
             <span class="span__menu">Status</span>
           </MenuItem>
           <MenuItem name="rank" :to="{

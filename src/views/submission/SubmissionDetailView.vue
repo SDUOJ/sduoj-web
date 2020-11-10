@@ -47,7 +47,9 @@
                 <Icon class="hover" type="md-copy" @click="copyToClipboard(submission.code)" />
               </Tooltip>
             </p>
-            <pre v-highlightjs="submission.code"><code style="font-family: Menlo, Monaco, 'Courier New', monospace;" /></pre>
+            <div v-highlight>
+              <pre><code>{{ submission.code }}</code></pre>
+            </div>
           </Card>
         </div>
       </Col>
@@ -110,7 +112,6 @@
               <Cell v-if="submission.judgeScore" title="Score">
                 <span slot="extra">{{ submission.judgeScore || 0 }}</span>
               </Cell>
-<!-- 这里待定，等待后端同步 -->
               <Cell title="Judge Template" :extra="submission.judgeTemplateTitle"/>
               <Cell v-if="submission.codeLength" title="Code Length">
                 <span slot="extra">{{ submission.codeLength || 0 }}</span>
@@ -247,6 +248,9 @@ export default {
       api.getSubmissionDetail({ submissionId }).then(ret => {
         this.submission = { ...ret };
         this.submission.checkpointResults = [];
+        if (!this.showCode) {
+          return;
+        }
         if (ret.judgeResult <= 0) {
           for (let i = 0; i < ret.checkpointNum; ++i) {
             this.submission.checkpointResults.push({
@@ -323,8 +327,8 @@ export default {
     closeWebsocket();
   },
   watch: {
-    submissionId: function() {
-      this.getSubmissionDetail(this.submissionId);
+    $route: function() {
+      this.getSubmissionDetail(this.$route.params.submissionId);
     }
   }
 }

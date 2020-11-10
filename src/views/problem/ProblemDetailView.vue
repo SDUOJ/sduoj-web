@@ -289,11 +289,6 @@ export default {
       if (this.file) {
         // 交文件
       } else {
-        const dataForm = {
-          problemCode: this.problem.problemCode,
-          judgeTemplateId: this.judgeTemplate.id,
-          code: this.code
-        };
         if (this.contestId && !this.hasParticipatedIn) {
           if (this.contestPassword === '') {
             this.$Message.error('Please input contest password');
@@ -308,8 +303,16 @@ export default {
             return;
           }
         }
+        if (this.code.length > 60000) {
+          this.$Message.error('Source code should contain 60000 bytes in UTF-8 at most');
+          return;
+        }
         this.submitBtnLoading = true;
-        api.submit(dataForm).then(submissionId => {
+        api.submit({
+          problemCode: this.problem.problemCode,
+          judgeTemplateId: this.judgeTemplate.id,
+          code: this.code
+        }).then(submissionId => {
           this.submitColdDown = true;
           setTimeout(() => {
             this.submitColdDown = false
@@ -319,6 +322,8 @@ export default {
             params: { submissionId }
           });
           this.reload();
+        }, err => {
+          this.$Message.error(err.message);
         }).finally(() => {
           this.submitBtnLoading = false;
         })
@@ -335,11 +340,9 @@ export default {
     },
     getProblem: function(params) {
       params = params || {};
-      api.problemQuery({
-        ...this.$route.params,
-        ...this.$route.query,
-        ...params
-      }).then(ret => {
+      Object.assign(params, params, this.$route.params, this.$route.query);
+      delete params._t;
+      api.problemQuery(params).then(ret => {
         ret.problemCaseDTOList.forEach((problemCase, index) => (problemCase.id = index + 1));
         this.problem = ret;
         if (ret.judgeTemplates.length > 0) {

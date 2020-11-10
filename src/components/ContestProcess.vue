@@ -21,7 +21,7 @@
       </div>
     </div>
     <div>
-      <Slider v-model="currentPercent" :disabled="contestStatus === CONTEST_STATUS.RUNNING" show-tip="never" :step="0.001"/>
+      <Slider v-model="currentPercent" :disabled="contestStatus !== CONTEST_STATUS.FINISHED" show-tip="never" :step="0.001"/>
     </div>
   </div>
 </template>
