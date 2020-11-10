@@ -209,7 +209,7 @@ export default {
 
   .upcoming-title {
     margin: 10px 0;
-    font-size: 14px;
+    font-size: 20px;
     line-height: 24px;
     color: #0000cc;
     text-decoration: underline;
