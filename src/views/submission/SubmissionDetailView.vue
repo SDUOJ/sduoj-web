@@ -327,8 +327,8 @@ export default {
     closeWebsocket();
   },
   watch: {
-    submissionId: function() {
-      this.getSubmissionDetail(this.submissionId);
+    $route: function() {
+      this.getSubmissionDetail(this.$route.params.submissionId);
     }
   }
 }
