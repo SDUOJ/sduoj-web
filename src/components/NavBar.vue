@@ -68,7 +68,10 @@ export default {
   methods: {
     toLogin: function () {
       this.$router.push({
-        name: 'login'
+        name: 'login',
+        query: {
+          to: this.$route.fullPath
+        }
       });
     },
     toRegist: function () {
