@@ -332,7 +332,7 @@ export default {
     showAllSubmission: function () {
       this.$router.push({
         name: this.contestId ? 'contest-submission' : 'submission',
-        params: {
+        query: {
           username: this.username,
           problemCode: this.problem.problemCode
         }

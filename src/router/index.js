@@ -16,9 +16,14 @@ import api from '_u/api';
 Vue.use(VueRouter);
 
 const originalPush = VueRouter.prototype.push;
+const originalReplace = VueRouter.prototype.replace;
 VueRouter.prototype.push = function push(location) {
-  location.query = Object.assign(location.query || {}, { _t: Date.now() });
-  return originalPush.call(this, location).catch(_ => _);
+  const that = this;
+  return originalPush.call(that, location).catch(_ => {
+    location.query = location.query || {};
+    location.query._t = Date.now();
+    originalReplace.call(that, location);
+  });
 };
 
 const scrollBehavior = (to, from, savedPosition) => {

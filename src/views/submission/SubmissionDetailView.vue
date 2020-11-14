@@ -10,6 +10,7 @@
 
 <template>
   <div class="container">
+    <Spin size="large" fix v-if="spinShow" />
     <Row>
       <Col span="17">
         <div style="margin-right: 20px;">
@@ -144,12 +145,6 @@ export default {
     ProblemCode
   },
   inject: ['reload'],
-  props: {
-    submissionId: {
-      type: String,
-      default: ''
-    }
-  },
   data: function () {
     return {
       submission: {
@@ -161,7 +156,8 @@ export default {
         { title: 'Score', key: 'judgeScore' },
         { title: 'Time', slot: 'time' },
         { title: 'Memory', slot: 'mem' }
-      ]
+      ],
+      spinShow: false
     }
   },
   filters: {
@@ -266,7 +262,9 @@ export default {
             this.fillCheckpointResults([i, ...o])
           });
         }
-      }).finally(() => this.$Spin.hide());
+      }).finally(() => {
+        this.spinShow = false;
+      });
     },
     onCellClick: function(name) {
       if (name === 'rejudge') {
@@ -281,6 +279,12 @@ export default {
         // invalidate the grade
         api.invalidate(this.submission.submissionId);
       }
+    },
+    query: function(submissionId) {
+      if (submissionId) {
+        this.spinShow = true;
+        this.getSubmissionDetail(submissionId);
+      }
     }
   },
   computed: {
@@ -294,11 +298,11 @@ export default {
       return !!this.submission.judgeLog;
     },
     showCheckpointResults: function() {
-      if (!this.submission.judgeResult || this.submission.checkpointResults.length === 0) {
+      if (this.submission.checkpointResults.length === 0) {
         return false;
       }
       if (this.submission.judgeResult > 0) {
-        return !(this.submission.judgeResult === JUDGE_RESULT_TYPE.CE || this.submissionId.judgeResult === JUDGE_RESULT_TYPE.SE);
+        return !(this.submission.judgeResult === JUDGE_RESULT_TYPE.CE || this.submission.judgeResult === JUDGE_RESULT_TYPE.SE);
       }
       return this.submission.judgeResult === JUDGE_RESULT_TYPE.JG;
     },
@@ -307,17 +311,14 @@ export default {
     }
   },
   mounted: function () {
-    if (this.$route.params.submissionId) {
-      this.$Spin.show();
-      this.getSubmissionDetail(this.$route.params.submissionId);
-    }
+    this.query(this.$route.params.submissionId);
   },
   beforeDestroy: function () {
     closeWebsocket();
   },
   watch: {
     $route: function() {
-      this.getSubmissionDetail(this.$route.params.submissionId);
+      this.query(this.$route.params.submissionId);
     }
   }
 }
