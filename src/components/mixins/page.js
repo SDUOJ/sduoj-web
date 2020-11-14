@@ -1,7 +1,7 @@
 export default {
   data: function() {
     return {
-      pageSizeOpts: [15, 30, 50],
+      pageSizeOpts: [15, 30, 50, 100],
       total: 0
     }
   },
