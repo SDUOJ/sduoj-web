@@ -59,6 +59,7 @@ const routes = [
   {
     name: 'submission-detail',
     path: '/submission/:submissionId',
+    meta: { scrollToTop: true },
     component: () => import('@/views/submission/SubmissionDetailView')
   },
   {
@@ -86,6 +87,7 @@ const routes = [
       {
         name: 'contest-submission',
         path: 'submission',
+        meth: { scrollToTop: true },
         component: () => import('@/views/submission/SubmissionView')
       },
       {
