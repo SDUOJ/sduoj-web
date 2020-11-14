@@ -206,7 +206,7 @@ export default {
     return get('/contest/rank', { contestId });
   },
   rejudge: function(data) {
-    return post('/contest/rejudge', data);
+    return post('/submit/rejudge', data);
   },
   invalidate: function(submissionId) {
 

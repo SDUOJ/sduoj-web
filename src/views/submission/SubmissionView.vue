@@ -22,32 +22,31 @@
           <Input v-model="tUsername"
             placeholder="Username"
             style="width: 200px;"
-            @on-enter="onFiltering">
-          </Input>
+            @on-enter="onFiltering" />
         </Col>
         <Col span="6">
-          <div class="filter-title">By Problem Code</div>
-          <Input v-model="tProblemCode"
-            placeholder="Problem Code"
+          <div class="filter-title">By Problem</div>
+          <Input
+            v-model="tProblemCode"
+            placeholder="Problem"
             style="width: 200px;"
-            @on-enter="onFiltering">
-          </Input>
+            @on-enter="onFiltering" />
         </Col>
         <Col span="6">
           <div class="filter-title">By Judge Result</div>
-          <Input v-model="tJudgeResult"
-            placeholder="Judge Result"
-            style="width: 200px;"
-            @on-enter="onFiltering">
-          </Input>
+          <Select v-model="tJudgeResult" style="width: 200px" clearable>
+            <Option v-for="type in JUDGE_RESULT_TYPE" :value="type.value" :key="type.value" :label="type.label">
+              <JudgeResult :result="type.value" />
+            </Option>
+          </Select>
         </Col>
         <Col span="6">
           <div class="filter-title">By Judge Template</div>
-          <Input v-model="tJudgeTemplate"
+          <Input
+            v-model="tJudgeTemplate"
             placeholder="Judge Template"
             style="width: 200px;"
-            @on-enter="onFiltering">
-          </Input>
+            @on-enter="onFiltering" />
         </Col>
       </Row>
     </Card>
@@ -79,14 +78,16 @@
 
 <script>
 import SubmissionList from '_c/SubmissionList';
+import JudgeResult from '_c/JudgeResult';
 import { mapGetters, mapState } from 'vuex';
 import api from '_u/api';
+import {  JUDGE_RESULT, JUDGE_RESULT_TYPE } from '_u/constants';
 
 import { Page } from '_c/mixins';
 
 export default {
   name: 'SubmissionView',
-  components: { SubmissionList },
+  components: { SubmissionList, JudgeResult },
   mixins: [Page],
   data: function() {
     return {
@@ -113,18 +114,10 @@ export default {
     onSubmissionListCellClick: function(row, col) {
       const name = this.contestId ? 'contest-submission-detail' : 'submission-detail';
       switch (col.key) {
-        case 'submissionId':
         case 'judgeResult':
           this.$router.push({
             name,
             params: { submissionId: row.submissionId }
-          });
-          break;
-        case 'problemCode':
-        case 'problemTitle':
-          this.$router.push({
-            name: 'problem-detail',
-            params: { problemCode: row.problemCode }
           });
           break;
       }
@@ -136,9 +129,14 @@ export default {
       this.total = totalPage * this.pageSize;
     },
     handleRejudge: function(submissions) {
-      api.rejudge({
-        contestId: this.contestId,
-        submissionIds: submissions.map(item => item.submissionId)
+      console.log(submissions);
+      if (submissions.length === 0) {
+        this.$Message.error('Select submissions');
+        return;
+      }
+      api.rejudge(submissions.map(o => o.submissionId)).then(_ => {
+        this.$Message.success('Rejudging');
+        this.getSubmissionList();
       });
     },
     getSubmissionList: function() {
@@ -157,10 +155,7 @@ export default {
   computed: {
     ...mapState('contest', ['contest']),
     ...mapGetters('contest', ['contestId']),
-    ...mapGetters('user', ['isAdmin', 'username']),
-    canDoRejudge: function() {
-      return !!(this.contestId && (this.isAdmin || this.contest.username === this.username));
-    },
+    ...mapGetters('user', ['isAdmin', 'isLogin', 'username']),
     username: {
       get: function() {
         return this.$route.params.username || this.$route.query.username || '';
@@ -192,6 +187,21 @@ export default {
       set: function(judgeTemplate) {
         this.$router.push({ query: { ...this.$route.query, judgeTemplate } });
       }
+    },
+    canDoRejudge: function() {
+      return !!(this.isAdmin || (this.contestId && this.isLogin && this.username === this.contest.username));
+    },
+    JUDGE_RESULT_TYPE: () => {
+      const judgeResultType = [];
+      Object.keys(JUDGE_RESULT_TYPE)
+        .filter(key => JUDGE_RESULT_TYPE[key] >= 0)
+        .forEach(key => {
+          judgeResultType.push({
+            value: JUDGE_RESULT_TYPE[key],
+            label: JUDGE_RESULT[JUDGE_RESULT_TYPE[key]].name
+          });
+        });
+      return judgeResultType;
     }
   },
   mounted: function() {
@@ -205,6 +215,9 @@ export default {
   watch: {
     $route: function() {
       this.getSubmissionList();
+    },
+    tJudgeResult: function() {
+      this.judgeResult = this.tJudgeResult;
     }
   }
 }

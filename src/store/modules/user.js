@@ -21,7 +21,10 @@ const getters = {
   avatar: state => `https://www.gravatar.com/avatar/${md5(state.profile.email || '')}?s=200&d=mp&r=g`,
   isLogin: state => !!state.profile.userId,
   isVerified: state => !!state.profile.emailVerified,
-  isAdmin: state => {
+  isAdmin: (state, getters) => {
+    if (!getters.isLogin) {
+      return false;
+    }
     let isAdmin = false;
     state.profile.roles.forEach(role => (isAdmin |= USER_ROLE[role].isAdmin));
     return isAdmin;

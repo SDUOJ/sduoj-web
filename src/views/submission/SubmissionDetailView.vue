@@ -35,10 +35,8 @@
               </template>
             </Table>
           </Card>
-          <Card v-if="showJudgerLog" class="box" :title="compilerLogTitle" dis-hover>
-            <div class="judge-log">
-              {{ submission.judgeLog }}
-            </div>
+          <Card v-if="showJudgeLog" class="box" title="Judge Log" dis-hover>
+            <div class="judge-log">{{ submission.judgeLog }}</div>
           </Card>
           <Card v-if="showCode" class="box" title="Your Code" icon="md-code" dis-hover :padding="10">
             <p slot="title">
@@ -60,18 +58,19 @@
               <Cell title="Public" v-if="submission.username === username">
                 <i-switch v-model="submission.isPublic" slot="extra" true-color="#19be6b"/>
               </Cell>
+              <template v-if="canDoRejudge">
+                <Cell name="rejudge" :disabled="submission.judgeResult < 0">
+                  <strong>Rejudge</strong>
+                  <Icon slot="icon" type="md-refresh" color="#2d8cf0" />
+                </Cell>
+<!--                TODO: 取消成绩暂不可用-->
+<!--                <Cell name="invalidate">-->
+<!--                  <strong>Invalidate</strong>-->
+<!--                  <Icon slot="icon" type="md-close-circle" color="#d9534f" />-->
+<!--                </Cell>-->
+              </template>
               <Divider size="small"/>
               <template v-if="contestId">
-                <template v-if="canDoRejudge">
-                  <Cell name="rejudge">
-                    <strong>Rejudge</strong>
-                    <Icon slot="icon" type="md-refresh" color="#2d8cf0" />
-                  </Cell>
-                  <Cell name="invalidate">
-                    <strong>Invalidate</strong>
-                    <Icon slot="icon" type="md-close-circle" color="#d9534f" />
-                  </Cell>
-                </template>
                 <Cell
                   title="Contest"
                   :extra="$store.state.contest.contest.contestTitle"
@@ -116,10 +115,10 @@
               <Cell v-if="submission.codeLength" title="Code Length">
                 <span slot="extra">{{ submission.codeLength || 0 }}</span>
               </Cell>
-              <Cell v-if="submission.usedTime" title="Total Time">
+              <Cell title="Total Time">
                 <span class="time" slot="extra">{{ submission.usedTime || 0 }}</span>
               </Cell>
-              <Cell v-if="submission.usedMemory" title="Total Memory">
+              <Cell title="Total Memory">
                 <span class="mem" slot="extra">{{ submission.usedMemory || 0 }}</span>
               </Cell>
             </div>
@@ -137,7 +136,7 @@ import { mapGetters, mapState } from 'vuex';
 import api from '_u/api';
 import { sendWebsocket, closeWebsocket } from '_u/socket';
 import { contestProblemId } from '_u/transform';
-import { JUDGE_STATUS, JUDGE_RESULT } from '_u/constants';
+import { JUDGE_RESULT_TYPE } from '_u/constants';
 
 export default {
   components: {
@@ -182,32 +181,32 @@ export default {
         // 如果data[i]是数组但是只有一个元素也是表示评测状态，此时 fileCheckpointResults 会返回false
         if ((Array.isArray(data[i]) && !this.fillCheckpointResults(data[i]))) {
           switch (data[i][0]) {
-            case JUDGE_STATUS.COMPILING:
-              this.$set(this.submission, 'judgeResult', JUDGE_RESULT.CP);
+            case JUDGE_RESULT_TYPE.CP:
+              this.$set(this.submission, 'judgeResult', JUDGE_RESULT_TYPE.CP);
               break;
-            case JUDGE_STATUS.JUDGING:
+            case JUDGE_RESULT_TYPE.JG:
               this.submission.checkpointResults.forEach(o => {
-                this.$set(o, 'judgeResult', JUDGE_RESULT.JG);
+                this.$set(o, 'judgeResult', JUDGE_RESULT_TYPE.JG);
               });
-              this.$set(this.submission, 'judgeResult', JUDGE_RESULT.JG);
+              this.$set(this.submission, 'judgeResult', JUDGE_RESULT_TYPE.JG);
               break;
-            case JUDGE_STATUS.END:
+            case JUDGE_RESULT_TYPE.END:
               closeWebsocket();
               this.reload();
               break;
           }
         } else if (!Array.isArray(data[i]) && !this.fillCheckpointResults(data)) {
           switch (data[0]) {
-            case JUDGE_STATUS.COMPILING:
-              this.$set(this.submission, 'judgeResult', JUDGE_RESULT.CP);
+            case JUDGE_RESULT_TYPE.CP:
+              this.$set(this.submission, 'judgeResult', JUDGE_RESULT_TYPE.CP);
               break;
-            case JUDGE_STATUS.JUDGING:
+            case JUDGE_RESULT_TYPE.JG:
               this.submission.checkpointResults.forEach(o => {
-                this.$set(o, 'judgeResult', JUDGE_RESULT.JG);
+                this.$set(o, 'judgeResult', JUDGE_RESULT_TYPE.JG);
               });
-              this.$set(this.submission, 'judgeResult', JUDGE_RESULT.JG);
+              this.$set(this.submission, 'judgeResult', JUDGE_RESULT_TYPE.JG);
               break;
-            case JUDGE_STATUS.END:
+            case JUDGE_RESULT_TYPE.END:
               closeWebsocket();
               this.reload();
               break;
@@ -272,9 +271,11 @@ export default {
     onCellClick: function(name) {
       if (name === 'rejudge') {
         // doRejudge
-        api.rejudge({
-          contestId: this.contestId,
-          submissionIds: [this.submission.submissionId]
+        if (this.submission.judgeResult < 0) {
+          return;
+        }
+        api.rejudge([this.submission.submissionId]).then(_ => {
+          this.reload();
         });
       } else if (name === 'invalidate') {
         // invalidate the grade
@@ -283,13 +284,13 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('user', ['username', 'isAdmin']),
+    ...mapGetters('user', ['username', 'isAdmin', 'isLogin']),
     ...mapGetters('contest', ['contestId']),
     ...mapState('contest', ['contest']),
     showCode: function () {
       return !!this.submission.code;
     },
-    showJudgerLog: function () {
+    showJudgeLog: function () {
       return !!this.submission.judgeLog;
     },
     showCheckpointResults: function() {
@@ -297,27 +298,15 @@ export default {
         return false;
       }
       if (this.submission.judgeResult > 0) {
-        return !(this.submission.judgeResult === JUDGE_RESULT.CE || this.submissionId.judgeResult === JUDGE_RESULT.SE);
+        return !(this.submission.judgeResult === JUDGE_RESULT_TYPE.CE || this.submissionId.judgeResult === JUDGE_RESULT_TYPE.SE);
       }
-      return this.submission.judgeResult === JUDGE_RESULT.JG;
-    },
-    compilerLogTitle: function () {
-      if (this.submission.judgeResult === JUDGE_RESULT.SE) {
-        // system error
-        return 'System Error'
-      } else if (this.submission.judgeResult === JUDGE_RESULT.CE) {
-        // compile error
-        return 'Compile Error'
-      } else if (this.showJudgerLog) {
-        return 'Compiler Log'
-      }
-      return ''
+      return this.submission.judgeResult === JUDGE_RESULT_TYPE.JG;
     },
     canDoRejudge: function() {
-      return !!(this.contestId && (this.isAdmin || this.username === this.contest.username));
+      return this.isAdmin || (this.contestId && this.isLogin && this.username === this.contest.username);
     }
   },
-  created: function () {
+  mounted: function () {
     if (this.$route.params.submissionId) {
       this.$Spin.show();
       this.getSubmissionDetail(this.$route.params.submissionId);
