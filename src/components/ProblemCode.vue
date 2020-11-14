@@ -10,8 +10,7 @@
 
 <template>
   <span>
-    <strong>{{ oj }}</strong>
-    -{{ code }}
+    <strong>{{ oj }}</strong>-{{ code }}
   </span>
 </template>
 
