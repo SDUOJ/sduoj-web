@@ -27,6 +27,20 @@ export const CONTEST_MODE = {
 };
 
 export const JUDGE_RESULT = {
+  '-3': {
+    name: 'Compiling',
+    abbr: 'CP',
+    css: 'verdict-pending',
+    color: 'grey',
+    icon: 'md-information'
+  },
+  '-2': {
+    name: 'Judging',
+    abbr: 'JG',
+    css: 'verdict-pending',
+    color: 'grey',
+    icon: 'md-information'
+  },
   0: {
     name: 'Pending',
     abbr: 'PD',
@@ -84,26 +98,15 @@ export const JUDGE_RESULT = {
     icon: 'md-close'
   },
   8: {
-    name: 'Compile Error',
+    name: 'Compilation Error',
     abbr: 'CE',
     css: 'verdict-compile-error',
     color: 'orange',
     icon: 'md-close'
-  },
-  9: {
-    name: 'Compiling',
-    abbr: 'CP',
-    css: 'verdict-pending',
-    color: 'grey',
-    icon: 'md-information'
-  },
-  10: {
-    name: 'Judging',
-    abbr: 'JG',
-    css: 'verdict-pending',
-    color: 'grey',
-    icon: 'md-information'
-  },
+  }
+};
+
+export const JUDGE_RESULT_TYPE = {
   PD: 0,
   AC: 1,
   TLE: 2,
@@ -113,42 +116,38 @@ export const JUDGE_RESULT = {
   WA: 6,
   PE: 7,
   CE: 8,
-  CP: 9,
-  JG: 10
+
+  CP: -3,
+  JG: -2,
+  END: -1
 };
 
-export const judgeTemplateType = {
+export const JUDGE_TEMPLATE_TYPE = {
   IO: 0,
   SPJ: 1,
   ADVANCED: 2
 }
 
-export const judgeTemplateProperity = {
-  [judgeTemplateType.IO]: {
+export const JUDGE_TEMPLATE_PROPERITY = {
+  [JUDGE_TEMPLATE_TYPE.IO]: {
     type: 0,
     name: 'IO',
     color: 'blue',
     zipFile: false
   },
-  [judgeTemplateType.SPJ]: {
+  [JUDGE_TEMPLATE_TYPE.SPJ]: {
     type: 1,
     name: 'SPJ',
     color: 'gold',
     zipFile: true
   },
-  [judgeTemplateType.ADVANCED]: {
+  [JUDGE_TEMPLATE_TYPE.ADVANCED]: {
     type: 2,
     name: 'Advanced',
     color: 'purple',
     zipFile: true
   }
 }
-
-export const JUDGE_STATUS = {
-  COMPILING: -3,
-  JUDGING: -2,
-  END: -1
-};
 
 export const USER_ROLE = {
   user: {

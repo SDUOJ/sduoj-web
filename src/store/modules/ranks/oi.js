@@ -8,7 +8,7 @@
  *      https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
-import { JUDGE_RESULT } from '_u/constants';
+import { JUDGE_RESULT_TYPE } from '_u/constants';
 
 function calculateProblemResult(submissions, problemNum, endTime) {
   const problemSubmissionMap = {};
@@ -35,7 +35,7 @@ function calculateProblemResult(submissions, problemNum, endTime) {
     let lastUnPDSubmission = null;
     for (let i1 = problemSubmissionMap[i].length - 1; i1 >= 0; --i1) {
       const oneSubmission = problemSubmissionMap[i][i1];
-      if (oneSubmission.judgeResult === JUDGE_RESULT.PD) {
+      if (oneSubmission.judgeResult === JUDGE_RESULT_TYPE.PD) {
         lastUnPDSubmission = oneSubmission;
         break;
       } else {
@@ -85,11 +85,11 @@ function formatProblemResults(_problemResults, problemWeights, startTime) {
       score += judgeScore * problemWeights[problemCode - 1];
       let css;
       switch (judgeResult) {
-        case JUDGE_RESULT.AC:
+        case JUDGE_RESULT_TYPE.AC:
           css = 'score_correct';
           solved++;
           break;
-        case JUDGE_RESULT.PD:
+        case JUDGE_RESULT_TYPE.PD:
           css = 'score_pending';
           break;
         default:

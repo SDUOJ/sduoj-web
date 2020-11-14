@@ -11,7 +11,7 @@
 import Vue from 'vue';
 import api from '_u/api';
 import moment from 'moment';
-import { CONTEST_STATUS, CONTEST_OPENNESS, JUDGE_RESULT } from '_u/constants';
+import { CONTEST_STATUS, CONTEST_OPENNESS, JUDGE_RESULT_TYPE } from '_u/constants';
 import { s2hs } from '_u/transform';
 import rankHandler, { calculateScore } from './ranks';
 
@@ -127,7 +127,7 @@ const getters = {
     scores.forEach(score => {
       for (let i = 0; i < score.problemNum; ++i) {
         const result = score.problemResults[i];
-        if (JUDGE_RESULT.AC === result.judgeResult) {
+        if (JUDGE_RESULT_TYPE.AC === result.judgeResult) {
           if (!firstSolvedMap[result.problemCode] || firstSolvedMap[result.problemCode] > result.gmtCreate) {
             firstSolvedMap[result.problemCode] = result.gmtCreate;
           }
@@ -137,7 +137,7 @@ const getters = {
     scores.forEach(score => {
       for (let i = 0; i < score.problemNum; ++i) {
         const result = score.problemResults[i];
-        if (JUDGE_RESULT.AC === result.judgeResult && firstSolvedMap[result.problemCode] === result.gmtCreate) {
+        if (JUDGE_RESULT_TYPE.AC === result.judgeResult && firstSolvedMap[result.problemCode] === result.gmtCreate) {
           result.css = 'score_first';
         }
       }

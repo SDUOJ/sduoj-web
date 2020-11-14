@@ -8,7 +8,7 @@
  *      https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
-import { JUDGE_RESULT } from '_u/constants';
+import { JUDGE_RESULT_TYPE } from '_u/constants';
 
 function calculateProblemResult(submissions, problemNum, endTime) {
   const problemResults = [];
@@ -35,7 +35,7 @@ function calculateProblemResult(submissions, problemNum, endTime) {
     problemSubmissionMap[i].sort((a, b) => a.gmtCreate - b.gmtCreate);
     for (let i1 = 0; i1 < problemSubmissionMap[i].length; ++i1) {
       const oneSubmission = problemSubmissionMap[i][i1];
-      if (JUDGE_RESULT.AC === oneSubmission.judgeResult) {
+      if (JUDGE_RESULT_TYPE.AC === oneSubmission.judgeResult) {
         problemResults.push([
           oneSubmission.gmtCreate,
           oneSubmission.judgeScore,
@@ -45,7 +45,7 @@ function calculateProblemResult(submissions, problemNum, endTime) {
         ]);
         ac = true;
         break;
-      } else if (JUDGE_RESULT.PD === oneSubmission.judgeResult) {
+      } else if (JUDGE_RESULT_TYPE.PD === oneSubmission.judgeResult) {
         numSubmissionsPending++;
       }
     }
@@ -54,7 +54,7 @@ function calculateProblemResult(submissions, problemNum, endTime) {
         problemResults.push([
           0,  // gmtCreate
           0,  // judgeScore
-          numSubmissionsPending > 0 ? JUDGE_RESULT.PD : JUDGE_RESULT.WA, // judgeResult
+          numSubmissionsPending > 0 ? JUDGE_RESULT_TYPE.PD : JUDGE_RESULT_TYPE.WA, // judgeResult
           problemSubmissionMap[i].length, // numSubmissions
           numSubmissionsPending  // numSubmissionsPending
         ]);
@@ -93,15 +93,15 @@ function formatProblemResults(_problemResults, problemWeights, startTime) {
       const numSubmissionsPending = parseInt(result[4]);
       let css;
       switch (judgeResult) {
-        case JUDGE_RESULT.AC:
+        case JUDGE_RESULT_TYPE.AC:
           css = 'score_correct';
           solved += problemWeights[problemCode - 1];
           score += time + (numSubmissions - numSubmissionsPending - 1) * 20 * 60 * 1000;
           break;
-        case JUDGE_RESULT.WA:
+        case JUDGE_RESULT_TYPE.WA:
           css = 'score_incorrect';
           break;
-        case JUDGE_RESULT.PD:
+        case JUDGE_RESULT_TYPE.PD:
           css = 'score_pending';
           break;
         default:

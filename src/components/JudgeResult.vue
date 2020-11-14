@@ -10,10 +10,8 @@
 
 <template>
   <div class="judge-result">
-    <template v-if="result !== -1">
-      <Icon :type="JUDGE_RESULT[result].icon" :color="JUDGE_RESULT[result].color" />
-      <span :class="`${judgeResult2Class(result)} hover`">{{ judgeResult2Text(result) }}</span>
-    </template>
+      <Icon :type="judgeResult.icon" :color="judgeResult.color" />
+      <span :class="`${judgeResult.css} hover`">{{ abbr ? judgeResult.abbr : judgeResult.name }}</span>
   </div>
 </template>
 
@@ -24,7 +22,7 @@ export default {
   props: {
     result: {
       type: Number,
-      default: -1
+      default: 0
     },
     abbr: {
       type: Boolean,
@@ -32,20 +30,8 @@ export default {
     }
   },
   computed: {
-    JUDGE_RESULT: () => JUDGE_RESULT
-  },
-  methods: {
-    judgeResult2Text: function (judgeResult) {
-      if (judgeResult === -1) {
-        return '';
-      }
-      return JUDGE_RESULT[judgeResult][this.abbr ? 'abbr' : 'name'];
-    },
-    judgeResult2Class: judgeResult => {
-      if (judgeResult === -1) {
-        return '';
-      }
-      return JUDGE_RESULT[judgeResult].css;
+    judgeResult: function() {
+      return JUDGE_RESULT[this.result]
     }
   }
 }
@@ -61,19 +47,11 @@ export default {
     font-weight: bold;
   }
 
-  /*.verdict-accepted:hover {*/
-  /*  cursor: pointer;*/
-  /*}*/
-
   // judge failed
   .verdict-failed {
     color: #d9534f;
     font-weight: bold;
   }
-
-  /*.verdict-failed:hover {*/
-  /*  cursor: pointer;*/
-  /*}*/
 
   // judge pending
   .verdict-pending {
@@ -81,19 +59,11 @@ export default {
     font-weight: bold;
   }
 
-  /*.verdict-pending:hover {*/
-  /*  cursor: pointer;*/
-  /*}*/
-
   // compile error
   .verdict-compile-error {
     color: #ffa500;
     font-weight: bold;
   }
-
-  /*.verdict-compile-error:hover {*/
-  /*  cursor: pointer;*/
-  /*}*/
 
   .verdict-system-error {
     color: rebeccapurple;

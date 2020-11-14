@@ -8,7 +8,7 @@
  *      https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
-import { JUDGE_RESULT } from '_u/constants';
+import { JUDGE_RESULT_TYPE } from '_u/constants';
 
 function calculateProblemResult(submissions, problemNum, endTime) {
   const problemResults = [];
@@ -37,7 +37,7 @@ function calculateProblemResult(submissions, problemNum, endTime) {
       if (!maxScoreSubmission || oneSubmission.judgeScore > maxScoreSubmission.judgeScore) {
         maxScoreSubmission = oneSubmission;
       }
-      if (oneSubmission.judgeResult === JUDGE_RESULT.PD) {
+      if (oneSubmission.judgeResult === JUDGE_RESULT_TYPE.PD) {
         numSubmissionsPending++;
       }
     }
@@ -84,14 +84,14 @@ function formatProblemResults(_problemResults, problemWeights, startTime) {
       score += judgeScore * problemWeights[problemCode - 1];
       let css;
       switch (judgeResult) {
-        case JUDGE_RESULT.AC:
+        case JUDGE_RESULT_TYPE.AC:
           css = 'score_correct';
           solved++;
           break;
-        case JUDGE_RESULT.WA:
+        case JUDGE_RESULT_TYPE.WA:
           css = 'score_incorrect';
           break;
-        case JUDGE_RESULT.PD:
+        case JUDGE_RESULT_TYPE.PD:
           css = 'score_pending';
           break;
         default:
