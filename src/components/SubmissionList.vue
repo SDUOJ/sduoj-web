@@ -22,10 +22,16 @@
       @on-sort-change="onSort"
       @on-cell-click="onCellClick">
       <template slot-scope="{ row }" slot="id">
-        <span class="underline">{{ row.submissionId }}</span>
+        <router-link :to="{
+          name: contestId ? 'contest-submission-detail' : 'submission-detail',
+          params: { submissionId: row.submissionId }
+        }">{{ row.submissionId }}</router-link>
       </template>
       <template slot-scope="{ row }" slot="title">
-        <span class="underline">{{ row.problemTitle }}</span>
+        <router-link :to="{
+          name: contestId ? 'contest-problem-detail' : 'problem-detail',
+          params: { problemCode: row.problemCode }
+        }">{{ row.problemTitle }}</router-link>
       </template>
       <template slot-scope="{ row }" slot="judge-result">
         <JudgeResult :result="row.judgeResult" />
@@ -108,7 +114,6 @@ export default {
                     }
                   }, [
                     h(ProblemCode, {
-                      class: 'hover',
                       props: {
                         problemCode: texts
                       }
@@ -123,7 +128,6 @@ export default {
                   ]);
                 } else {
                   return h(ProblemCode, {
-                    class: 'hover',
                     props: {
                       problemCode: params.row.problemCode
                     }

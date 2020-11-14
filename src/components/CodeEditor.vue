@@ -49,7 +49,7 @@
 <script>
 import { codemirror } from 'vue-codemirror-lite'
 import 'codemirror/addon/selection/active-line.js'
-import { judgeTemplateProperity } from '_u/constants';
+import { JUDGE_TEMPLATE_PROPERITY } from '_u/constants';
 import Upload from '_c/upload/upload';
 
 export default {
@@ -77,7 +77,7 @@ export default {
     }
   },
   filters: {
-    judgeTemplateTypeName: type => judgeTemplateProperity[type].name
+    judgeTemplateTypeName: type => JUDGE_TEMPLATE_PROPERITY[type].name
   },
   data: function () {
     return {
