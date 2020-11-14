@@ -121,7 +121,6 @@ export default {
     return {
       problemTableColumns: [
         {
-          title: 'Problem Code',
           key: 'problemCode',
           width: 210,
           render: (h, params) => {
@@ -283,7 +282,7 @@ export default {
       }).finally(() => {
         this.loading = false;
       });
-      api.getUserACProblems().then(acproblems => (this.acproblems = acproblems));
+      api.getUserACProblems().then(acproblems => (this.acproblems = acproblems)).catch(_ => _);
     }
   },
   mounted: function () {
@@ -316,7 +315,7 @@ export default {
   }
 </style>
 
-<style lang="less">
+<style lang="less" scoped>
   li {
     list-style: none;
   }
