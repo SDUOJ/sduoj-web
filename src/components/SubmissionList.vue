@@ -29,7 +29,7 @@
       </template>
       <template slot-scope="{ row }" slot="title">
         <router-link :to="{
-          name: contestId ? 'contest-problem-detail' : 'problem-detail',
+          name: contestId ? 'contest-problem' : 'problem-detail',
           params: { problemCode: row.problemCode }
         }">{{ row.problemTitle }}</router-link>
       </template>

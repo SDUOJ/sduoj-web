@@ -161,7 +161,9 @@ export default {
         return this.$route.params.username || this.$route.query.username || '';
       },
       set: function(username) {
-        this.$router.push({ query: { ...this.$route.query, username } });
+        if (this.$route.query.username !== username) {
+          this.$router.push({ query: { ...this.$route.query, username } });
+        }
       }
     },
     problemCode: {
@@ -169,7 +171,9 @@ export default {
         return this.$route.params.problemCode || this.$route.query.problemCode || '';
       },
       set: function(problemCode) {
-        this.$router.push({ query: { ...this.$route.query, problemCode } });
+        if (this.$route.query.problemCode !== problemCode) {
+          this.$router.push({ query: { ...this.$route.query, problemCode } });
+        }
       }
     },
     judgeResult: {
@@ -177,7 +181,10 @@ export default {
         return this.$route.params.judgeResult || this.$route.query.judgeResult || '';
       },
       set: function(judgeResult) {
-        this.$router.push({ query: { ...this.$route.query, judgeResult } });
+        console.log(judgeResult);
+        if (this.$route.query.judgeResult !== judgeResult) {
+          this.$router.push({ query: { ...this.$route.query, judgeResult } });
+        }
       }
     },
     judgeTemplate: {
@@ -185,7 +192,9 @@ export default {
         return this.$route.params.judgeTemplate || this.$route.query.judgeTemplate || '';
       },
       set: function(judgeTemplate) {
-        this.$router.push({ query: { ...this.$route.query, judgeTemplate } });
+        if (this.$route.query.judgeTemplate !== judgeTemplate) {
+          this.$router.push({ query: { ...this.$route.query, judgeTemplate } });
+        }
       }
     },
     canDoRejudge: function() {
@@ -205,11 +214,10 @@ export default {
     }
   },
   mounted: function() {
-    this.tUsername = this.$route.params.username || this.$route.query.username;
-    this.tProblemCode = this.$route.params.problemCode || this.$route.query.problemCode;
-    this.tJudgeResult = this.$route.params.judgeResult || this.$route.query.judgeResult;
-    this.tJudgeTemplate = this.$route.params.judgeTemplate || this.$route.query.judgeTemplate;
-    this.onFiltering();
+    this.tUsername = this.username;
+    this.tProblemCode = this.problemCode;
+    this.tJudgeResult = this.judgeResult;
+    this.tJudgeTemplate = this.judgeTemplate;
     this.getSubmissionList();
   },
   watch: {

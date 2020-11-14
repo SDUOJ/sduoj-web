@@ -176,7 +176,7 @@
      </SubmissionList>
    </Modal>
    <Modal v-model="modelSubmissionDetail" width="1000px" footer-hide :closable="false">
-     <SubmissionDetailView :submission-id="submissionId" />
+     <SubmissionDetailView ref="SubmissionDetailView" />
    </Modal>
  </div>
 </template>
@@ -206,7 +206,6 @@ export default {
         username: '',
         problemCode: ''
       },
-      submissionId: '',
 
       total: 0,
       pageNow: 1,
@@ -278,7 +277,7 @@ export default {
         case 'submissionId':
         case 'judgeResult':
           if (row.username === this.username || this.isAdmin || row.isPublic) {
-            this.submissionId = row.submissionId;
+            this.$refs.SubmissionDetailView.query(row.submissionId);
             this.modelSubmissionDetail = true;
           }
           break;
