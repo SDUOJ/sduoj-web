@@ -16,7 +16,7 @@
         <div style="margin-right: 20px;">
           <!-- websocket -->
           <Card class="box" dis-hover :padding="0">
-            <JudgeResult class="title" slot="title" v-bind:result="submission.judgeResult"/>
+            <JudgeResult class="title" slot="title" :result="submission.judgeResult" :total="submission.checkpointNum" :current="judgedCheckpointNum"/>
             <Table
               v-if="showCheckpointResults"
               disabled-hover
@@ -133,9 +133,11 @@
 <script>
 import ProblemCode from '_c/ProblemCode';
 import JudgeResult from '_c/JudgeResult';
+import { Websocket } from '_c/mixins';
+
 import { mapGetters, mapState } from 'vuex';
+
 import api from '_u/api';
-import { sendWebsocket, closeWebsocket } from '_u/socket';
 import { contestProblemId } from '_u/transform';
 import { JUDGE_RESULT_TYPE } from '_u/constants';
 
@@ -144,6 +146,7 @@ export default {
     JudgeResult,
     ProblemCode
   },
+  mixins: [Websocket],
   inject: ['reload'],
   data: function () {
     return {
@@ -168,6 +171,12 @@ export default {
     copyToClipboard: function (content) {
       this.$copyText(content).then(_ => this.$Message.success('已复制到剪切板'));
     },
+    gotoProblem: function (problemCode) {
+      this.$router.push({
+        name: 'problem-detail',
+        params: { problemCode }
+      });
+    },
     wsSuccess: function (data) {
       if (typeof data === 'string') {
         data = JSON.parse(data);
@@ -175,69 +184,49 @@ export default {
       for (let i = 0; i < data.length; ++i) {
         // data[i]不是数组的话就是单独的一个数：表示评测状态 -3 compiling -2 judging
         // 如果data[i]是数组但是只有一个元素也是表示评测状态，此时 fileCheckpointResults 会返回false
-        if ((Array.isArray(data[i]) && !this.fillCheckpointResults(data[i]))) {
-          switch (data[i][0]) {
-            case JUDGE_RESULT_TYPE.CP:
-              this.$set(this.submission, 'judgeResult', JUDGE_RESULT_TYPE.CP);
-              break;
-            case JUDGE_RESULT_TYPE.JG:
-              this.submission.checkpointResults.forEach(o => {
-                this.$set(o, 'judgeResult', JUDGE_RESULT_TYPE.JG);
-              });
-              this.$set(this.submission, 'judgeResult', JUDGE_RESULT_TYPE.JG);
-              break;
-            case JUDGE_RESULT_TYPE.END:
-              closeWebsocket();
-              this.reload();
-              break;
-          }
-        } else if (!Array.isArray(data[i]) && !this.fillCheckpointResults(data)) {
-          switch (data[0]) {
-            case JUDGE_RESULT_TYPE.CP:
-              this.$set(this.submission, 'judgeResult', JUDGE_RESULT_TYPE.CP);
-              break;
-            case JUDGE_RESULT_TYPE.JG:
-              this.submission.checkpointResults.forEach(o => {
-                this.$set(o, 'judgeResult', JUDGE_RESULT_TYPE.JG);
-              });
-              this.$set(this.submission, 'judgeResult', JUDGE_RESULT_TYPE.JG);
-              break;
-            case JUDGE_RESULT_TYPE.END:
-              closeWebsocket();
-              this.reload();
-              break;
-          }
+        if (Array.isArray(data[i])) {
+          this.fillCheckpointResults(data[i]);
+        } else {
+          this.fillCheckpointResults(data);
           break;
         }
       }
     },
-    wsRequest: function () {
-      sendWebsocket('/submission', { id: this.submission.submissionId },
-        this.wsSuccess,
-        err => {
-          if (err !== '') {
-            this.$Message.error(err);
-          }
-        });
-    },
-    gotoProblem: function (problemCode) {
-      this.$router.push({
-        name: 'problem-detail',
-        params: { problemCode }
-      });
-    },
     fillCheckpointResults: function (oneJudge) {
-      if (oneJudge.length === 5) {
-        this.submission.checkpointResults.splice(oneJudge[0], 1, {
-          id: parseInt(oneJudge[0]) + 1,
-          judgeResult: parseInt(oneJudge[1]),
-          judgeScore: parseInt(oneJudge[2]),
-          usedTime: oneJudge[3].toString(),
-          usedMemory: oneJudge[4].toString()
+      if (oneJudge[1] < JUDGE_RESULT_TYPE.PD) {
+        // ['submissionId', -3/-2/-1]
+        switch (oneJudge[1]) {
+          case JUDGE_RESULT_TYPE.CP:
+            this.$set(this.submission, 'judgeResult', JUDGE_RESULT_TYPE.CP);
+            break;
+          case JUDGE_RESULT_TYPE.JG:
+            this.submission.checkpointResults.forEach(o => {
+              this.$set(o, 'judgeResult', JUDGE_RESULT_TYPE.JG);
+            });
+            this.$set(this.submission, 'judgeResult', JUDGE_RESULT_TYPE.JG);
+            break;
+          case JUDGE_RESULT_TYPE.END:
+            this.websock.close();
+            this.submission = {
+              ...this.submission,
+              judgeResult: oneJudge[2],
+              judgeScore: oneJudge[3],
+              usedTime: oneJudge[4].toString(),
+              usedMemory: oneJudge[5].toString()
+            };
+            // this.reload();
+            break;
+        }
+      } else {
+        // ['submissionId', caseIndex, judgeResult, judgeScore, usedTime, usedMemory]
+        this.submission.checkpointResults.splice(oneJudge[1], 1, {
+          id: oneJudge[1] + 1,
+          judgeResult: oneJudge[2],
+          judgeScore: oneJudge[3],
+          usedTime: oneJudge[4].toString(),
+          usedMemory: oneJudge[5].toString()
         });
-        return true;
       }
-      return false;
     },
     getSubmissionDetail: function(submissionId) {
       api.getSubmissionDetail({ submissionId }).then(ret => {
@@ -250,16 +239,20 @@ export default {
           for (let i = 0; i < ret.checkpointNum; ++i) {
             this.submission.checkpointResults.push({
               id: i + 1,
-              judgeResult: 0,
+              judgeResult: ret.judgeResult,
               judgeScore: 0,
               usedTime: 0,
               usedMemory: 0
             });
           }
-          this.wsRequest();
+          this.initWebSocket(
+            '/submission',
+            [this.submission.submissionId],
+            this.wsSuccess
+          );
         } else {
           ret.checkpointResults.forEach((o, i) => {
-            this.fillCheckpointResults([i, ...o])
+            this.fillCheckpointResults([ret.submissionId, i, ...o])
           });
         }
       }).finally(() => {
@@ -308,13 +301,13 @@ export default {
     },
     canDoRejudge: function() {
       return this.isAdmin || (this.contestId && this.isLogin && this.username === this.contest.username);
+    },
+    judgedCheckpointNum: function() {
+      return this.submission.checkpointResults.filter(o => o.judgeResult > JUDGE_RESULT_TYPE.PD).length;
     }
   },
   mounted: function () {
     this.query(this.$route.params.submissionId);
-  },
-  beforeDestroy: function () {
-    closeWebsocket();
   },
   watch: {
     $route: function() {

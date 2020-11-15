@@ -10,13 +10,16 @@
 
 <template>
   <div class="judge-result">
-      <Icon :type="judgeResult.icon" :color="judgeResult.color" />
-      <span :class="`${judgeResult.css} hover`">{{ abbr ? judgeResult.abbr : judgeResult.name }}</span>
+    <Icon :type="judgeResult.icon" :color="judgeResult.color" />
+    <span :class="`${judgeResult.css} hover`">{{ abbr ? judgeResult.abbr : judgeResult.name }}</span>
+    <template v-if="result === JUDGE_RESULT_TYPE.JG && total > 0">
+      <span :class="`${judgeResult.css} hover`">{{ ` (${current}/${total})` }}</span>
+    </template>
   </div>
 </template>
 
 <script>
-import { JUDGE_RESULT } from '_u/constants';
+import { JUDGE_RESULT, JUDGE_RESULT_TYPE } from '_u/constants';
 
 export default {
   props: {
@@ -27,12 +30,21 @@ export default {
     abbr: {
       type: Boolean,
       default: false
+    },
+    total: {
+      type: Number,
+      default: 0
+    },
+    current: {
+      type: Number,
+      default: 0
     }
   },
   computed: {
     judgeResult: function() {
       return JUDGE_RESULT[this.result]
-    }
+    },
+    JUDGE_RESULT_TYPE: () => JUDGE_RESULT_TYPE
   }
 }
 </script>
