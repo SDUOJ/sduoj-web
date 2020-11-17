@@ -155,7 +155,11 @@ export default {
   },
   mounted: function() {
     this.$Spin.show();
-    this.$store.dispatch('contest/getContest', this.$route.params.contestId).finally(() => this.$Spin.hide());
+    this.$store.dispatch('contest/getContest', this.$route.params.contestId)
+      .catch(_ => {
+        this.$Message.error('Permission denied');
+      })
+      .finally(() => this.$Spin.hide());
   },
   beforeDestroy: function () {
     this.$store.commit('contest/clearContest');

@@ -14,7 +14,7 @@
       <Col span="16">
         <div style="margin-right: 30px;">
           <UserProfile />
-          <UserPassword v-if="isVerified" style="margin: 20px 0;" />
+          <UserPassword style="margin: 20px 0;" />
           <UserEmail />
         </div>
       </Col>

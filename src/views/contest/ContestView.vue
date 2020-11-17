@@ -176,12 +176,14 @@ export default {
     },
     $route: function() {
       this.getContestList();
+      api.getUpcomingContest().then(ret => (this.upcomingContest = ret)).catch(err => (err));
+      api.getParticipatedContests().then(ret => (this.participatedContest = ret)).catch(err => (err));
     }
   },
   mounted: function () {
     this.getContestList();
-    api.getUpcomingContest().then(ret => (this.upcomingContest = { ...ret }));
-    api.getParticipatedContests().then(ret => (this.participatedContest = ret));
+    api.getUpcomingContest().then(ret => (this.upcomingContest = { ...ret })).catch(err => (err));
+    api.getParticipatedContests().then(ret => (this.participatedContest = ret)).catch(err => (err));
   }
 }
 </script>

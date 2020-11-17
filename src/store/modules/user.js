@@ -26,7 +26,7 @@ const getters = {
       return false;
     }
     let isAdmin = false;
-    state.profile.roles.forEach(role => (isAdmin |= USER_ROLE[role].isAdmin));
+    (state.profile.roles || []).forEach(role => (isAdmin |= USER_ROLE[role].isAdmin));
     return isAdmin;
   }
 }
