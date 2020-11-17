@@ -21,10 +21,7 @@
         <!-- 题面描述 -->
         <Card class="box" title="Description" dis-hover :padding="0">
           <div class="problem-markdown">
-            <markdown-it-vue-light
-              v-if="problemDescription.markdownDescription"
-              :content="problemDescription.markdownDescription" />
-            <div v-else v-html="problemDescription.htmlDescription || ''"></div>
+            <Markdown :value="problemDescription.markdownDescription || problemDescription.htmlDescription" />
           </div>
         </Card>
         <!--  -->
@@ -35,14 +32,18 @@
                 <span class="clip hover" @click="copyToClipboard(problemCase.input)"> Input </span>
                 <Icon type="ios-copy-outline" />
               </Tooltip>
-              <markdown-it-vue-light :content="`\`\`\`text\n${problemCase.input}\n\`\`\``" />
+              <div v-highlight>
+                <pre><code class="plaintext">{{ problemCase.input }}</code></pre>
+              </div>
             </div>
             <div class="problem-example">
               <Tooltip content="Copy" placement="right">
                 <span class="clip hover" @click="copyToClipboard(problemCase.output)"> Output </span>
                 <Icon type="ios-copy-outline" />
               </Tooltip>
-              <markdown-it-vue-light :content="`\`\`\`text\n${problemCase.output}\n\`\`\``" />
+              <div v-highlight>
+                <pre><code class="plaintext">{{ problemCase.output }}</code></pre>
+              </div>
             </div>
         </Card>
         </div>
@@ -168,11 +169,10 @@
 </template>
 
 <script>
-import MarkdownItVueLight from 'markdown-it-vue/dist/markdown-it-vue-light.umd.min.js'
-import 'markdown-it-vue/dist/markdown-it-vue-light.css'
 import ProblemCode from '_c/ProblemCode';
 import CodeEditor from '_c/CodeEditor';
 import JudgeResult from '_c/JudgeResult';
+import Markdown from '_c/Markdown';
 import moment from 'moment';
 
 import api from '_u/api';
@@ -199,7 +199,7 @@ function setStorage(problemCode, contestId, value) {
 
 export default {
   components: {
-    MarkdownItVueLight,
+    Markdown,
     CodeEditor,
     ProblemCode
   },

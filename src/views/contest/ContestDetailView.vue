@@ -49,7 +49,7 @@
           </ul>
         </div>
         <div>
-          <markdown-it-vue-light :content="contest.markdownDescription || ''" />
+          <Markdown style="min-height: 0" :value="contest.markdownDescription" />
           <ContestProcess />
         </div>
       </div>
@@ -104,18 +104,16 @@
 </template>
 
 <script>
-import MarkdownItVueLight from 'markdown-it-vue/dist/markdown-it-vue-light.umd.min.js'
-import 'markdown-it-vue/dist/markdown-it-vue-light.css'
-
 import { mapGetters, mapState } from 'vuex';
 import { CONTEST_OPENNESS, CONTEST_STATUS } from '_u/constants';
 import { s2hs } from '_u/transform';
 
 import ContestProcess from '_c/ContestProcess';
+import Markdown from '_c/Markdown';
 
 export default {
   name: 'ContestDetailView',
-  components: { MarkdownItVueLight, ContestProcess },
+  components: { Markdown, ContestProcess },
   inject: ['reload'],
   data: function() {
     return {
