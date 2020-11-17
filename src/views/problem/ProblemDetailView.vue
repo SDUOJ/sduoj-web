@@ -179,6 +179,23 @@ import api from '_u/api';
 import { contestProblemId } from '_u/transform';
 
 import { mapGetters, mapState } from 'vuex';
+import store from '@/store';
+
+function getStorage(problemCode, contestId) {
+  let _key = `PROBLEM_${problemCode}`;
+  if (contestId) {
+    _key += `_${contestId}`;
+  }
+  return JSON.parse(sessionStorage.getItem(_key)) || null;
+}
+
+function setStorage(problemCode, contestId, value) {
+  let _key = `PROBLEM_${problemCode}`;
+  if (contestId) {
+    _key += `_${contestId}`;
+  }
+  sessionStorage.setItem(_key, JSON.stringify(value));
+}
 
 export default {
   components: {
@@ -345,7 +362,7 @@ export default {
       api.problemQuery(params).then(ret => {
         ret.problemCaseDTOList.forEach((problemCase, index) => (problemCase.id = index + 1));
         this.problem = ret;
-        if (ret.judgeTemplates.length > 0) {
+        if (this.code === '' && ret.judgeTemplates.length > 0) {
           this.judgeTemplate = ret.judgeTemplates[0];
         }
         // 查最多5个提交记录
@@ -370,13 +387,42 @@ export default {
     }
   },
   watch: {
-    $route: function() {
+    $route: function(to, from) {
+      setStorage(from.params.problemCode, this.contestId, {
+        code: this.code,
+        judgeTemplate: this.judgeTemplate
+      });
+      const value = getStorage(to.params.problemCode, this.contestId);
+      this.code = '';
+      this.judgeTemplate = {};
+      if (value) {
+        this.code = value.code;
+        this.judgeTemplate = value.judgeTemplate;
+      }
       this.getProblem();
     }
   },
   created: function () {
     this.$Spin.show();
     this.getProblem();
+  },
+  beforeRouteLeave: function(to, from, next) {
+    setStorage(this.$route.params.problemCode, this.contestId, {
+      code: this.code,
+      judgeTemplate: this.judgeTemplate
+    });
+    next();
+  },
+  beforeRouteEnter: function(to, from, next) {
+    const value = getStorage(to.params.problemCode, store.getters['contest/contestId']);
+    if (value) {
+      next(vm => {
+        vm.code = value.code;
+        vm.judgeTemplate = value.judgeTemplate;
+      });
+    } else {
+      next();
+    }
   }
 }
 </script>

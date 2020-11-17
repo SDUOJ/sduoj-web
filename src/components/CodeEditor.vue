@@ -25,8 +25,8 @@
       <Upload
         class="upload"
         :show-upload-list="false"
-        :format="judgeTemplate.acceptFileExtensions"
-        :accept="judgeTemplate.acceptFileExtensions.map(o => `.${o}`).join(',')"
+        :format="judgeTemplate.acceptFileExtensions || []"
+        :accept="(judgeTemplate.acceptFileExtensions || []).map(o => `.${o}`).join(',')"
         :file-list.sync="fileList">
 <!--        TODO: 上传文件暂不可用-->
         <Tooltip :disabled="true">
