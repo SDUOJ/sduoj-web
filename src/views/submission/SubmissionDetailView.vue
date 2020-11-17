@@ -214,6 +214,7 @@ export default {
               usedTime: oneJudge[4].toString(),
               usedMemory: oneJudge[5].toString()
             };
+            this.getSubmissionDetail(this.submission.submissionId);
             // this.reload();
             break;
         }
