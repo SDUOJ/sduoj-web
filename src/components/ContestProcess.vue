@@ -11,6 +11,10 @@
 <template>
   <div class="tools clearfix">
     <div class="clearfix" style="margin: 10px 3px">
+      <div>
+        <Slider v-model="currentPercent" v-if="contestStatus === CONTEST_STATUS.FINISHED" show-tip="never" :step="0.001"/>
+        <Progress :percent="currentPercent" v-else-if="contestStatus === CONTEST_STATUS.RUNNING" hide-info status="active" :stroke-width="4" />
+      </div>
       <div style="float: left">
         <span>Begin: </span>
         <span class="time">{{ contestStartTime.format('yyyy-MM-DD HH:mm:ss') }}</span>
@@ -19,9 +23,6 @@
         <span>End: </span>
         <span class="time">{{ contestEndTime.format('yyyy-MM-DD HH:mm:ss') }}</span>
       </div>
-    </div>
-    <div>
-      <Slider v-model="currentPercent" :disabled="contestStatus !== CONTEST_STATUS.FINISHED" show-tip="never" :step="0.001"/>
     </div>
   </div>
 </template>
