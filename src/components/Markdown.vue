@@ -1,6 +1,6 @@
 <template>
   <mavon-editor
-    style="z-index: 0"
+    style="z-index: 0; min-height: 0"
     :value="value"
     :subfield="false"
     :boxShadow="false"

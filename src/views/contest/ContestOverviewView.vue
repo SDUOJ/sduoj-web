@@ -27,8 +27,24 @@
         <Card dis-hover :padding="0">
           <Table
             :columns="problemColumn"
-            :data="contest.problems"
-            @on-cell-click="handleCellClick" />
+            :data="problems"
+            @on-cell-click="handleCellClick">
+            <template slot-scope="{ row }" slot="problemCode">
+              <strong class="hover">{{ row.problemCode | contestProblemId }}</strong>
+            </template>
+            <template slot-scope="{ row }" slot="title">
+              <span class="hover">{{ row.problemTitle }}</span>
+            </template>
+            <template slot-scope="{ row }" slot="ratio">
+              <span v-if="row.submitNum > 0">{{ `${row.acceptNum} / ${row.submitNum}` }}</span>
+            </template>
+            <template slot-scope="{ row }" slot="status">
+              <JudgeResult :result="row.judgeResult" />
+            </template>
+            <template slot-scope="{ row }" slot="score">
+              <span v-if="row.judgeResult && showJudgeScore">{{ row.judgeScore }}</span>
+            </template>
+          </Table>
         </Card>
       </div>
     </div>
@@ -38,13 +54,19 @@
 <script>
 import JudgeResult from '_c/JudgeResult';
 import { mapGetters, mapState } from 'vuex';
-import { CONTEST_OPENNESS } from '_u/constants';
+import { CONTEST_OPENNESS, CONTEST_STATUS } from '_u/constants';
 import api from '_u/api';
 import { contestProblemId } from '_u/transform';
 
 export default {
   name: 'ContestOverviewView.vue',
   inject: ['reload'],
+  components: {
+    JudgeResult
+  },
+  filters: {
+    contestProblemId: val => contestProblemId(val)
+  },
   data: function() {
     return {
       participateForm: {
@@ -52,36 +74,18 @@ export default {
         contestId: ''
       },
       problemColumn: [
-        {
-          key: 'problemCode',
-          maxWidth: 60,
-          render: (h, params) => h('strong', { class: 'hover' }, contestProblemId(params.row.problemCode))
-        },
-        {
-          title: 'Problem Title',
-          key: 'problemTitle',
-          render: (h, params) => h('span', { class: 'hover' }, params.row.problemTitle)
-        },
-        {
-          title: 'AC / Submits',
-          render: (h, params) => {
-            if (params.row.submitNum > 0) {
-              return h('span', params.row.acceptNum + ' / ' + params.row.submitNum);
-            }
-          }
-        },
-        {
-          title: 'Status',
-          key: 'judgeResult',
-          render: (h, params) => h(JudgeResult, { props: { result: params.row.judgeResult } })
-        }
+        { key: 'problemCode', maxWidth: 60, slot: 'problemCode' },
+        { key: 'problemTitle', title: 'Title', slot: 'title' },
+        { title: 'AC / Submits', slot: 'ratio' },
+        { title: 'Status', slot: 'status' },
+        { title: 'Score', slot: 'score' }
       ]
     }
   },
   methods: {
     handleParticipate: function() {
       this.participateForm.contestId = this.contest.contestId;
-      if (this.openness !== 'protected' && !this.contest.participants.includes(this.username)) {
+      if (this.contestOpenness !== CONTEST_OPENNESS.PROTECTED && !this.contest.participants.includes(this.username)) {
         api.participateIn(this.participateForm).then(() => (this.reload()), err => (this.$Message.error(err.message)));
       }
     },
@@ -96,9 +100,13 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['username']),
-    ...mapGetters('contest', ['contestStartTime', 'contestEndTime', 'contestStarted', 'contestOpenness', 'scores']),
+    ...mapGetters('contest', ['contestStartTime', 'contestEndTime', 'contestStarted', 'contestOpenness', 'contestStatus', 'scores', 'problems']),
     ...mapState('contest', ['contest', 'questions']),
-    CONTEST_OPENNESS: () => CONTEST_OPENNESS
+    CONTEST_OPENNESS: () => CONTEST_OPENNESS,
+    showJudgeScore: function() {
+      const infoOpenness = this.contest.features[this.contestStatus === CONTEST_STATUS.RUNNING ? 'contestRunning' : 'contestEnd'];
+      return infoOpenness.displayJudgeScore;
+    }
   },
   mounted: function () {
     if (this.contestOpenness === CONTEST_OPENNESS.PUBLIC) {

@@ -85,7 +85,7 @@
         title="Upcoming"
         :padding="0"
         dis-hover
-        v-if="!!upcomingContest.contestId">
+        v-if="upcomingContest">
         <div class="upcoming-title" @click="toContestDetail(upcomingContest.contestId)">{{ upcomingContest.contestTitle }}</div>
         <div class="upcoming-countdown"><span>{{ countdown }}</span>
         </div>
@@ -160,6 +160,7 @@ export default {
       });
     },
     getContestList: function() {
+      this.$Spin.show();
       api.getContestList({
         pageNow: this.pageNow,
         pageSize: this.pageSize,
@@ -167,6 +168,8 @@ export default {
       }).then(ret => {
         this.contestList = ret.rows;
         this.total = parseInt(ret.totalPage) * this.pageSize;
+      }).finally(() => {
+        this.$Spin.hide();
       });
     }
   },
@@ -176,14 +179,22 @@ export default {
     },
     $route: function() {
       this.getContestList();
-      api.getUpcomingContest().then(ret => (this.upcomingContest = ret)).catch(err => (err));
-      api.getParticipatedContests().then(ret => (this.participatedContest = ret)).catch(err => (err));
+      api.getUpcomingContest().then(ret => {
+        this.upcomingContest = ret;
+      }).catch(err => (err));
+      api.getParticipatedContests().then(ret => {
+        this.participatedContest = ret;
+      }).catch(err => (err));
     }
   },
   mounted: function () {
     this.getContestList();
-    api.getUpcomingContest().then(ret => (this.upcomingContest = { ...ret })).catch(err => (err));
-    api.getParticipatedContests().then(ret => (this.participatedContest = ret)).catch(err => (err));
+    api.getUpcomingContest().then(ret => {
+      this.upcomingContest = ret;
+    }).catch(err => (err));
+    api.getParticipatedContests().then(ret => {
+      this.participatedContest = ret;
+    }).catch(err => (err));
   }
 }
 </script>
