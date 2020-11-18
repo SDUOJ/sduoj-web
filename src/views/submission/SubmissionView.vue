@@ -129,7 +129,6 @@ export default {
       this.total = totalPage * this.pageSize;
     },
     handleRejudge: function(submissions) {
-      console.log(submissions);
       if (submissions.length === 0) {
         this.$Message.error('Select submissions');
         return;
@@ -181,7 +180,6 @@ export default {
         return this.$route.params.judgeResult || this.$route.query.judgeResult || '';
       },
       set: function(judgeResult) {
-        console.log(judgeResult);
         if (this.$route.query.judgeResult !== judgeResult) {
           this.$router.push({ query: { ...this.$route.query, judgeResult } });
         }

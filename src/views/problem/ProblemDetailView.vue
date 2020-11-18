@@ -21,10 +21,7 @@
         <!-- 题面描述 -->
         <Card class="box" title="Description" dis-hover :padding="0">
           <div class="problem-markdown">
-            <markdown-it-vue-light
-              v-if="problemDescription.markdownDescription"
-              :content="problemDescription.markdownDescription" />
-            <div v-else v-html="problemDescription.htmlDescription || ''"></div>
+            <Markdown :value="problemDescription.markdownDescription || problemDescription.htmlDescription" />
           </div>
         </Card>
         <!--  -->
@@ -35,14 +32,18 @@
                 <span class="clip hover" @click="copyToClipboard(problemCase.input)"> Input </span>
                 <Icon type="ios-copy-outline" />
               </Tooltip>
-              <markdown-it-vue-light :content="`\`\`\`text\n${problemCase.input}\n\`\`\``" />
+              <div v-highlight>
+                <pre><code class="plaintext">{{ problemCase.input }}</code></pre>
+              </div>
             </div>
             <div class="problem-example">
               <Tooltip content="Copy" placement="right">
                 <span class="clip hover" @click="copyToClipboard(problemCase.output)"> Output </span>
                 <Icon type="ios-copy-outline" />
               </Tooltip>
-              <markdown-it-vue-light :content="`\`\`\`text\n${problemCase.output}\n\`\`\``" />
+              <div v-highlight>
+                <pre><code class="plaintext">{{ problemCase.output }}</code></pre>
+              </div>
             </div>
         </Card>
         </div>
@@ -78,7 +79,7 @@
         <div class="box">
           <div class="contest__problems" v-if="contestId">
             <span
-              v-for="pb in contest.problems"
+              v-for="pb in problems"
               :key="pb.problemCode"
               :class="pb.problemCode === problem.problemCode ? 'active' : ''"
               @click="switchContestProblem(pb.problemCode)">
@@ -146,7 +147,7 @@
               v-if="showContestProblems"
               :show-header="false"
               :columns="problemColumn"
-              :data="contest.problems"
+              :data="problems"
               @on-cell-click="onProblemTableClick"></Table>
           </Card>
           <!-- 近期提交记录 -->
@@ -168,21 +169,37 @@
 </template>
 
 <script>
-import MarkdownItVueLight from 'markdown-it-vue/dist/markdown-it-vue-light.umd.min.js'
-import 'markdown-it-vue/dist/markdown-it-vue-light.css'
 import ProblemCode from '_c/ProblemCode';
 import CodeEditor from '_c/CodeEditor';
 import JudgeResult from '_c/JudgeResult';
+import Markdown from '_c/Markdown';
 import moment from 'moment';
 
 import api from '_u/api';
 import { contestProblemId } from '_u/transform';
 
 import { mapGetters, mapState } from 'vuex';
+import store from '@/store';
+
+function getStorage(problemCode, contestId) {
+  let _key = `PROBLEM_${problemCode}`;
+  if (contestId) {
+    _key += `_${contestId}`;
+  }
+  return JSON.parse(sessionStorage.getItem(_key)) || null;
+}
+
+function setStorage(problemCode, contestId, value) {
+  let _key = `PROBLEM_${problemCode}`;
+  if (contestId) {
+    _key += `_${contestId}`;
+  }
+  sessionStorage.setItem(_key, JSON.stringify(value));
+}
 
 export default {
   components: {
-    MarkdownItVueLight,
+    Markdown,
     CodeEditor,
     ProblemCode
   },
@@ -345,7 +362,7 @@ export default {
       api.problemQuery(params).then(ret => {
         ret.problemCaseDTOList.forEach((problemCase, index) => (problemCase.id = index + 1));
         this.problem = ret;
-        if (ret.judgeTemplates.length > 0) {
+        if (this.code === '' && ret.judgeTemplates.length > 0) {
           this.judgeTemplate = ret.judgeTemplates[0];
         }
         // 查最多5个提交记录
@@ -363,20 +380,49 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['username', 'isLogin']),
-    ...mapGetters('contest', ['hasParticipatedIn', 'contestId']),
+    ...mapGetters('contest', ['hasParticipatedIn', 'contestId', 'problems']),
     ...mapState('contest', ['contest']),
     problemDescription: function () {
       return this.problem.problemDescriptionDTO || {};
     }
   },
   watch: {
-    $route: function() {
+    $route: function(to, from) {
+      setStorage(from.params.problemCode, this.contestId, {
+        code: this.code,
+        judgeTemplate: this.judgeTemplate
+      });
+      const value = getStorage(to.params.problemCode, this.contestId);
+      this.code = '';
+      this.judgeTemplate = {};
+      if (value) {
+        this.code = value.code;
+        this.judgeTemplate = value.judgeTemplate;
+      }
       this.getProblem();
     }
   },
   created: function () {
     this.$Spin.show();
     this.getProblem();
+  },
+  beforeRouteLeave: function(to, from, next) {
+    setStorage(this.$route.params.problemCode, this.contestId, {
+      code: this.code,
+      judgeTemplate: this.judgeTemplate
+    });
+    next();
+  },
+  beforeRouteEnter: function(to, from, next) {
+    const value = getStorage(to.params.problemCode, store.getters['contest/contestId']);
+    if (value) {
+      next(vm => {
+        vm.code = value.code;
+        vm.judgeTemplate = value.judgeTemplate;
+      });
+    } else {
+      next();
+    }
   }
 }
 </script>

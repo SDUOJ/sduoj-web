@@ -16,8 +16,8 @@
         <Select @on-change="onJudgeTemplateChange" :value="judgeTemplate.id" class="adjust">
           <Tooltip v-for="template in judgeTemplateSet" :key="template.id" :content="template.comment" style="width: 100%"  placement="right" transfer>
             <Option :value="template.id" :label="template.title">
-              <span>{{ `${template.id}:${template.title}` }}</span>
-              <span style="float:right;color:#ccc">{{ template.type | judgeTemplateTypeName }}</span>
+              <span>{{ template.title }}</span>
+              <span style="float: right; color: #ccc">{{ template.type | judgeTemplateTypeName }}</span>
             </Option>
           </Tooltip>
         </Select>
@@ -25,8 +25,8 @@
       <Upload
         class="upload"
         :show-upload-list="false"
-        :format="judgeTemplate.acceptFileExtensions"
-        :accept="judgeTemplate.acceptFileExtensions.map(o => `.${o}`).join(',')"
+        :format="judgeTemplate.acceptFileExtensions || []"
+        :accept="(judgeTemplate.acceptFileExtensions || []).map(o => `.${o}`).join(',')"
         :file-list.sync="fileList">
 <!--        TODO: 上传文件暂不可用-->
         <Tooltip :disabled="true">
@@ -127,7 +127,7 @@ export default {
     float: left;
     padding: 10px 10px 5px 10px;
     .adjust {
-      width: 150px;
+      width: 200px;
       margin-left: 10px;
     }
   }

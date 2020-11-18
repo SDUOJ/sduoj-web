@@ -17,7 +17,10 @@ import rankHandler, { calculateScore } from './ranks';
 
 const state = {
   contest: {
-    features: {},
+    features: {
+      contestRunning: {},
+      contestEnd: {}
+    },
     problems: [],
     participants: []
   },
@@ -125,22 +128,20 @@ const getters = {
     // first blood
     const firstSolvedMap = {};
     scores.forEach(score => {
-      for (let i = 0; i < score.problemNum; ++i) {
-        const result = score.problemResults[i];
+      score.problemResults.forEach(result => {
         if (JUDGE_RESULT_TYPE.AC === result.judgeResult) {
-          if (!firstSolvedMap[result.problemCode] || firstSolvedMap[result.problemCode] > result.gmtCreate) {
-            firstSolvedMap[result.problemCode] = result.gmtCreate;
+          if (!firstSolvedMap[result.problemCode] || firstSolvedMap[result.problemCode] > result.time) {
+            firstSolvedMap[result.problemCode] = result.time;
           }
         }
-      }
+      })
     });
     scores.forEach(score => {
-      for (let i = 0; i < score.problemNum; ++i) {
-        const result = score.problemResults[i];
-        if (JUDGE_RESULT_TYPE.AC === result.judgeResult && firstSolvedMap[result.problemCode] === result.gmtCreate) {
+      score.problemResults.forEach(result => {
+        if (JUDGE_RESULT_TYPE.AC === result.judgeResult && firstSolvedMap[result.problemCode] === result.time) {
           result.css = 'score_first';
         }
-      }
+      })
     });
     for (let i = 0; i < state.contest.problems.length; ++i) {
       let judgeResult = -1;
@@ -159,6 +160,34 @@ const getters = {
       likedScores = getters.scores.filter(score => state.likedScoresMap[score.user.userId] || score.user.userId === rootState.user.profile.userId);
     }
     return likedScores;
+  },
+  problems: (state, getters, rootState) => {
+    if (getters.contestStatus === CONTEST_STATUS.FINISHED) {
+      const problems = {};
+      state.contest.problems.forEach((problem, i) => {
+        problems[i] = {
+          ...problem,
+          acceptNum: 0,
+          submitNum: 0,
+          judgeResult: null,
+          judgeScore: null
+        };
+      })
+      getters.scores.forEach(score => {
+        score.problemResults.forEach(result => {
+          problems[result.problemCode - 1].submitNum += result.numSubmissions;
+          if (result.judgeResult === JUDGE_RESULT_TYPE.AC) {
+            problems[result.problemCode - 1].acceptNum++;
+          }
+          if (score.user.userId === rootState.user.profile.userId) {
+            problems[result.problemCode - 1].judgeResult = result.judgeResult;
+          }
+        });
+      });
+      return Object.keys(problems).map(key => problems[key]);
+    } else {
+      return state.contest.problems;
+    }
   }
 }
 
@@ -205,7 +234,10 @@ const mutations = {
       state.scoreTimer = null;
     }
     state.contest = {
-      features: {},
+      features: {
+        contestRunning: {},
+        contestEnd: {}
+      },
       problems: [],
       participants: []
     };

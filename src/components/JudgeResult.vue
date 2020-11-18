@@ -9,7 +9,7 @@
  -->
 
 <template>
-  <div class="judge-result">
+  <div class="judge-result" v-if="result !== null">
     <Icon :type="judgeResult.icon" :color="judgeResult.color" />
     <span :class="`${judgeResult.css} hover`">{{ abbr ? judgeResult.abbr : judgeResult.name }}</span>
     <template v-if="result === JUDGE_RESULT_TYPE.JG && total > 0">
@@ -25,7 +25,7 @@ export default {
   props: {
     result: {
       type: Number,
-      default: 0
+      default: null
     },
     abbr: {
       type: Boolean,

@@ -23,7 +23,7 @@
      </colgroup>
      <colgroup>
        <template v-if="showSubmissions">
-         <col class="scoreprob" v-for="problem in contest.problems" :key="problem.problemCode" />
+         <col class="scoreprob" v-for="problem in problems" :key="problem.problemCode" />
        </template>
      </colgroup>
      <thead>
@@ -31,7 +31,7 @@
        <th style="padding: 0 10px" title="rank" scope="col">RANK</th>
        <th style="padding: 0 10px" title="username" colspan="2" scope="col">PARTICIPANT</th>
        <th style="padding: 0 10px" title="# solved / penalty or score" colspan="2" scope="col">SCORE</th>
-       <th :title="'problem ' + problem.problemTitle" scope="col" v-for="problem in contest.problems" :key="problem.problemCode">
+       <th :title="'problem ' + problem.problemTitle" scope="col" v-for="problem in problems" :key="problem.problemCode">
         <router-link :to="{
           name: 'contest-problem',
           params: { problemCode: problem.problemCode }
@@ -232,7 +232,8 @@ export default {
       'contestMode',
       'contestStatus',
       'scores',
-      'likedScores'
+      'likedScores',
+      'problems'
     ]),
     ...mapGetters('user', ['profile']),
     CONTEST_MODE: () => CONTEST_MODE
@@ -260,7 +261,9 @@ export default {
       this.$store.commit('contest/setScoreLiked', { index, status });
     },
     showAllSubmissions: function(username, problemCode) {
-      if (this.contestStatus === CONTEST_STATUS.FINISHED || username === this.profile.username) {
+      const infoOpenness = this.contest.features[this.contestStatus === CONTEST_STATUS.RUNNING ? 'contestRunning' : 'contestEnd'];
+      const displayPeerSubmission = infoOpenness.displayPeerSubmission;
+      if (displayPeerSubmission || this.isAdmin || username === this.profile.username) {
         this.$refs.SubmissionList.querySubmissionList({
           username,
           problemCode,

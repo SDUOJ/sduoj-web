@@ -10,6 +10,10 @@
 
 import { JUDGE_RESULT_TYPE } from '_u/constants';
 
+// 将所有的提交进行筛选，只保留 endTime 之前的提交（如果 endTime 非空的话）
+// 按照题目顺序（包括没有提交的题目）整理成一个数组，每个题目的信息也是一个数组，与后端提供的赛时结构一致
+// for each problem: [gmtCreate, judgeScore, judgeResult, numSubmissions, numSubmissionsPending]
+// 在榜单中所有 judgeResult 只有三个状态 AC WA PD
 function calculateProblemResult(submissions, problemNum, endTime) {
   const problemResults = [];
   const problemSubmissionMap = {};
@@ -22,7 +26,7 @@ function calculateProblemResult(submissions, problemNum, endTime) {
     if (!endTime || parseInt(submission[1]) <= endTime) {
       problemSubmissionMap[problemCode].push({
         gmtCreate: parseInt(submission[1]),
-        judgeScore: parseInt(submission[2]),
+        judgeScore: parseInt(submission[2] || 0),
         judgeResult: parseInt(submission[3])
       });
     }
@@ -32,9 +36,10 @@ function calculateProblemResult(submissions, problemNum, endTime) {
     // sort by gmtCreate
     let ac = false;
     let numSubmissionsPending = 0;
+    let oneSubmission = null;
     problemSubmissionMap[i].sort((a, b) => a.gmtCreate - b.gmtCreate);
     for (let i1 = 0; i1 < problemSubmissionMap[i].length; ++i1) {
-      const oneSubmission = problemSubmissionMap[i][i1];
+      oneSubmission = problemSubmissionMap[i][i1];
       if (JUDGE_RESULT_TYPE.AC === oneSubmission.judgeResult) {
         problemResults.push([
           oneSubmission.gmtCreate,
@@ -53,8 +58,8 @@ function calculateProblemResult(submissions, problemNum, endTime) {
       if (problemSubmissionMap[i].length) {
         problemResults.push([
           0,  // gmtCreate
-          0,  // judgeScore
-          numSubmissionsPending > 0 ? JUDGE_RESULT_TYPE.PD : JUDGE_RESULT_TYPE.WA, // judgeResult
+          oneSubmission.judgeScore,  // judgeScore
+          numSubmissionsPending > 0 ? JUDGE_RESULT_TYPE.PD : oneSubmission.judgeResult, // judgeResult
           problemSubmissionMap[i].length, // numSubmissions
           numSubmissionsPending  // numSubmissionsPending
         ]);
@@ -66,6 +71,7 @@ function calculateProblemResult(submissions, problemNum, endTime) {
   return problemResults;
 }
 
+// 将形如 [gmtCreate, judgeScore, judgeResult, numSubmissions, numSubmissionsPending] 的数组转换成自己的数据结构
 function formatProblemResults(_problemResults, problemWeights, startTime) {
   const problemResults = [];
   let problemCode = 0;
@@ -87,7 +93,7 @@ function formatProblemResults(_problemResults, problemWeights, startTime) {
       if (time > 0) {
         time -= startTime;
       }
-      const judgeScore = parseInt(result[1]);
+      const judgeScore = parseInt(result[1] || 0);
       const judgeResult = parseInt(result[2]);
       const numSubmissions = parseInt(result[3]);
       const numSubmissionsPending = parseInt(result[4]);
@@ -122,6 +128,7 @@ function formatProblemResults(_problemResults, problemWeights, startTime) {
   return { solved, score, problemResults };
 }
 
+// 计算rank：第一关键字 过题数solved 降序，第二关键字 罚时score 升序
 function calculateRank(scores) {
   scores.sort((a, b) => {
     if (a.solved !== b.solved) {

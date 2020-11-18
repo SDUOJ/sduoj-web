@@ -21,7 +21,7 @@ function calculateProblemResult(submissions, problemNum, endTime) {
     if (!endTime || parseInt(submission[1]) <= endTime) {
       problemSubmissionMap[problemCode].push({
         gmtCreate: parseInt(submission[1]),
-        judgeScore: parseInt(submission[2]),
+        judgeScore: parseInt(submission[2] || 0),
         judgeResult: parseInt(submission[3])
       });
     }
@@ -78,7 +78,7 @@ function formatProblemResults(_problemResults, problemWeights, startTime) {
       if (time > 0) {
         time -= startTime;
       }
-      const judgeScore = parseInt(result[1]);
+      const judgeScore = parseInt(result[1] || 0);
       const judgeResult = parseInt(result[2]);
       const numSubmissions = parseInt(result[3]);
       const numSubmissionsPending = parseInt(result[4]);
@@ -110,6 +110,7 @@ function formatProblemResults(_problemResults, problemWeights, startTime) {
   return { solved, score, problemResults };
 }
 
+// 只按得分计算 rank
 function calculateRank(scores) {
   scores.sort((a, b) => {
     if (a.score !== b.score) {
