@@ -58,7 +58,7 @@
 import ProblemCode from '_c/ProblemCode';
 import JudgeResult from '_c/JudgeResult';
 import { Websocket } from '_c/mixins';
-import { JUDGE_RESULT_TYPE } from '_u/constants';
+import { JUDGE_RESULT_TYPE, CONTEST_STATUS } from '_u/constants';
 import { contestProblemId } from '_u/transform';
 import api from '_u/api';
 import store from '@/store';
@@ -232,6 +232,15 @@ export default {
       }).then(ret => {
         this.submissions = ret.rows;
         this.$emit('update-total-page', parseInt(ret.totalPage));
+
+        // 所有人都看不到 websocket
+        if (this.contestId) {
+          const infoOpenness = this.contest.features[this.contestStatus === CONTEST_STATUS.RUNNING ? 'contestRunning' : 'contestEnd'];
+          const displayCheckpointResult = infoOpenness.displayCheckpointResult;
+          if (!displayCheckpointResult) {
+            return;
+          }
+        }
 
         let length = 0;
         this.listenedSubmissions = {};

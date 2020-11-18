@@ -139,7 +139,7 @@ import { mapGetters, mapState } from 'vuex';
 
 import api from '_u/api';
 import { contestProblemId } from '_u/transform';
-import { JUDGE_RESULT_TYPE } from '_u/constants';
+import { JUDGE_RESULT_TYPE, CONTEST_STATUS } from '_u/constants';
 
 export default {
   components: {
@@ -236,6 +236,15 @@ export default {
         if (!this.showCode) {
           return;
         }
+        // 所有人都看不到 websocket
+        if (this.contestId) {
+          const infoOpenness = this.contest.features[this.contestStatus === CONTEST_STATUS.RUNNING ? 'contestRunning' : 'contestEnd'];
+          const displayCheckpointResult = infoOpenness.displayCheckpointResult;
+          if (!displayCheckpointResult) {
+            return;
+          }
+        }
+
         if (ret.judgeResult <= 0) {
           for (let i = 0; i < ret.checkpointNum; ++i) {
             this.submission.checkpointResults.push({
