@@ -17,7 +17,10 @@ import rankHandler, { calculateScore } from './ranks';
 
 const state = {
   contest: {
-    features: {},
+    features: {
+      contestRunning: {},
+      contestEnd: {}
+    },
     problems: [],
     participants: []
   },
@@ -157,6 +160,34 @@ const getters = {
       likedScores = getters.scores.filter(score => state.likedScoresMap[score.user.userId] || score.user.userId === rootState.user.profile.userId);
     }
     return likedScores;
+  },
+  problems: (state, getters, rootState) => {
+    if (getters.contestStatus === CONTEST_STATUS.FINISHED) {
+      const problems = {};
+      state.contest.problems.forEach((problem, i) => {
+        problems[i] = {
+          ...problem,
+          acceptNum: 0,
+          submitNum: 0,
+          judgeResult: null,
+          judgeScore: null
+        };
+      })
+      getters.scores.forEach(score => {
+        score.problemResults.forEach(result => {
+          problems[result.problemCode - 1].submitNum += result.numSubmissions;
+          if (result.judgeResult === JUDGE_RESULT_TYPE.AC) {
+            problems[result.problemCode - 1].acceptNum++;
+          }
+          if (score.user.userId === rootState.user.profile.userId) {
+            problems[result.problemCode - 1].judgeResult = result.judgeResult;
+          }
+        });
+      });
+      return Object.keys(problems).map(key => problems[key]);
+    } else {
+      return state.contest.problems;
+    }
   }
 }
 
@@ -203,7 +234,10 @@ const mutations = {
       state.scoreTimer = null;
     }
     state.contest = {
-      features: {},
+      features: {
+        contestRunning: {},
+        contestEnd: {}
+      },
       problems: [],
       participants: []
     };

@@ -79,7 +79,7 @@
         <div class="box">
           <div class="contest__problems" v-if="contestId">
             <span
-              v-for="pb in contest.problems"
+              v-for="pb in problems"
               :key="pb.problemCode"
               :class="pb.problemCode === problem.problemCode ? 'active' : ''"
               @click="switchContestProblem(pb.problemCode)">
@@ -147,7 +147,7 @@
               v-if="showContestProblems"
               :show-header="false"
               :columns="problemColumn"
-              :data="contest.problems"
+              :data="problems"
               @on-cell-click="onProblemTableClick"></Table>
           </Card>
           <!-- 近期提交记录 -->
@@ -380,7 +380,7 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['username', 'isLogin']),
-    ...mapGetters('contest', ['hasParticipatedIn', 'contestId']),
+    ...mapGetters('contest', ['hasParticipatedIn', 'contestId', 'problems']),
     ...mapState('contest', ['contest']),
     problemDescription: function () {
       return this.problem.problemDescriptionDTO || {};
