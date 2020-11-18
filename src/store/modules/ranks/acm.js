@@ -26,7 +26,7 @@ function calculateProblemResult(submissions, problemNum, endTime) {
     if (!endTime || parseInt(submission[1]) <= endTime) {
       problemSubmissionMap[problemCode].push({
         gmtCreate: parseInt(submission[1]),
-        judgeScore: parseInt(submission[2]),
+        judgeScore: parseInt(submission[2] || 0),
         judgeResult: parseInt(submission[3])
       });
     }
@@ -36,9 +36,10 @@ function calculateProblemResult(submissions, problemNum, endTime) {
     // sort by gmtCreate
     let ac = false;
     let numSubmissionsPending = 0;
+    let oneSubmission = null;
     problemSubmissionMap[i].sort((a, b) => a.gmtCreate - b.gmtCreate);
     for (let i1 = 0; i1 < problemSubmissionMap[i].length; ++i1) {
-      const oneSubmission = problemSubmissionMap[i][i1];
+      oneSubmission = problemSubmissionMap[i][i1];
       if (JUDGE_RESULT_TYPE.AC === oneSubmission.judgeResult) {
         problemResults.push([
           oneSubmission.gmtCreate,
@@ -57,8 +58,8 @@ function calculateProblemResult(submissions, problemNum, endTime) {
       if (problemSubmissionMap[i].length) {
         problemResults.push([
           0,  // gmtCreate
-          0,  // judgeScore
-          numSubmissionsPending > 0 ? JUDGE_RESULT_TYPE.PD : JUDGE_RESULT_TYPE.WA, // judgeResult
+          oneSubmission.judgeScore,  // judgeScore
+          numSubmissionsPending > 0 ? JUDGE_RESULT_TYPE.PD : oneSubmission.judgeResult, // judgeResult
           problemSubmissionMap[i].length, // numSubmissions
           numSubmissionsPending  // numSubmissionsPending
         ]);
@@ -92,7 +93,7 @@ function formatProblemResults(_problemResults, problemWeights, startTime) {
       if (time > 0) {
         time -= startTime;
       }
-      const judgeScore = parseInt(result[1]);
+      const judgeScore = parseInt(result[1] || 0);
       const judgeResult = parseInt(result[2]);
       const numSubmissions = parseInt(result[3]);
       const numSubmissionsPending = parseInt(result[4]);
