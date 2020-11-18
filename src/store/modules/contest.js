@@ -125,22 +125,20 @@ const getters = {
     // first blood
     const firstSolvedMap = {};
     scores.forEach(score => {
-      for (let i = 0; i < score.problemNum; ++i) {
-        const result = score.problemResults[i];
+      score.problemResults.forEach(result => {
         if (JUDGE_RESULT_TYPE.AC === result.judgeResult) {
-          if (!firstSolvedMap[result.problemCode] || firstSolvedMap[result.problemCode] > result.gmtCreate) {
-            firstSolvedMap[result.problemCode] = result.gmtCreate;
+          if (!firstSolvedMap[result.problemCode] || firstSolvedMap[result.problemCode] > result.time) {
+            firstSolvedMap[result.problemCode] = result.time;
           }
         }
-      }
+      })
     });
     scores.forEach(score => {
-      for (let i = 0; i < score.problemNum; ++i) {
-        const result = score.problemResults[i];
-        if (JUDGE_RESULT_TYPE.AC === result.judgeResult && firstSolvedMap[result.problemCode] === result.gmtCreate) {
+      score.problemResults.forEach(result => {
+        if (JUDGE_RESULT_TYPE.AC === result.judgeResult && firstSolvedMap[result.problemCode] === result.time) {
           result.css = 'score_first';
         }
-      }
+      })
     });
     for (let i = 0; i < state.contest.problems.length; ++i) {
       let judgeResult = -1;

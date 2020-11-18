@@ -10,6 +10,10 @@
 
 import { JUDGE_RESULT_TYPE } from '_u/constants';
 
+// 将所有的提交进行筛选，只保留 endTime 之前的提交（如果 endTime 非空的话）
+// 按照题目顺序（包括没有提交的题目）整理成一个数组，每个题目的信息也是一个数组，与后端提供的赛时结构一致
+// for each problem: [gmtCreate, judgeScore, judgeResult, numSubmissions, numSubmissionsPending]
+// 在榜单中所有 judgeResult 只有三个状态 AC WA PD
 function calculateProblemResult(submissions, problemNum, endTime) {
   const problemResults = [];
   const problemSubmissionMap = {};
@@ -66,6 +70,7 @@ function calculateProblemResult(submissions, problemNum, endTime) {
   return problemResults;
 }
 
+// 将形如 [gmtCreate, judgeScore, judgeResult, numSubmissions, numSubmissionsPending] 的数组转换成自己的数据结构
 function formatProblemResults(_problemResults, problemWeights, startTime) {
   const problemResults = [];
   let problemCode = 0;
@@ -122,6 +127,7 @@ function formatProblemResults(_problemResults, problemWeights, startTime) {
   return { solved, score, problemResults };
 }
 
+// 计算rank：第一关键字 过题数solved 降序，第二关键字 罚时score 升序
 function calculateRank(scores) {
   scores.sort((a, b) => {
     if (a.solved !== b.solved) {

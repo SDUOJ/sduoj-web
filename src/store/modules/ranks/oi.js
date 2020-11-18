@@ -110,6 +110,7 @@ function formatProblemResults(_problemResults, problemWeights, startTime) {
   return { solved, score, problemResults };
 }
 
+// 只按得分计算 rank
 function calculateRank(scores) {
   scores.sort((a, b) => {
     if (a.score !== b.score) {

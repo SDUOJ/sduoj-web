@@ -16,8 +16,8 @@
         <Select @on-change="onJudgeTemplateChange" :value="judgeTemplate.id" class="adjust">
           <Tooltip v-for="template in judgeTemplateSet" :key="template.id" :content="template.comment" style="width: 100%"  placement="right" transfer>
             <Option :value="template.id" :label="template.title">
-              <span>{{ `${template.id}:${template.title}` }}</span>
-              <span style="float:right;color:#ccc">{{ template.type | judgeTemplateTypeName }}</span>
+              <span>{{ template.title }}</span>
+              <span style="float: right; color: #ccc">{{ template.type | judgeTemplateTypeName }}</span>
             </Option>
           </Tooltip>
         </Select>
@@ -127,7 +127,7 @@ export default {
     float: left;
     padding: 10px 10px 5px 10px;
     .adjust {
-      width: 150px;
+      width: 200px;
       margin-left: 10px;
     }
   }
