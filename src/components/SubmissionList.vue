@@ -286,7 +286,7 @@ export default {
   }
 
   .mem::after {
-    content: " KB";
+    content: " KiB";
     white-space: pre;
   }
 
