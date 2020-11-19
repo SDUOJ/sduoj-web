@@ -35,7 +35,7 @@ export default {
   computed: {
     pageNow: {
       get: function() {
-        return Math.min(parseInt(this.$route.query.pageNow) || 1, Math.max(Math.ceil(this.total / this.pageSize), 1));
+        return Math.max(parseInt(this.$route.query.pageNow) || 1, 1);
       },
       set: function(pageNow) {
         this.$router.push({ query: { ...this.$route.query, pageNow } });
