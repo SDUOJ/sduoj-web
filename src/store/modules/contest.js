@@ -152,6 +152,7 @@ const getters = {
       });
       Vue.set(state.contest.problems[i], 'judgeResult', judgeResult);
     }
+    console.log(scores);
     return scores;
   },
   likedScores: (state, getters, rootState) => {

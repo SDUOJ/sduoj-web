@@ -13,7 +13,6 @@ import { JUDGE_RESULT_TYPE } from '_u/constants';
 // 将所有的提交进行筛选，只保留 endTime 之前的提交（如果 endTime 非空的话）
 // 按照题目顺序（包括没有提交的题目）整理成一个数组，每个题目的信息也是一个数组，与后端提供的赛时结构一致
 // for each problem: [gmtCreate, judgeScore, judgeResult, numSubmissions, numSubmissionsPending]
-// 在榜单中所有 judgeResult 只有三个状态 AC WA PD
 function calculateProblemResult(submissions, problemNum, endTime) {
   const problemResults = [];
   const problemSubmissionMap = {};
@@ -97,22 +96,18 @@ function formatProblemResults(_problemResults, problemWeights, startTime) {
       const judgeResult = parseInt(result[2]);
       const numSubmissions = parseInt(result[3]);
       const numSubmissionsPending = parseInt(result[4]);
+
       let css;
-      switch (judgeResult) {
-        case JUDGE_RESULT_TYPE.AC:
-          css = 'score_correct';
-          solved += problemWeights[problemCode - 1];
-          score += time + (numSubmissions - numSubmissionsPending - 1) * 20 * 60 * 1000;
-          break;
-        case JUDGE_RESULT_TYPE.WA:
-          css = 'score_incorrect';
-          break;
-        case JUDGE_RESULT_TYPE.PD:
-          css = 'score_pending';
-          break;
-        default:
-          css = '';
+      if (judgeResult <= JUDGE_RESULT_TYPE.PD) {
+        css = 'score_pending';
+      } else if (judgeResult === JUDGE_RESULT_TYPE.AC) {
+        css = 'score_correct';
+        solved += problemWeights[problemCode - 1];
+        score += time + (numSubmissions - numSubmissionsPending - 1) * 20 * 60 * 1000;
+      } else {
+        css = 'score_incorrect';
       }
+
       problemResults.push({
         problemCode,
         css,
