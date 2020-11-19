@@ -25,12 +25,13 @@
           </div>
         </Card>
         <!--  -->
-<!--        &lt;!&ndash; 样例输入输出 &ndash;&gt;-->
         <Card class="box" :title="`Case ${problemCase.id}`" dis-hover :padding="10" v-for="problemCase in problem.problemCaseDTOList" :key="problemCase.id">
             <div class="problem-example">
+              <span class="clip"> Input </span>
               <Tooltip style="display: inline-block" content="Copy" placement="right">
-                <span class="clip hover" @click="copyToClipboard(problemCase.input)"> Input </span>
-                <Icon type="ios-copy-outline" />
+                <span class="hover" @click="copyToClipboard(problemCase.input)">
+                  <Icon type="ios-copy-outline" />
+                </span>
               </Tooltip>
               <div v-highlight>
                 <pre><code class="plaintext">{{ problemCase.input }}</code></pre>

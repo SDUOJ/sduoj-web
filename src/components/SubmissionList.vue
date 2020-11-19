@@ -62,7 +62,7 @@ import { JUDGE_RESULT_TYPE, CONTEST_STATUS } from '_u/constants';
 import { contestProblemId } from '_u/transform';
 import api from '_u/api';
 import store from '@/store';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import moment from 'moment';
 
 export default {
@@ -175,6 +175,7 @@ export default {
     }
   },
   computed: {
+    ...mapState('contest', ['contest']),
     ...mapGetters('contest', ['contestId'])
   },
   methods: {

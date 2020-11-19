@@ -5,6 +5,7 @@
     :subfield="false"
     :boxShadow="false"
     :toolbarsFlag="false"
+    :imageClick="doNothing"
     defaultOpen="preview" />
 </template>
 
@@ -22,6 +23,9 @@ export default {
       type: String,
       default: ''
     }
+  },
+  methods: {
+    doNothing: function() {}
   }
 }
 </script>

@@ -14,12 +14,18 @@
       <div class="lang">
         <span>Judge Templates: </span>
         <Select @on-change="onJudgeTemplateChange" :value="judgeTemplate.id" class="adjust">
-          <Tooltip v-for="template in judgeTemplateSet" :key="template.id" :content="template.comment" style="width: 100%"  placement="right" transfer>
-            <Option :value="template.id" :label="template.title">
+          <template v-for="template in judgeTemplateSet">
+            <Tooltip v-if="template.comment.trim() !== ''" :key="template.id" :content="template.comment" style="width: 100%"  placement="right" transfer>
+              <Option :value="template.id" :label="template.title">
+                <span>{{ template.title }}</span>
+                <span style="float: right; color: #ccc">{{ template.type | judgeTemplateTypeName }}</span>
+              </Option>
+            </Tooltip>
+            <Option v-else :value="template.id" :key="template.id" :label="template.title">
               <span>{{ template.title }}</span>
               <span style="float: right; color: #ccc">{{ template.type | judgeTemplateTypeName }}</span>
             </Option>
-          </Tooltip>
+          </template>
         </Select>
       </div>
       <Upload
@@ -127,7 +133,7 @@ export default {
     float: left;
     padding: 10px 10px 5px 10px;
     .adjust {
-      width: 200px;
+      width: 300px;
       margin-left: 10px;
     }
   }
