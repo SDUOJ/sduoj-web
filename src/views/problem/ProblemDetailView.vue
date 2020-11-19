@@ -30,7 +30,7 @@
               <span class="clip"> Input </span>
               <Tooltip style="display: inline-block" content="Copy" placement="right">
                 <span class="hover" @click="copyToClipboard(problemCase.input)">
-                  <Icon type="ios-copy-outline" />
+                  <Icon type="ios-copy-outline" size="20" />
                 </span>
               </Tooltip>
               <div v-highlight>
@@ -38,9 +38,11 @@
               </div>
             </div>
             <div class="problem-example">
-              <Tooltip content="Copy" placement="right">
-                <span class="clip hover" @click="copyToClipboard(problemCase.output)"> Output </span>
-                <Icon type="ios-copy-outline" />
+              <span class="clip"> Output </span>
+              <Tooltip style="display: inline-block" content="Copy" placement="right">
+                <span class="hover" @click="copyToClipboard(problemCase.output)">
+                  <Icon type="ios-copy-outline" size="20" />
+                </span>
               </Tooltip>
               <div v-highlight>
                 <pre><code class="plaintext">{{ problemCase.output }}</code></pre>
@@ -447,7 +449,7 @@ export default {
     padding: 12px 0;
 
     .clip{
-      font-size: 100%;
+      font-size: 120%;
       font-weight: bold;
     }
   }
