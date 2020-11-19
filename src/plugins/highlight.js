@@ -10,12 +10,16 @@
 
 import Vue from 'vue';
 import hljs from 'highlight.js';
-import 'highlight.js/styles/github-gist.css';
+/* eslint-disable import/first */
+window.hljs = hljs;
+require('highlightjs-line-numbers.js');
+import 'highlight.js/styles/github.css';
 
 // 定义一个全局指令
 Vue.directive('highlight', el =>  {
   const blocks = el.querySelectorAll('pre code');
-  blocks.forEach(blocks => {
-    hljs.highlightBlock(blocks);
+  blocks.forEach(block => {
+    hljs.highlightBlock(block);
+    hljs.lineNumbersBlock(block);
   })
 })

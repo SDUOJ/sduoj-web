@@ -39,13 +39,14 @@
           <Card v-if="showJudgeLog" class="box" title="Judge Log" dis-hover>
             <div class="judge-log">{{ submission.judgeLog }}</div>
           </Card>
-          <Card v-if="showCode" class="box" title="Your Code" icon="md-code" dis-hover :padding="10">
+          <Card v-if="showCode" class="box" title="Your Code" icon="md-code" dis-hover :padding="0">
             <p slot="title">
               <span>Your Code</span>
-              <Tooltip content="copy" placement="left" style="float: right">
+              <Tooltip content="copy" placement="right">
                 <Icon class="hover" type="md-copy" @click="copyToClipboard(submission.code)" />
               </Tooltip>
             </p>
+            <p slot="extra" style="color: #bbb">{{ submission.codeLength || 0 }} B</p>
             <div v-highlight>
               <pre><code>{{ submission.code }}</code></pre>
             </div>
@@ -113,9 +114,6 @@
                 <span slot="extra">{{ submission.judgeScore || 0 }}</span>
               </Cell>
               <Cell title="Judge Template" :extra="submission.judgeTemplateTitle"/>
-              <Cell v-if="submission.codeLength" title="Code Length">
-                <span slot="extra">{{ submission.codeLength || 0 }}</span>
-              </Cell>
               <Cell title="Total Time">
                 <span class="time" slot="extra">{{ submission.usedTime || 0 }}</span>
               </Cell>
@@ -364,5 +362,43 @@ export default {
     word-wrap: break-word;
     word-break: break-all;
     overflow-x: scroll;
+  }
+
+</style>
+
+<style lang="less">
+  /* for block of numbers */
+  .hljs-ln-numbers {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    text-align: right;
+    color: #ccc;
+    vertical-align: top;
+    padding-right: 10px;
+
+    /* your custom style here */
+    // 假装是 github 那样
+    /*&:hover {*/
+    /*  cursor: pointer;*/
+    /*  color: rgba(27, 31, 35, 0.6);*/
+    /*}*/
+  }
+
+  /* for block of code */
+  .hljs-ln-code {
+    padding-left: 10px !important;
+  }
+
+  .hljs {
+    display: block;
+    overflow-x: auto;
+    padding: 0.5em;
+    color: #333;
+    background: #fff;
   }
 </style>
