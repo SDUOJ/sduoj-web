@@ -59,8 +59,8 @@
 
        <td class="scorepl">{{ displayRank ? score.rank : '?' }}</td>
        <td class="scoreaf" style="background: #ffffff">
-         <Icon v-if="likedScoresMap[score.user.userId]" class="heart fas" type="md-heart" @click="setUserLiked(index, false)"/>
-         <Icon v-else class="heart" type="md-heart-outline" @click="setUserLiked(index, true)" />
+         <Icon v-if="likedScoresMap[score.user.userId]" class="heart fas" type="md-heart" @click="setUserLiked(score.user.userId, false)"/>
+         <Icon v-else class="heart" type="md-heart-outline" @click="setUserLiked(score.user.userId, true)" />
        </td>
        <td class="scoretn" style="background: #ffffff" :title="score.user.username">
          <span class="forceWidth">{{ score.user.username }}</span>
@@ -111,8 +111,8 @@
       }">
       <td class="scorepl">{{ displayRank ? score.rank : '?' }}</td>
       <td class="scoreaf" style="background: #ffffff">
-        <Icon v-if="likedScoresMap[score.user.userId]" class="heart fas" type="md-heart" @click="setUserLiked(index, false)"/>
-        <Icon v-else class="heart" type="md-heart-outline" @click="setUserLiked(index, true)" />
+        <Icon v-if="likedScoresMap[score.user.userId]" class="heart fas" type="md-heart" @click="setUserLiked(score.user.userId, false)"/>
+        <Icon v-else class="heart" type="md-heart-outline" @click="setUserLiked(score.user.userId, true)" />
       </td>
       <td class="scoretn" style="background: #ffffff" :title="score.user.username">
           <span class="forceWidth">{{ score.user.username }}</span>
@@ -129,7 +129,7 @@
             v-if="(problem.numSubmissions + problem.numSubmissionsPending) > 0"
             @click="showAllSubmissions(score.user.username, problem.problemCode)">
             {{ problem.time | time2minutes }}
-            <span>{{ (problem.numSubmissions + problem.numSubmissionsPending) === 1 ? '1 try' : (problem.numSubmissions + problem.numSubmissionsPending) + ' tries' }}</span>
+            <span>{{ (problem.numSubmissions + problem.numSubmissionsPending) === 1 ? '1 try' : `${problem.numSubmissions + problem.numSubmissionsPending} tries` }}</span>
           </div>
         </a>
         <a v-else-if="contestMode === CONTEST_MODE.OI">
@@ -146,7 +146,7 @@
             v-if="problem.numSubmissions > 0"
             @click="showAllSubmissions(score.user.username, problem.problemCode)">
             {{ problem.score }}
-            <span>{{ problem.time | time2minutes }}</span>
+            <span>{{ (problem.time | time2minutes) === 1 ? `${problem.time | time2minutes} min` : `${problem.time | time2minutes} mins` }}</span>
           </div>
         </a>
       </td>
@@ -158,7 +158,7 @@
        ref="SubmissionList"
        size="small"
        :bannedKey="['problemCode', 'username', 'problemTitle']"
-       @update-total-page="total=$event"
+       @update-total-page="onUpdateTotal"
        @on-sort="onSort"
        @on-cell-click="onSubmissionListCellClick">
        <template>
@@ -257,8 +257,8 @@ export default {
     onUpdateTotal: function(totalPage) {
       this.total = totalPage * this.pageSize;
     },
-    setUserLiked: function(index, status) {
-      this.$store.commit('contest/setScoreLiked', { index, status });
+    setUserLiked: function(userId, status) {
+      this.$store.commit('contest/setScoreLiked', { userId, status });
     },
     showAllSubmissions: function(username, problemCode) {
       const infoOpenness = this.contest.features[this.contestStatus === CONTEST_STATUS.RUNNING ? 'contestRunning' : 'contestEnd'];
