@@ -83,18 +83,17 @@ function formatProblemResults(_problemResults, problemWeights, startTime) {
       const numSubmissions = parseInt(result[3]);
       const numSubmissionsPending = parseInt(result[4]);
       score += judgeScore * problemWeights[problemCode - 1];
+
       let css;
-      switch (judgeResult) {
-        case JUDGE_RESULT_TYPE.AC:
-          css = 'score_correct';
-          solved++;
-          break;
-        case JUDGE_RESULT_TYPE.PD:
-          css = 'score_pending';
-          break;
-        default:
-          css = 'score_incorrect';
+      if (judgeResult <= JUDGE_RESULT_TYPE.PD) {
+        css = 'score_pending';
+      } else if (judgeResult === JUDGE_RESULT_TYPE.AC) {
+        css = 'score_correct';
+        solved++;
+      } else {
+        css = 'score_incorrect';
       }
+
       problemResults.push({
         problemCode,
         css,

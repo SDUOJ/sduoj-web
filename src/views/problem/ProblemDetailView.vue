@@ -25,21 +25,24 @@
           </div>
         </Card>
         <!--  -->
-<!--        &lt;!&ndash; 样例输入输出 &ndash;&gt;-->
         <Card class="box" :title="`Case ${problemCase.id}`" dis-hover :padding="10" v-for="problemCase in problem.problemCaseDTOList" :key="problemCase.id">
             <div class="problem-example">
+              <span class="clip"> Input </span>
               <Tooltip style="display: inline-block" content="Copy" placement="right">
-                <span class="clip hover" @click="copyToClipboard(problemCase.input)"> Input </span>
-                <Icon type="ios-copy-outline" />
+                <span class="hover" @click="copyToClipboard(problemCase.input)">
+                  <Icon type="ios-copy-outline" size="20" />
+                </span>
               </Tooltip>
               <div v-highlight>
                 <pre><code class="plaintext">{{ problemCase.input }}</code></pre>
               </div>
             </div>
             <div class="problem-example">
-              <Tooltip content="Copy" placement="right">
-                <span class="clip hover" @click="copyToClipboard(problemCase.output)"> Output </span>
-                <Icon type="ios-copy-outline" />
+              <span class="clip"> Output </span>
+              <Tooltip style="display: inline-block" content="Copy" placement="right">
+                <span class="hover" @click="copyToClipboard(problemCase.output)">
+                  <Icon type="ios-copy-outline" size="20" />
+                </span>
               </Tooltip>
               <div v-highlight>
                 <pre><code class="plaintext">{{ problemCase.output }}</code></pre>
@@ -446,7 +449,7 @@ export default {
     padding: 12px 0;
 
     .clip{
-      font-size: 100%;
+      font-size: 120%;
       font-weight: bold;
     }
   }
@@ -464,7 +467,7 @@ export default {
     color: @sdu-red;
 
     &:after {
-      content: " KB\0A";
+      content: " KiB\0A";
       white-space: pre;
     }
   }

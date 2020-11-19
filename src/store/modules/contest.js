@@ -221,7 +221,7 @@ const mutations = {
     state.sliderTime = payload.sliderTime;
   },
   setScoreLiked: function(state, payload) {
-    Vue.set(state.likedScoresMap, this.getters['contest/scores'][payload.index].user.userId, payload.status);
+    Vue.set(state.likedScoresMap, payload.userId, payload.status);
   },
   setSettings: function(state, payload) {
     for (const key in payload.settings) {

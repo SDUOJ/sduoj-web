@@ -187,7 +187,7 @@ export default {
       }).catch(err => (err));
     }
   },
-  mounted: function () {
+  created: function () {
     this.getContestList();
     api.getUpcomingContest().then(ret => {
       this.upcomingContest = ret;
