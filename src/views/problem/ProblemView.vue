@@ -36,8 +36,17 @@
                 :data="problems"
                 :loading="loading"
                 class="problem-set-content-table"
-                @on-cell-click="onProblemClick"
                 @on-sort-change="onSort">
+                <template slot-scope="{ row }" slot="title">
+                  <router-link
+                    :to="{
+                      name: 'problem-detail',
+                      params: { problemCode: row.problemCode }
+                    }"
+                    style="text-decoration: none; color: black">{{ row.problemTitle }}</router-link>
+                  <Icon v-if="acproblems.includes(row.problemCode)" type="md-checkmark" style="color: #229954; font-size: 16px; vertical-align: middle" />
+                  <Tag v-if="row.isPublic === 0" style="margin-left: 5px" color="volcano">Private</Tag>
+                </template>
               </Table>
               <Page
                 class="problem-set-content-page"
@@ -156,37 +165,8 @@ export default {
             }
           }
         },
-        {
-          title: 'Title',
-          key: 'problemTitle',
-          minWidth: 150,
-          render: (h, params) => {
-            if (!this.acproblems.includes(params.row.problemCode)) {
-              return h('span', { class: 'hover' },
-                params.row.problemTitle);
-            } else {
-              return h('span', { class: 'hover' }, [
-                params.row.problemTitle,
-                ' ',
-                h('Icon', {
-                  props: {
-                    type: 'md-checkmark'
-                  },
-                  style: {
-                    color: '#229954',
-                    fontSize: '16px',
-                    verticalAlign: 'middle'
-                  }
-                })]);
-            }
-          }
-        },
-        {
-          title: 'Accept',
-          key: 'acceptNum',
-          width: 100,
-          sortable: 'custom'
-        }
+        { title: 'Title', slot: 'title' },
+        { title: 'Accept', key: 'acceptNum', width: 100, sortable: 'custom' }
       ],
       acproblems: [],
       problems: [],
@@ -256,17 +236,6 @@ export default {
         ]
       } else {
         this.problemTableColumns = this.problemTableColumns.filter(item => item.key !== 'problemTagDTOList');
-      }
-    },
-
-    onProblemClick: function (row, col) {
-      if (col.key === 'problemTitle') {
-        this.$router.push({
-          name: 'problem-detail',
-          params: {
-            problemCode: row.problemCode
-          }
-        });
       }
     },
     getProblemList: function () {

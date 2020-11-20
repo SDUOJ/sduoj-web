@@ -17,6 +17,7 @@ import './plugins/clipboard2';
 import './plugins/highlight';
 import './plugins/iviewui';
 
+import './styles/rank.css';
 Vue.config.productionTip = false;
 
 Vue.prototype.$Message.config({
