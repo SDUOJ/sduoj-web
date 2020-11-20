@@ -146,7 +146,8 @@
             v-if="problem.numSubmissions > 0"
             @click="showAllSubmissions(score.user.username, problem.problemCode)">
             {{ problem.score }}
-            <span>{{ (problem.time | time2minutes) === 1 ? `${problem.time | time2minutes} min` : `${problem.time | time2minutes} mins` }}</span>
+            <span v-if="problem.time < 120000">{{ problem.time | time2minutes }} min</span>
+            <span v-else>{{ problem.time | time2minutes }} mins</span>
           </div>
         </a>
       </td>

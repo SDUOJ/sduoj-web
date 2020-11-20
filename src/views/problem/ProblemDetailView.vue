@@ -21,7 +21,7 @@
         <!-- 题面描述 -->
         <Card class="box" title="Description" dis-hover :padding="0">
           <div class="problem-markdown">
-            <Markdown :value="problemDescription.markdownDescription || problemDescription.htmlDescription" />
+            <Markdown :value="problemDescription.markdownDescription || problemDescription.htmlDescription || ''" />
           </div>
         </Card>
         <!--  -->
