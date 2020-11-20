@@ -15,8 +15,14 @@ window.hljs = hljs;
 require('highlightjs-line-numbers.js');
 import 'highlight.js/styles/github.css';
 
-// 定义一个全局指令
 Vue.directive('highlight', el =>  {
+  const blocks = el.querySelectorAll('pre code');
+  blocks.forEach(block => {
+    hljs.highlightBlock(block);
+  })
+})
+
+Vue.directive('highlight-linenumber', el =>  {
   const blocks = el.querySelectorAll('pre code');
   blocks.forEach(block => {
     hljs.highlightBlock(block);
