@@ -208,7 +208,11 @@ export default {
   rejudge: function(data) {
     return post('/submit/rejudge', data);
   },
-  invalidate: function(submissionId) {
-
+  invalidate: function(params) {
+    if (params.contestId) {
+      return get('/contest/invalidateSubmission', params);
+    } else {
+      return get('/submit/invalidateSubmission', params);
+    }
   }
 }

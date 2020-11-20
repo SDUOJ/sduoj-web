@@ -103,6 +103,13 @@ export const JUDGE_RESULT = {
     css: 'verdict-compile-error',
     color: 'orange',
     icon: 'md-close'
+  },
+  9: {
+    name: 'Canceled',
+    abbr: 'CAN',
+    css: 'verdict-canceled',
+    color: '#220048',
+    icon: 'md-close'
   }
 };
 
@@ -116,6 +123,7 @@ export const JUDGE_RESULT_TYPE = {
   WA: 6,
   PE: 7,
   CE: 8,
+  CAN: 9,
 
   CP: -3,
   JG: -2,
