@@ -135,6 +135,9 @@ del {
     border-collapse: collapse;
     clear: both;
 }
+.scoreboard th {
+    min-width: 4.2em;
+}
 .scoreboard td {
     font-size: small;
     vertical-align: middle;
@@ -159,7 +162,7 @@ del {
     padding: 0px;
 }
 .scoreboard td.score_cell {
-    min-width: 4.2em;
+    min-width: 4.8em;
     border-right: none;
 }
 .scoreboard a {

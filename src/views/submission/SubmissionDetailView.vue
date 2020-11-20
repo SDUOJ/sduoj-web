@@ -60,17 +60,14 @@
               <Cell title="Public" v-if="submission.username === username">
                 <i-switch v-model="submission.isPublic" slot="extra" true-color="#19be6b"/>
               </Cell>
-              <template v-if="canDoRejudge">
-                <Cell name="rejudge" :disabled="submission.judgeResult < 0">
-                  <strong>Rejudge</strong>
-                  <Icon slot="icon" type="md-refresh" color="#2d8cf0" />
-                </Cell>
-<!--                TODO: 取消成绩暂不可用-->
-<!--                <Cell name="invalidate">-->
-<!--                  <strong>Invalidate</strong>-->
-<!--                  <Icon slot="icon" type="md-close-circle" color="#d9534f" />-->
-<!--                </Cell>-->
-              </template>
+              <Cell v-if="canDoRejudge" name="rejudge" :disabled="submission.judgeResult < 0">
+                <strong>Rejudge</strong>
+                <Icon slot="icon" type="md-refresh" color="#2d8cf0" />
+              </Cell>
+              <Cell v-if="canDoInvalidate" name="invalidate" :disabled="submission.judgeResult < 0">
+                <strong>Invalidate</strong>
+                <Icon slot="icon" type="md-close-circle" color="#d9534f" />
+              </Cell>
               <Divider size="small"/>
               <template v-if="contestId">
                 <Cell
@@ -268,17 +265,22 @@ export default {
       });
     },
     onCellClick: function(name) {
+      if (this.submission.judgeResult < 0) {
+        return;
+      }
       if (name === 'rejudge') {
         // doRejudge
-        if (this.submission.judgeResult < 0) {
-          return;
-        }
         api.rejudge([this.submission.submissionId]).then(_ => {
-          this.reload();
+          this.getSubmissionDetail(this.submission.submissionId);
         });
       } else if (name === 'invalidate') {
         // invalidate the grade
-        api.invalidate(this.submission.submissionId);
+        api.invalidate({
+          submissionId: this.submission.submissionId,
+          contestId: this.contestId
+        }).then(_ => {
+          this.getSubmissionDetail(this.submission.submissionId);
+        });
       }
     },
     query: function(submissionId) {
@@ -302,12 +304,18 @@ export default {
       if (this.submission.checkpointResults.length === 0) {
         return false;
       }
+      if (this.submission.judgeResult === JUDGE_RESULT_TYPE.CAN) {
+        return false;
+      }
       if (this.submission.judgeResult > 0) {
         return !(this.submission.judgeResult === JUDGE_RESULT_TYPE.CE || this.submission.judgeResult === JUDGE_RESULT_TYPE.SE);
       }
       return this.submission.judgeResult === JUDGE_RESULT_TYPE.JG;
     },
     canDoRejudge: function() {
+      return this.isAdmin || (this.contestId && this.isLogin && this.username === this.contest.username);
+    },
+    canDoInvalidate: function() {
       return this.isAdmin || (this.contestId && this.isLogin && this.username === this.contest.username);
     },
     judgedCheckpointNum: function() {

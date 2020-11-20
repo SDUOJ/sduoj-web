@@ -82,4 +82,9 @@ export default {
     font-weight: bold;
   }
 
+  .verdict-canceled {
+    color: #220048;
+    font-weight: bold;
+  }
+
 </style>
