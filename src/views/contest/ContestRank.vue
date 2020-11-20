@@ -32,16 +32,16 @@
        <th style="padding: 0 10px" title="username" colspan="2" scope="col">PARTICIPANT</th>
        <th style="padding: 0 10px" title="# solved / penalty or score" colspan="2" scope="col">SCORE</th>
        <th :title="'problem ' + problem.problemTitle" scope="col" v-for="problem in problems" :key="problem.problemCode">
-        <router-link :to="{
-          name: 'contest-problem',
-          params: { problemCode: problem.problemCode }
-        }">
-          {{ problem.problemCode | contestProblemId }}
-          <div class="circle" v-if="problem.ballonColor" :style="`background: ${problem.ballonColor};`"></div>
-          <div class="problempoints">
-            {{ problem.acceptNum || 0 }} / {{ problem.submitNum || 0 }}
-          </div>
-        </router-link>
+         <router-link
+          :to="{
+            name: 'contest-problem',
+            params: { problemCode: problem.problemCode }
+          }"
+          class="alike">
+          <strong>{{ problem.problemCode | contestProblemId }}</strong>
+          <div class="circle" v-if="problem.problemColor" :style="`background: ${problem.problemColor}; margin-left: 5px`" />
+         </router-link>
+         <div class="problempoints">{{ problem.acceptNum || 0 }} / {{ problem.submitNum || 0 }}</div>
        </th>
      </tr>
      </thead>
@@ -64,7 +64,7 @@
        </td>
        <td class="scoretn" style="background: #ffffff" :title="score.user.username">
          <span class="forceWidth">{{ score.user.username }}</span>
-         <span v-if="score.user.affiliation || false" class="forceWidth univ">{{ score.user.affiliation }}</span>
+         <span v-if="score.user.nickname || false" class="forceWidth univ">{{ score.user.nickname }}</span>
        </td>
        <td class="scorenc">{{ score.solved }}</td>
        <td class="scorett" v-if="contestMode === CONTEST_MODE.ACM">{{ score.score | time2minutes }}</td>
@@ -190,8 +190,6 @@ import { contestProblemId } from '_u/transform';
 import { CONTEST_MODE, CONTEST_STATUS } from '_u/constants';
 
 import { mapState, mapGetters } from 'vuex';
-
-import '@/styles/domjudge.css';
 
 export default {
   name: 'ContestRank',
