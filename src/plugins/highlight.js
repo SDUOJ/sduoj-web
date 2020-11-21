@@ -15,15 +15,38 @@ window.hljs = hljs;
 require('highlightjs-line-numbers.js');
 import 'highlight.js/styles/github.css';
 
-Vue.directive('highlight', el =>  {
-  const blocks = el.querySelectorAll('pre code');
-  blocks.forEach(block => {
-    hljs.highlightBlock(block);
-  })
-})
+// highlight 会改变原有的DOM结构，导致数据更新时vue不会刷新
+// 我们需要手动检测数据更新，然后重新渲染
+Vue.directive('highlight', {
+  deep: true,
+  bind: (el, binding) => {
+    // on first bind, highlight all targets
+    const targets = el.querySelectorAll('code');
+    targets.forEach(target => {
+      if (typeof binding.value === 'string') {
+        // if a value is directly assigned to the directive, use this
+        // instead of the element content.
+        target.textContent = binding.value;
+      }
+      hljs.highlightBlock(target);
+    });
+  },
+  componentUpdated: (el, binding) => {
+    // after an update, re-fill the content and then highlight
+    const targets = el.querySelectorAll('code');
+    targets.forEach(target => {
+      if (typeof binding.value === 'string') {
+        // if a value is directly assigned to the directive, use this
+        // instead of the element content.
+        target.textContent = binding.value;
+      }
+      hljs.highlightBlock(target);
+    });
+  }
+});
 
 Vue.directive('highlight-linenumber', el =>  {
-  const blocks = el.querySelectorAll('pre code');
+  const blocks = el.querySelectorAll('code');
   blocks.forEach(block => {
     hljs.highlightBlock(block);
     hljs.lineNumbersBlock(block);

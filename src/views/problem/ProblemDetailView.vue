@@ -33,8 +33,8 @@
                   <Icon type="ios-copy-outline" size="20" />
                 </span>
               </Tooltip>
-              <div v-highlight>
-                <pre><code class="plaintext">{{ problemCase.input }}</code></pre>
+              <div v-highlight="problemCase.input">
+                <code class="plaintext" />
               </div>
             </div>
             <div class="problem-example">
@@ -44,8 +44,8 @@
                   <Icon type="ios-copy-outline" size="20" />
                 </span>
               </Tooltip>
-              <div v-highlight>
-                <pre><code class="plaintext">{{ problemCase.output }}</code></pre>
+              <div v-highlight="problemCase.output">
+                <code class="plaintext" />
               </div>
             </div>
         </Card>
@@ -131,7 +131,7 @@
                 :selected="pd.id === problemDescription.id"
                 :to="{
                   name: $route.name,
-                  params: { ...$route.pararms },
+                  params: { ...$route.params },
                   query: { descriptionId: pd.id }
                 }"/>
             </CellGroup>
