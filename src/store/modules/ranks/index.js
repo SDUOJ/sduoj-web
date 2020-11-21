@@ -21,7 +21,8 @@ export function calculateScore(score, startTime, problemWeights, calculateProble
   delete ret.submissions;
   ret.user = {
     userId: score.userId,
-    username: score.username
+    username: score.username,
+    nickname: score.nickname
   };
 
   if (score.submissions) {
