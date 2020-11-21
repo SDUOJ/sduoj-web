@@ -43,6 +43,7 @@
         <Col span="6">
           <div class="filter-title">By Judge Template</div>
           <Input
+            disabled
             v-model="tJudgeTemplate"
             placeholder="Judge Template"
             style="width: 200px;"
@@ -100,16 +101,29 @@ export default {
   },
   methods: {
     onFiltering: function() {
-      this.username = this.tUsername;
-      this.problemCode = this.tProblemCode;
-      this.judgeResult = this.tJudgeResult;
-      this.judgeTemplate = this.tJudgeTemplate;
+      this.$router.replace({
+        query: {
+          ...this.$route.query,
+          username: this.tUsername,
+          problemCode: this.tProblemCode,
+          judgeResult: this.tJudgeResult
+          // judgeTemplate: this.tJudgeTemplate
+        }
+      });
     },
     onReset: function() {
-      this.username = '';
-      this.problemCode = '';
-      this.judgeResult = '';
-      this.judgeTemplate = '';
+      const query = { ...this.$route.query };
+      delete query.username;
+      delete query.problemCode;
+      delete query.judgeResult;
+      delete query.judgeTemplate;
+
+      this.tUsername = '';
+      this.tProblemCode = '';
+      this.tJudgeResult = '';
+      this.tJudgeTemplate = '';
+
+      this.$router.replace({ query });
     },
     onSubmissionListCellClick: function(row, col) {
       const name = this.contestId ? 'contest-submission-detail' : 'submission-detail';
@@ -157,42 +171,22 @@ export default {
     ...mapGetters('user', ['isAdmin', 'isLogin', 'username']),
     username: {
       get: function() {
-        return this.$route.params.username || this.$route.query.username || '';
-      },
-      set: function(username) {
-        if (this.$route.query.username !== username) {
-          this.$router.push({ query: { ...this.$route.query, username } });
-        }
+        return this.$route.params.username || this.$route.query.username;
       }
     },
     problemCode: {
       get: function() {
-        return this.$route.params.problemCode || this.$route.query.problemCode || '';
-      },
-      set: function(problemCode) {
-        if (this.$route.query.problemCode !== problemCode) {
-          this.$router.push({ query: { ...this.$route.query, problemCode } });
-        }
+        return this.$route.params.problemCode || this.$route.query.problemCode;
       }
     },
     judgeResult: {
       get: function() {
-        return this.$route.params.judgeResult || this.$route.query.judgeResult || '';
-      },
-      set: function(judgeResult) {
-        if (this.$route.query.judgeResult !== judgeResult) {
-          this.$router.push({ query: { ...this.$route.query, judgeResult } });
-        }
+        return this.$route.params.judgeResult || this.$route.query.judgeResult;
       }
     },
     judgeTemplate: {
       get: function() {
-        return this.$route.params.judgeTemplate || this.$route.query.judgeTemplate || '';
-      },
-      set: function(judgeTemplate) {
-        if (this.$route.query.judgeTemplate !== judgeTemplate) {
-          this.$router.push({ query: { ...this.$route.query, judgeTemplate } });
-        }
+        return this.$route.params.judgeTemplate || this.$route.query.judgeTemplate;
       }
     },
     canDoRejudge: function() {
@@ -214,8 +208,8 @@ export default {
   mounted: function() {
     this.tUsername = this.username;
     this.tProblemCode = this.problemCode;
-    this.tJudgeResult = this.judgeResult;
-    this.tJudgeTemplate = this.judgeTemplate;
+    this.tJudgeResult = parseInt(this.judgeResult) || '';
+    // this.tJudgeTemplate = this.judgeTemplate;
     this.getSubmissionList();
   },
   watch: {
@@ -223,7 +217,7 @@ export default {
       this.getSubmissionList();
     },
     tJudgeResult: function() {
-      this.judgeResult = this.tJudgeResult;
+      this.onFiltering();
     }
   }
 }

@@ -26,6 +26,11 @@ VueRouter.prototype.push = function push(location) {
   }).catch(_ => _);
 };
 
+VueRouter.prototype.replace = function push(location) {
+  const that = this;
+  return originalReplace.call(that, location).catch(_ => _);
+}
+
 const scrollBehavior = (to, from, savedPosition) => {
   if (savedPosition) {
     // savedPosition is only available for popstate navigations.
