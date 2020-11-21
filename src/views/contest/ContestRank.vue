@@ -160,7 +160,7 @@
     </tr>
      </tbody>
    </table>
-   <Modal v-model="modelSubmissions" width="900px" footer-hide :closable="false">
+   <Modal v-model="modelSubmissions" width="900px" footer-hide :closable="false" scrollable>
      <SubmissionList
        ref="SubmissionList"
        size="small"
@@ -182,7 +182,7 @@
        </template>
      </SubmissionList>
    </Modal>
-   <Modal v-model="modelSubmissionDetail" width="1000px" footer-hide :closable="false">
+   <Modal v-model="modelSubmissionDetail" width="1000px" footer-hide :closable="false" scrollable>
      <SubmissionDetailView ref="SubmissionDetailView" />
    </Modal>
  </div>
@@ -196,6 +196,8 @@ import { contestProblemId } from '_u/transform';
 import { CONTEST_MODE, CONTEST_STATUS } from '_u/constants';
 
 import { mapState, mapGetters } from 'vuex';
+
+import '@/styles/rank.css';
 
 export default {
   name: 'ContestRank',
