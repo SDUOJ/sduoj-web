@@ -197,8 +197,6 @@ import { CONTEST_MODE, CONTEST_STATUS } from '_u/constants';
 
 import { mapState, mapGetters } from 'vuex';
 
-import '@/styles/rank.css';
-
 export default {
   name: 'ContestRank',
   components: { SubmissionList, SubmissionDetailView },
