@@ -129,14 +129,14 @@ del {
     text-align: right;
 }
 
-.center { margin: 0px auto; }
+.center { margin: 0 auto; }
 
 .scoreboard {
     border-collapse: collapse;
     clear: both;
 }
 .scoreboard th {
-    min-width: 4.2em;
+    min-width: 5em;
 }
 .scoreboard td {
     font-size: small;
@@ -155,17 +155,24 @@ del {
 }
 .scoreboard tr {
     border-bottom: 1px solid black;
-    height: 42px;
+    height: 45px;
 }
 .scoreboard td, .scoreboard th {
     border-right: 1px solid silver;
     padding: 0px;
 }
 .scoreboard td.score_cell {
-    min-width: 4.8em;
+    min-width: 4.2em;
     border-right: none;
 }
 .scoreboard a {
+    display: block;
+    padding: 2px;
+    text-decoration: none;
+    color: black;
+}
+
+.scoreboard .alike {
     display: block;
     padding: 2px;
     text-decoration: none;
@@ -276,6 +283,7 @@ td.scorenc { border-color: silver; border-right: 0; }
     border-radius: 50%;
     border: 1px solid black;
     display: inline-block;
+    vertical-align:  middle;
 }
 
 .heart {

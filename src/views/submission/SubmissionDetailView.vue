@@ -47,7 +47,7 @@
               </Tooltip>
             </p>
             <p slot="extra" style="color: #bbb">{{ submission.codeLength || 0 }} B</p>
-            <div v-highlight>
+            <div v-highlight-linenumber>
               <pre><code>{{ submission.code }}</code></pre>
             </div>
           </Card>

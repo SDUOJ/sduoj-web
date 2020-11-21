@@ -33,7 +33,14 @@
               <strong class="hover">{{ row.problemCode | contestProblemId }}</strong>
             </template>
             <template slot-scope="{ row }" slot="title">
-              <span class="hover">{{ row.problemTitle }}</span>
+              <div class="circle" v-if="row.problemColor" :style="`background: ${row.problemColor};`" />
+              <div class="nocircle" v-else />
+              <router-link
+                :to="{
+                  name: 'contest-problem',
+                  params: { problemCode: row.problemCode }
+                }"
+                style="text-decoration: none; color: black">{{ row.problemTitle }}</router-link>
             </template>
             <template slot-scope="{ row }" slot="ratio">
               <span v-if="row.submitNum > 0">{{ `${row.acceptNum} / ${row.submitNum}` }}</span>
@@ -90,7 +97,7 @@ export default {
       }
     },
     handleCellClick: function(row, col) {
-      if (col.key === 'problemCode' || col.key === 'problemTitle') {
+      if (col.key === 'problemCode') {
         this.$router.push({
           name: 'contest-problem',
           params: { problemCode: row.problemCode }
@@ -120,5 +127,16 @@ export default {
   .overview {
     margin: 24px auto;
     width: 80%;
+  }
+  .nocircle {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+    vertical-align: middle;
+  }
+  .circle {
+    margin-right: 5px;
   }
 </style>

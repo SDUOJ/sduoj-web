@@ -65,8 +65,7 @@
               style="float: right; margin: 5px 0 5px 10px;"
               :loading="submitBtnLoading"
               :disabled="submitColdDown"
-              @click="onSubmit">Submit
-            </Button>
+              @click="onSubmit">Submit</Button>
             <Input
               style="float: right; width: 200px; margin: 8px 0;"
               placeholder="Contest Password"
@@ -151,7 +150,21 @@
               :show-header="false"
               :columns="problemColumn"
               :data="problems"
-              @on-cell-click="onProblemTableClick"></Table>
+              @on-cell-click="onProblemTableClick">
+              <template slot-scope="{ row }" slot="title">
+                <div class="circle" v-if="row.problemColor" :style="`background: ${row.problemColor};`" />
+                <div class="nocircle" v-else />
+                <router-link
+                  :to="{
+                    name: 'contest-problem',
+                    params: { problemCode: row.problemCode }
+                  }"
+                  style="text-decoration: none; color: black">{{ row.problemTitle }}</router-link>
+              </template>
+              <template slot-scope="{ row }" slot="ratio">
+                <span v-if="row.submitNum > 0">{{ `${row.acceptNum}/${row.submitNum}` }}</span>
+              </template>
+            </Table>
           </Card>
           <!-- 近期提交记录 -->
           <Card class="display__card"
@@ -228,20 +241,8 @@ export default {
           maxWidth: 60,
           render: (h, params) => h('strong', contestProblemId(params.row.problemCode))
         },
-        {
-          key: 'problemTitle',
-          minWidth: 80,
-          render: (h, params) => h('span', { class: 'hover' }, params.row.problemTitle)
-        },
-        {
-          render: (h, params) => {
-            if (params.row.submitNum > 0) {
-              return h('span', `${params.row.acceptNum}/${params.row.submitNum}`);
-            } else {
-              return '';
-            }
-          }
-        },
+        { key: 'problemTitle', minWidth: 80, slot: 'title' },
+        { slot: 'ratio' },
         {
           key: 'judgeResult',
           render: (h, params) => h(JudgeResult, { props: { result: params.row.judgeResult, abbr: true } })
@@ -296,9 +297,7 @@ export default {
     switchContestProblem: function(problemCode) {
       this.$router.push({
         name: 'contest-problem',
-        params: {
-          problemCode
-        }
+        params: { problemCode }
       });
     },
     onSubmit: async function () {
@@ -522,5 +521,17 @@ export default {
   .block__ce {
     display: block;
     border-left: 6px solid rgba(255, 165, 0, .15) !important;
+  }
+
+  .nocircle {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+    vertical-align: middle;
+  }
+  .circle {
+    margin-right: 5px;
   }
 </style>

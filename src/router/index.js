@@ -22,8 +22,8 @@ VueRouter.prototype.push = function push(location) {
   return originalPush.call(that, location).catch(_ => {
     location.query = location.query || {};
     location.query._t = Date.now();
-    originalReplace.call(that, location);
-  });
+    originalReplace.call(that, location).catch(_ => _);
+  }).catch(_ => _);
 };
 
 const scrollBehavior = (to, from, savedPosition) => {
