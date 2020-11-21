@@ -187,6 +187,9 @@ del {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+.unofficial-username:before {
+    content: '* ';
+}
 .forceWidth {
     position: relative;
     display: block;

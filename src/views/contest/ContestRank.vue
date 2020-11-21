@@ -57,14 +57,17 @@
           scorethisisme: score.user.userId === profile.userId
         }">
 
-       <td class="scorepl">{{ displayRank ? score.rank : '?' }}</td>
+       <td class="scorepl">
+         <span v-if="displayRank">{{ score.rank === -1 ? '*' : score.rank }}</span>
+         <span v-else>?</span>
+       </td>
        <td class="scoreaf" style="background: #ffffff">
          <Icon v-if="likedScoresMap[score.user.userId]" class="heart fas" type="md-heart" @click="setUserLiked(score.user.userId, false)"/>
          <Icon v-else class="heart" type="md-heart-outline" @click="setUserLiked(score.user.userId, true)" />
        </td>
        <td class="scoretn" style="background: #ffffff" :title="score.user.username">
-         <span class="forceWidth">{{ score.user.username }}</span>
-         <span v-if="score.user.nickname || false" class="forceWidth univ">{{ score.user.nickname }}</span>
+         <span :class="['forceWidth', { 'unofficial-username': !score.official }]">{{ score.user.username }}</span>
+         <span v-if="score.user.nickname" class="forceWidth univ">{{ score.user.nickname }}</span>
        </td>
        <td class="scorenc">{{ score.solved }}</td>
        <td class="scorett" v-if="contestMode === CONTEST_MODE.ACM">{{ score.score | time2minutes }}</td>
@@ -109,14 +112,17 @@
         scorethisisme: score.user.userId === profile.userId,
         scoreliked: likedScoresMap[score.user.userId]
       }">
-      <td class="scorepl">{{ displayRank ? score.rank : '?' }}</td>
+      <td class="scorepl">
+        <span v-if="displayRank">{{ score.rank === -1 ? '*' : score.rank }}</span>
+        <span v-else>?</span>
+      </td>
       <td class="scoreaf" style="background: #ffffff">
         <Icon v-if="likedScoresMap[score.user.userId]" class="heart fas" type="md-heart" @click="setUserLiked(score.user.userId, false)"/>
         <Icon v-else class="heart" type="md-heart-outline" @click="setUserLiked(score.user.userId, true)" />
       </td>
       <td class="scoretn" style="background: #ffffff" :title="score.user.username">
-          <span class="forceWidth">{{ score.user.username }}</span>
-          <span v-if="score.user.affiliation || false" class="forceWidth univ">{{ score.user.affiliation }}</span>
+          <span :class="['forceWidth', { 'unofficial-username': !score.official }]">{{ score.user.username }}</span>
+          <span v-if="score.user.nickname" class="forceWidth univ">{{ score.user.nickname }}</span>
       </td>
       <td class="scorenc">{{ score.solved }}</td>
       <td class="scorett" v-if="contestMode === CONTEST_MODE.ACM">{{ score.score | time2minutes }}</td>
