@@ -160,7 +160,7 @@
     </tr>
      </tbody>
    </table>
-   <Modal v-model="modelSubmissions" width="900px" footer-hide :closable="false" scrollable>
+   <Modal v-model="modelSubmissions" width="40%" footer-hide :closable="false" scrollable>
      <SubmissionList
        ref="SubmissionList"
        size="small"
@@ -182,7 +182,7 @@
        </template>
      </SubmissionList>
    </Modal>
-   <Modal v-model="modelSubmissionDetail" width="1000px" footer-hide :closable="false" scrollable>
+   <Modal v-model="modelSubmissionDetail" width="60%" footer-hide :closable="false" scrollable>
      <SubmissionDetailView ref="SubmissionDetailView" />
    </Modal>
  </div>
