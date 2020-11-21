@@ -34,7 +34,7 @@
                 </span>
               </Tooltip>
               <div v-highlight="problemCase.input">
-                <code class="plaintext" />
+                <pre><code class="plaintext" /></pre>
               </div>
             </div>
             <div class="problem-example">
@@ -45,7 +45,7 @@
                 </span>
               </Tooltip>
               <div v-highlight="problemCase.output">
-                <code class="plaintext" />
+                <pre><code class="plaintext" /></pre>
               </div>
             </div>
         </Card>
