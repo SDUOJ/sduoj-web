@@ -45,10 +45,32 @@ Vue.directive('highlight', {
   }
 });
 
-Vue.directive('highlight-linenumber', el =>  {
-  const blocks = el.querySelectorAll('code');
-  blocks.forEach(block => {
-    hljs.highlightBlock(block);
-    hljs.lineNumbersBlock(block);
-  })
-})
+Vue.directive('highlight-linenumber', {
+  deep: true,
+  bind: (el, binding) => {
+    // on first bind, highlight all targets
+    const targets = el.querySelectorAll('code');
+    targets.forEach(target => {
+      if (typeof binding.value === 'string') {
+        // if a value is directly assigned to the directive, use this
+        // instead of the element content.
+        target.textContent = binding.value;
+      }
+      hljs.highlightBlock(target);
+      hljs.lineNumbersBlock(target);
+    });
+  },
+  componentUpdated: (el, binding) => {
+    // after an update, re-fill the content and then highlight
+    const targets = el.querySelectorAll('code');
+    targets.forEach(target => {
+      if (typeof binding.value === 'string') {
+        // if a value is directly assigned to the directive, use this
+        // instead of the element content.
+        target.textContent = binding.value;
+      }
+      hljs.highlightBlock(target);
+      hljs.lineNumbersBlock(target);
+    });
+  }
+});
