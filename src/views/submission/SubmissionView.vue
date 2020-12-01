@@ -83,6 +83,7 @@ import JudgeResult from '_c/JudgeResult';
 import { mapGetters, mapState } from 'vuex';
 import api from '_u/api';
 import {  JUDGE_RESULT, JUDGE_RESULT_TYPE } from '_u/constants';
+import { contestProblemIdInvert } from '_u/transform';
 
 import { Page } from '_c/mixins';
 
@@ -155,7 +156,7 @@ export default {
     getSubmissionList: function() {
       this.$refs.SubmissionList.querySubmissionList({
         username: this.username,
-        problemCode: this.problemCode,
+        problemCode: this.contestId ? contestProblemIdInvert(this.problemCode) : this.problemCode,
         judgeResult: this.judgeResult,
         judgeTemplate: this.judgeTemplate,
         pageNow: this.pageNow,

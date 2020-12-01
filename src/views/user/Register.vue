@@ -20,8 +20,7 @@
           :rules="registerRules"
           label-position="right"
           :label-width="150"
-          label-colon
-        >
+          label-colon>
           <FormItem prop="username" label="Username">
             <Input
               v-model="registerForm.username"
@@ -70,7 +69,7 @@
       </div>
       <div class="bottom">
         <div class="btns">
-          <a href="/#/login">Already registerd?</a>
+          <router-link :to="{ name: 'login' }">Already registerd?</router-link>
           <Button type="text"
             @click="handleRegister('registerForm')"
             :loading="btnRegisterLoading">Register</Button>
@@ -80,7 +79,7 @@
     <div class="container activation hover" v-else>
       <Tooltip  content="Return to Home" placement="bottom">
         <Icon type="md-checkmark-circle-outline" size="30"/>
-        <h1 style="display: inline" @click="$router.replace({ name: 'home' })">&nbsp; You have activated</h1>
+        <h1 style="display: inline" @click="$router.replace({ name: 'home' })">&nbsp; {{ message }}</h1>
       </Tooltip>
     </div>
 </template>
@@ -149,7 +148,8 @@ export default {
       captchaId: 0,
       captchaImg: '',
       btnRegisterLoading: false,
-      apply: true
+      apply: true,
+      message: ''
     };
   },
   methods: {
@@ -173,8 +173,8 @@ export default {
           dataForm.captchaId = this.captchaId;
           this.btnRegisterLoading = true;
           api.register(dataForm).then(ret => {
-            this.$Message.success('Success, check your email for activation');
-            this.btnRegisterLoading = false;
+            this.apply = false;
+            this.message = 'Success, check your email for activation';
           }).catch(err => {
             this.$Message.error(err.message);
             this.btnRegisterLoading = false;
@@ -192,11 +192,13 @@ export default {
   },
   mounted: function() {
     if (this.$route.query.token) {
-      this.apply = false;
-      api.verifyEmail(this.$route.query.token).catch(err => {
-        this.$Message.error(err.data);
-        this.apply = true;
-      })
+      api.verifyEmail(this.$route.query.token)
+        .then(_ => {
+          this.apply = false;
+          this.message = 'You have activated';
+        }).catch(err => {
+          this.$Message.error(err.data);
+        });
     }
   }
 };

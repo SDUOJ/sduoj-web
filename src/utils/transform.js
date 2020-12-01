@@ -10,19 +10,45 @@
 
 import moment from 'moment';
 
+/*
+ * 将 1 2 3 4 这样的problemId 转换成 A、B、C、D
+*/
 export function contestProblemId(problemCode) {
-  problemCode = parseInt(problemCode) - 1;
-  const str = []
+  problemCode = parseInt(problemCode);
+  const str = [];
   do {
-    const ch = problemCode % 26;
-    if (str.length === 0) {
-      str.push(String.fromCharCode(65 + ch));
-    } else {
-      str.push(String.fromCharCode(64 + ch));
-    }
-    problemCode = parseInt(problemCode / 26);
-  } while (problemCode > 0)
+    const ch = (problemCode - 1) % 26 + 1;
+    str.push(String.fromCharCode(64 + ch)); // ch + 'A' - 1
+    problemCode = parseInt((problemCode - ch) / 26);
+  } while (problemCode > 0);
   return str.reverse().join('');
+}
+
+/*
+ * 将 A、B、C、D 转换成 1 2 3 4
+*/
+export function contestProblemIdInvert(problemCode) {
+  if (!problemCode) return '';
+  let base = 0;
+  let problemId = 0;
+  for (const ch of problemCode) {
+    if (ch >= 'A' && ch <= 'Z') {
+      if (!base) base = 26;
+      if (base !== 26)  return '';
+      problemId = problemId * base + (ch.charCodeAt() - 64); // (ch - 1) - 'A'
+    } else if (ch >= 'a' && ch <= 'z') {
+      if (!base) base = 26;
+      if (base !== 26)  return '';
+      problemId = problemId * base + (ch.charCodeAt() - 96); // (ch - 1) - 'a'
+    } else if (ch >= '0' && ch <= '9') {
+      if (!base) base = 10;
+      if (base !== 10)  return '';
+      problemId = problemId * base + (ch.charCodeAt() - 48); // ch - '0';
+    } else {
+      return '';
+    }
+  }
+  return problemId.toString();
 }
 
 export function s2hs(diff) {
