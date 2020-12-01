@@ -24,16 +24,16 @@
             </FormItem>
             <FormItem label="Student ID">
               <Input type="text" v-model="profileForm.studentId" style="width: 200px;">
-                <Icon type="ios-person-outline" slot="prepend"></Icon>
+                <Icon type="ios-person-outline" slot="prepend" />
               </Input>
             </FormItem>
             <FormItem label="Confirm Password" prop="password">
               <Input type="password" v-model="profileForm.password" style="width: 200px;">
-                <Icon type="ios-lock-outline" slot="prepend"></Icon>
+                <Icon type="ios-lock-outline" slot="prepend" />
               </Input>
             </FormItem>
             <FormItem>
-              <Button @click="handleProfileUpdate('profileForm')" :disabled="!isVerified">Update</Button>
+              <Button @click="handleProfileUpdate('profileForm')" :disabled="!isVerified" :loading="btnLoading">Update</Button>
             </FormItem>
           </Col>
           <Col span="12">
@@ -88,27 +88,37 @@ export default {
         password: [
           { required: true, trigger: 'blur', min: 6, max: 32 }
         ]
-      }
+      },
+      btnLoading: false
     }
   },
   methods: {
     handleProfileUpdate: function(name) {
       this.$refs[name].validate(valid => {
         if (valid) {
+          this.btnLoading = true;
           api.updateProfile(this.profileForm).then(ret => {
             api.getProfile();
             this.$Message.success('Updated');
           }).catch(err => {
             this.$Message.error(err.message);
+          }).finally(() => {
+            this.btnLoading = false;
           })
         }
       })
     },
     sendEmail: function() {
       if (!this.isVerified) {
+        const msg = this.$Message.loading({
+          content: 'Waiting...',
+          duration: 0
+        });
         api.sendVerificationEmail(this.username).then(ret => {
-          this.$Message.success(`An verification email has sent to ${ret.data}`);
+          msg();
+          this.$Message.success(`An verification email has sent to ${ret}`);
         }).catch(err => {
+          msg();
           this.$Message.error(err.message);
         })
       }
