@@ -30,7 +30,7 @@
       </div>
       <div class="bottom">
         <div class="btns">
-          <a href="/#/resetpass">Forgot your password?</a>
+          <router-link :to="{ name: 'reset-password' }">Forgot your password?</router-link>
           <Button type="text"
             @click="handleLogin('loginForm')"
             :loading="btnLoginLoading">Login</Button>
