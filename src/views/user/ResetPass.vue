@@ -136,6 +136,7 @@ export default {
             // 用户名
             delete dataForm.email;
           }
+          this.btnResetLoading = true;
           api.forgetPassword(dataForm).then(ret => {
             this.$Message.success(`重置密码链接已发送到 ${ret}`);
           }).catch(err => {
@@ -144,6 +145,7 @@ export default {
           }).finally(() => {
             this.resetForm.handler = '';
             this.resetForm.captcha = '';
+            this.btnResetLoading = false;
           })
         } else {
           const dataForm = {
@@ -152,6 +154,7 @@ export default {
             captcha: this.resetForm.captcha,
             captchaId: this.captchaId
           }
+          this.btnResetLoading = true;
           api.resetPassword(dataForm).then(ret => {
             this.$Message.success({
               content: 'Password resetted, please login',
@@ -159,6 +162,8 @@ export default {
             })
           }).catch(err => {
             this.$Message.error(err.message);
+          }).finally(() => {
+            this.btnResetLoading = false;
           });
         }
       })

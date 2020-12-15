@@ -16,11 +16,11 @@
           <Col span="12">
             <FormItem label="Password" prop="password">
               <Input type="password" v-model="emailForm.password" style="width: 200px;">
-                <Icon type="ios-lock-outline" slot="prepend"></Icon>
+                <Icon type="ios-lock-outline" slot="prepend" />
               </Input>
             </FormItem>
             <FormItem>
-              <Button @click="handleEmailUpdate('emailForm')">Update</Button>
+              <Button @click="handleEmailUpdate('emailForm')" :loading="btnLoading">Update</Button>
             </FormItem>
           </Col>
           <Col span="12">
@@ -66,19 +66,22 @@ export default {
           { required: true, type: 'email', trigger: 'blur' },
           { validator: validateEmail, trigger: 'blur' }
         ]
-      }
+      },
+      btnLoading: false
     }
   },
   methods: {
     handleEmailUpdate: function(name) {
       this.$refs[name].validate(valid => {
         if (valid) {
+          this.btnLoading = true;
           api.updateProfile(this.emailForm).then(ret => {
             api.getProfile();
             this.$Message.success('Updated');
           }).catch(err => {
             this.$Message.error(err.message);
           }).finally(() => {
+            this.btnLoading = false;
             this.$refs[name].resetFields();
           })
         }

@@ -16,22 +16,22 @@
           <Col span="12">
             <FormItem label="Old Password" prop="oldPassword">
               <Input type="password" v-model="passwordForm.oldPassword" style="width: 200px;">
-                <Icon type="ios-lock-outline" slot="prepend"></Icon>
+                <Icon type="ios-lock-outline" slot="prepend" />
               </Input>
             </FormItem>
             <FormItem>
-              <Button @click="handlePasswordUpdate('passwordForm')">Update</Button>
+              <Button @click="handlePasswordUpdate('passwordForm')" :loading="btnLoading">Update</Button>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="New Password" prop="newPassword">
               <Input type="password" v-model="passwordForm.newPassword" style="width: 200px;">
-                <Icon type="ios-lock-outline" slot="prepend"></Icon>
+                <Icon type="ios-lock-outline" slot="prepend" />
               </Input>
             </FormItem>
             <FormItem label="Confirm New Password" prop="confirmNewPassword">
               <Input type="password" v-model="passwordForm.confirmNewPassword" style="width: 200px;">
-                <Icon type="ios-lock-outline" slot="prepend"></Icon>
+                <Icon type="ios-lock-outline" slot="prepend" />
               </Input>
             </FormItem>
           </Col>
@@ -76,7 +76,8 @@ export default {
         confirmNewPassword: [
           { required: true, validator: validateConfirmNewPass, trigger: 'change' }
         ]
-      }
+      },
+      btnLoading: false
     }
   },
   methods: {
@@ -87,11 +88,13 @@ export default {
             password: this.passwordForm.oldPassword,
             newPassword: this.passwordForm.newPassword
           };
+          this.btnLoading = true;
           api.updateProfile(dataForm).then(ret => {
             this.$Message.success('Updated');
           }).catch(err => {
             this.$Message.error(err.message);
           }).finally(() => {
+            this.btnLoading = false;
             this.$refs[name].resetFields();
           })
         }

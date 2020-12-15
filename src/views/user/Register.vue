@@ -197,7 +197,7 @@ export default {
           this.apply = false;
           this.message = 'You have activated';
         }).catch(err => {
-          this.$Message.error(err.data);
+          this.$Message.error(err.message);
         });
     }
   }
