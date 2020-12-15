@@ -9,17 +9,17 @@
  */
 
 function getWsURL() {
-  if (process.env.NODE_ENV === 'production') {
-    return `ws://${location.host}/ws`;
-  }
   if (process.env.VUE_APP_OJ_WS) {
     return `${process.env.VUE_APP_OJ_WS}/ws`;
   }
-  const OJ_SERVER = new URL(process.env.VUE_APP_OJ_SERVER);
-  if (OJ_SERVER.protocol === 'https:') {
-    return `ws://${OJ_SERVER.host}/ws`;
+  if (process.env.NODE_ENV === 'production') { // 生产环境
+    // https 对应 wss，http 对应 ws
+    const WS_PROTOCOL = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    return `${WS_PROTOCOL}//${location.host}/ws`;
   } else {
-    return `ws://${OJ_SERVER.host}/ws`;
+    const OJ_SERVER = new URL(process.env.VUE_APP_OJ_SERVER);
+    const WS_PROTOCOL = OJ_SERVER.protocol === 'https:' ? 'wss:' : 'ws:';
+    return `${WS_PROTOCOL}//${OJ_SERVER.host}/ws`;
   }
 }
 
