@@ -152,8 +152,19 @@ function calculateRank(scores) {
   return scores;
 }
 
+function exportScore(problemResults) {
+  return problemResults.map(o => {
+    if (o.numSubmissions + o.numSubmissionsPending > 0) {
+      return `-${o.numSubmissions + o.numSubmissionsPending}/${o.time}`;
+    } else {
+      return '';
+    }
+  });
+}
+
 export default {
   formatProblemResults,
   calculateProblemResult,
-  calculateRank
+  calculateRank,
+  exportScore
 }

@@ -41,7 +41,7 @@
               <Icon type="ios-people-outline"/>
               {{ contest.participantNum }}
             </li>
-            <li>
+            <li v-if="contestOpenness !== CONTEST_OPENNESS.PRIVATE || hasParticipatedIn">
               <div class="hover-background" @click="contestSettingsModal=true">
                 <Icon type="md-settings" :size="20"/>
               </div>
@@ -53,7 +53,7 @@
           <ContestProcess />
         </div>
       </div>
-      <Menu mode="horizontal" theme="light" :active-name="$route.path.split('/')[3]" class="contest__menu">
+      <Menu mode="horizontal" theme="light" :active-name="$route.path.split('/')[3]" class="contest__menu" v-if="contestLoaded">
         <MenuItem name="overview" :to="{
           name: 'contest-overview'
         }">
@@ -88,11 +88,14 @@
       <Modal
         title="Settings"
         v-model="contestSettingsModal"
-        :mask-closable="false"
-        @on-ok="$store.dispatch('contest/settingso', $store.state.contest.settings)">
+        footer-hide
+        scrollable>
         <Form>
           <FormItem label="Show Practice">
             <i-switch v-model="showPractice" />
+          </FormItem>
+          <FormItem label="Export">
+            <Button @click="exportRank" :loading="exportLoading">Rank</Button>
           </FormItem>
         </Form>
       </Modal>
@@ -106,10 +109,12 @@
 <script>
 import { mapGetters, mapState } from 'vuex';
 import { CONTEST_OPENNESS, CONTEST_STATUS } from '_u/constants';
-import { s2hs } from '_u/transform';
+import { contestProblemIdEncode, s2hs } from '_u/transform';
 
 import ContestProcess from '_c/ContestProcess';
 import Markdown from '_c/Markdown';
+
+import rankHandler from '@/store/modules/ranks';
 
 export default {
   name: 'ContestDetailView',
@@ -120,7 +125,8 @@ export default {
       contestSettingsModal: false,
       contestSettingsForm: {
         showPractice: false
-      }
+      },
+      exportLoading: false
     }
   },
   filters: {
@@ -130,6 +136,7 @@ export default {
     ...mapState('contest', ['contest', 'sliderTime']),
     ...mapGetters('user', ['username']),
     ...mapGetters('contest', [
+      'contestLoaded',
       'hasParticipatedIn',
       'contestStatus',
       'contestStartTime',
@@ -138,7 +145,8 @@ export default {
       'contestMode',
       'contestStarted',
       'contestOpenness',
-      'countdown'
+      'countdown',
+      'scores'
     ]),
     showPractice: {
       get: function() {
@@ -151,13 +159,41 @@ export default {
     CONTEST_OPENNESS: () => CONTEST_OPENNESS,
     CONTEST_STATUS: () => CONTEST_STATUS
   },
-  mounted: function() {
-    this.$Spin.show();
-    this.$store.dispatch('contest/getContest', this.$route.params.contestId)
-      .catch(_ => {
-        this.$Message.error('Permission denied');
+  methods: {
+    exportRank: function() {
+      const handler = rankHandler[this.contestMode];
+      import('_u/excel').then(excel => {
+        this.exportLoading = true;
+        const tHeader = ['username', 'nickname', 'official', 'rank', 'score', 'solved'].concat(
+          this.contest.problems.map(o => {
+            const contestProblemId = contestProblemIdEncode(o.problemCode);
+            return `${contestProblemId}(${o.problemWeight}):${o.problemTitle}`;
+          })
+        );
+        const data = this.scores.map(o => {
+          return [
+            o.user.username,
+            o.user.nickname,
+            o.official,
+            o.rank.toString(),
+            o.score.toString(),
+            o.solved.toString(),
+            ...handler.exportScore(o.problemResults)
+          ];
+        });
+        excel.export_json_to_excel({
+          header: tHeader,
+          data,
+          filename: this.contest.contestTitle
+        });
+        this.exportLoading = false;
       })
-      .finally(() => this.$Spin.hide());
+    }
+  },
+  beforeCreate: function() {
+    this.$store.dispatch('contest/getContest', this.$route.params.contestId).catch(err => {
+      this.$Message.error(err.message);
+    });
   },
   beforeDestroy: function () {
     this.$store.commit('contest/clearContest');
@@ -190,7 +226,7 @@ export default {
   .contest__subtitle {
     word-wrap: break-word;
     word-break: break-all;
-    margin-top: 5px;
+    margin: 5px 5px 0;
     font-size: 14px;
     color: #aaa;
   }

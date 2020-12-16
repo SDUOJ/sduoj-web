@@ -135,8 +135,19 @@ function calculateRank(scores) {
   return scores;
 }
 
+function exportScore(problemResults) {
+  return problemResults.map(o => {
+    if (o.numSubmissions > 0) {
+      return o.score.toString();
+    } else {
+      return '';
+    }
+  });
+}
+
 export default {
   formatProblemResults,
   calculateProblemResult,
-  calculateRank
+  calculateRank,
+  exportScore
 }
