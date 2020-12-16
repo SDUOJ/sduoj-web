@@ -9,6 +9,7 @@
  */
 
 import { JUDGE_RESULT_TYPE } from '_u/constants';
+import { contestProblemIdEncode } from '_u/transform';
 
 function calculateProblemResult(submissions, problemNum, endTime) {
   const problemResults = [];
@@ -135,16 +136,31 @@ function calculateRank(scores) {
   return scores;
 }
 
-function exportScore(problemResults) {
-  return problemResults.map(o => {
-    if (o.numSubmissions > 0) {
-      return o.score.toString();
-    } else {
-      return '';
-    }
-  });
+function exportScore(scores, problems) {
+  const header = ['username', 'nickname', 'official', 'rank', 'score'].concat(
+    problems.map(o => {
+      const contestProblemId = contestProblemIdEncode(o.problemCode);
+      return `${contestProblemId}(${o.problemWeight}):${o.problemTitle}`;
+    })
+  );
+  const data = scores.map(o => {
+    return [
+      o.user.username,
+      o.user.nickname,
+      o.official,
+      o.rank.toString(),
+      o.score.toString(),
+      ...o.problemResults.map(v => {
+        if (v.numSubmissions > 0) {
+          return v.score.toString();
+        } else {
+          return ''
+        }
+      })
+    ]
+  })
+  return { header, data };
 }
-
 export default {
   formatProblemResults,
   calculateProblemResult,

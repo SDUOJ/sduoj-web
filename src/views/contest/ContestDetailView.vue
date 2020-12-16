@@ -109,7 +109,7 @@
 <script>
 import { mapGetters, mapState } from 'vuex';
 import { CONTEST_OPENNESS, CONTEST_STATUS } from '_u/constants';
-import { contestProblemIdEncode, s2hs } from '_u/transform';
+import { s2hs } from '_u/transform';
 
 import ContestProcess from '_c/ContestProcess';
 import Markdown from '_c/Markdown';
@@ -161,29 +161,11 @@ export default {
   },
   methods: {
     exportRank: function() {
-      const handler = rankHandler[this.contestMode];
       import('_u/excel').then(excel => {
         this.exportLoading = true;
-        const tHeader = ['username', 'nickname', 'official', 'rank', 'score', 'solved'].concat(
-          this.contest.problems.map(o => {
-            const contestProblemId = contestProblemIdEncode(o.problemCode);
-            return `${contestProblemId}(${o.problemWeight}):${o.problemTitle}`;
-          })
-        );
-        const data = this.scores.map(o => {
-          return [
-            o.user.username,
-            o.user.nickname,
-            o.official,
-            o.rank.toString(),
-            o.score.toString(),
-            o.solved.toString(),
-            ...handler.exportScore(o.problemResults)
-          ];
-        });
+        const ret = rankHandler[this.contestMode].exportScore(this.scores, this.contest.problems);
         excel.export_json_to_excel({
-          header: tHeader,
-          data,
+          ...ret,
           filename: this.contest.contestTitle
         });
         this.exportLoading = false;

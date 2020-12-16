@@ -9,6 +9,7 @@
  */
 
 import { JUDGE_RESULT_TYPE } from '_u/constants';
+import { contestProblemIdEncode } from '_u/transform';
 
 // 将所有的提交进行筛选，只保留 endTime 之前的提交（如果 endTime 非空的话）
 // 按照题目顺序（包括没有提交的题目）整理成一个数组，每个题目的信息也是一个数组，与后端提供的赛时结构一致
@@ -152,14 +153,31 @@ function calculateRank(scores) {
   return scores;
 }
 
-function exportScore(problemResults) {
-  return problemResults.map(o => {
-    if (o.numSubmissions + o.numSubmissionsPending > 0) {
-      return `-${o.numSubmissions + o.numSubmissionsPending}/${o.time}`;
-    } else {
-      return '';
-    }
-  });
+function exportScore(scores, problems) {
+  const header = ['username', 'nickname', 'official', 'rank', 'solved', 'penalty'].concat(
+    problems.map(o => {
+      const contestProblemId = contestProblemIdEncode(o.problemCode);
+      return `${contestProblemId}(${o.problemWeight}):${o.problemTitle}`;
+    })
+  );
+  const data = scores.map(o => {
+    return [
+      o.user.username,
+      o.user.nickname,
+      o.official,
+      o.rank.toString(),
+      o.solved.toString(),
+      parseInt(o.score / 60000).toString(),
+      ...o.problemResults.map(v => {
+        if (v.numSubmissions + v.numSubmissionsPending > 0) {
+          return `-${v.numSubmissions + v.numSubmissionsPending}/${parseInt(v.time / 6000)}`;
+        } else {
+          return ''
+        }
+      })
+    ]
+  })
+  return { header, data };
 }
 
 export default {
