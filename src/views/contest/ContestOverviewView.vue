@@ -63,7 +63,7 @@ import JudgeResult from '_c/JudgeResult';
 import { mapGetters, mapState } from 'vuex';
 import { CONTEST_OPENNESS, CONTEST_STATUS } from '_u/constants';
 import api from '_u/api';
-import { contestProblemId } from '_u/transform';
+import { contestProblemIdEncode } from '_u/transform';
 
 export default {
   name: 'ContestOverviewView.vue',
@@ -72,7 +72,7 @@ export default {
     JudgeResult
   },
   filters: {
-    contestProblemId: val => contestProblemId(val)
+    contestProblemId: val => contestProblemIdEncode(val)
   },
   data: function() {
     return {

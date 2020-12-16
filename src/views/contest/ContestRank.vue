@@ -192,7 +192,7 @@
 import SubmissionList from '_c/SubmissionList';
 import SubmissionDetailView from '@/views/submission/SubmissionDetailView';
 
-import { contestProblemId } from '_u/transform';
+import { contestProblemIdEncode } from '_u/transform';
 import { CONTEST_MODE, CONTEST_STATUS } from '_u/constants';
 
 import { mapState, mapGetters } from 'vuex';
@@ -221,7 +221,7 @@ export default {
     }
   },
   filters: {
-    contestProblemId: problemCode => contestProblemId(problemCode),
+    contestProblemId: problemCode => contestProblemIdEncode(problemCode),
     time2minutes: time => {
       if (time === 0) {
         return '\b';

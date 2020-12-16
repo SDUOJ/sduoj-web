@@ -59,7 +59,7 @@ import ProblemCode from '_c/ProblemCode';
 import JudgeResult from '_c/JudgeResult';
 import { Websocket } from '_c/mixins';
 import { JUDGE_RESULT_TYPE, CONTEST_STATUS } from '_u/constants';
-import { contestProblemId } from '_u/transform';
+import { contestProblemIdEncode } from '_u/transform';
 import api from '_u/api';
 import store from '@/store';
 import { mapGetters, mapState } from 'vuex';
@@ -108,7 +108,7 @@ export default {
           },
           render: function(h, params) {
             if (store.state.contest.contest.contestId) {
-              return h('strong', contestProblemId(params.row.problemCode));
+              return h('strong', contestProblemIdEncode(params.row.problemCode));
             } else {
               if (params.row.problemCode !== undefined) {
                 if (params.row.problemCode.length > 20) {

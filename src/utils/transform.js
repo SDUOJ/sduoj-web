@@ -13,7 +13,7 @@ import moment from 'moment';
 /*
  * 将 1 2 3 4 这样的problemId 转换成 A、B、C、D
 */
-export function contestProblemId(problemCode) {
+export function contestProblemIdEncode(problemCode) {
   problemCode = parseInt(problemCode);
   const str = [];
   do {
@@ -27,7 +27,7 @@ export function contestProblemId(problemCode) {
 /*
  * 将 A、B、C、D 转换成 1 2 3 4
 */
-export function contestProblemIdInvert(problemCode) {
+export function contestProblemIdDecode(problemCode) {
   if (!problemCode) return '';
   let base = 0;
   let problemId = 0;

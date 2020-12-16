@@ -133,7 +133,7 @@ import { Websocket } from '_c/mixins';
 import { mapGetters, mapState } from 'vuex';
 
 import api from '_u/api';
-import { contestProblemId } from '_u/transform';
+import { contestProblemIdEncode } from '_u/transform';
 import { JUDGE_RESULT_TYPE, CONTEST_STATUS } from '_u/constants';
 
 export default {
@@ -160,7 +160,7 @@ export default {
   },
   filters: {
     parseInt: str => parseInt(str),
-    contestProblemId: problemCode => contestProblemId(problemCode)
+    contestProblemId: problemCode => contestProblemIdEncode(problemCode)
   },
   methods: {
     copyToClipboard: function (content) {
