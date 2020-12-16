@@ -43,7 +43,7 @@
                 style="text-decoration: none; color: black">{{ row.problemTitle }}</router-link>
             </template>
             <template slot-scope="{ row }" slot="ratio">
-              <span v-if="row.submitNum > 0">{{ `${row.acceptNum} / ${row.submitNum}` }}</span>
+              <span>{{ `${row.acceptNum || '-'} / ${row.submitNum || '-'}` }}</span>
             </template>
             <template slot-scope="{ row }" slot="status">
               <JudgeResult :result="row.judgeResult" />
@@ -92,8 +92,14 @@ export default {
   methods: {
     handleParticipate: function() {
       this.participateForm.contestId = this.contest.contestId;
-      if (this.contestOpenness !== CONTEST_OPENNESS.PROTECTED && !this.contest.participants.includes(this.username)) {
-        api.participateIn(this.participateForm).then(() => (this.reload()), err => (this.$Message.error(err.message)));
+      if (this.contestOpenness !== CONTEST_OPENNESS.PROTECTED && !this.hasParticipatedIn) {
+        api.participateIn(this.participateForm)
+          .then(() => {
+            this.reload();
+          })
+          .catch(err => {
+            this.$Message.error(err.message);
+          });
       }
     },
     handleCellClick: function(row, col) {
@@ -107,8 +113,18 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['username']),
-    ...mapGetters('contest', ['contestStartTime', 'contestEndTime', 'contestStarted', 'contestOpenness', 'contestStatus', 'scores', 'problems']),
     ...mapState('contest', ['contest', 'questions']),
+    ...mapGetters('contest', [
+      'contestLoaded',
+      'contestStartTime',
+      'contestEndTime',
+      'contestStarted',
+      'contestOpenness',
+      'contestStatus', 
+      'scores', 
+      'problems',
+      'hasParticipatedIn'
+    ]),
     CONTEST_OPENNESS: () => CONTEST_OPENNESS,
     showJudgeScore: function() {
       const infoOpenness = this.contest.features[this.contestStatus === CONTEST_STATUS.RUNNING ? 'contestRunning' : 'contestEnd'];
