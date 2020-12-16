@@ -1,7 +1,7 @@
 <template>
   <mavon-editor
     style="z-index: 0; min-height: 0"
-    :value="value"
+    :value="value || ''"
     :subfield="false"
     :boxShadow="false"
     :toolbarsFlag="false"
@@ -29,7 +29,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>
