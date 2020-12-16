@@ -71,7 +71,8 @@ const getters = {
     return state.contest.features.mode;
   },
   hasParticipatedIn: (state, getters, rootState, rootGetters) => {
-    return state.contest.participants.includes(rootGetters['user/username']);
+    const username = rootGetters['user/username'];
+    return state.contest.participants.includes(username) || state.contest.unofficialParticipants.includes(username);
   },
   contestStartTime: state => {
     return moment(new Date(parseInt(state.contest.gmtStart)));
@@ -148,7 +149,7 @@ const getters = {
       }
     });
     for (let i = 0; i < state.contest.problems.length; ++i) {
-      let judgeResult = -1;
+      let judgeResult = null;
       scores.forEach(score => {
         if (score.user.userId === rootState.user.profile.userId) {
           judgeResult = score.problemResults[i].judgeResult;
@@ -262,10 +263,13 @@ const actions = {
         resolve(contest);
         commit('setContest', { contest });
         const contestStatus = this.getters['contest/contestStatus'];
+        const showRank = !(this.getters['contest/contestOpenness'] === CONTEST_OPENNESS.PRIVATE && !this.getters['contest/hasParticipatedIn']);
         if (contestStatus === CONTEST_STATUS.RUNNING) {
           dispatch('getQuestions');
-          dispatch('getContestRank');
-          commit('setScoreTimer', { interval: 30000 });
+          if (showRank) {
+            dispatch('getContestRank');
+            commit('setScoreTimer', { interval: 30000 });
+          }
         } else if (contestStatus === CONTEST_STATUS.FINISHED) {
           dispatch('getQuestions');
           dispatch('getContestRank');
