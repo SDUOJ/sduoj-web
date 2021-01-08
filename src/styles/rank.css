@@ -144,7 +144,7 @@ del {
     text-align: center;
 }
 .scoreboard td div {
-    width: 4em;
+    width: 4.2em;
     font-size: 120%;
     display: inline-block;
 }
@@ -249,6 +249,7 @@ img.affiliation-logo {
 .scorenc,.scorett,.scorepl {text-align: center;width: 2ex;}
 .scorenc { font-weight: bold; }
 td.scorenc { border-color: silver; border-right: 0; }
+td.scorett { padding: 0 5px; }
 
 .scoreprob { width: 3.0em; vertical-align: middle; }
 .scoreaffil { text-align: center; }

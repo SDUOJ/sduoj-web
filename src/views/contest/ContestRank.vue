@@ -41,7 +41,7 @@
           <strong>{{ problem.problemCode | contestProblemId }}</strong>
           <div class="circle" v-if="problem.problemColor" :style="`background: ${problem.problemColor}; margin-left: 5px`" />
          </router-link>
-         <div class="problempoints">{{ problem.acceptNum || 0 }} / {{ problem.submitNum || 0 }}</div>
+         <div class="problempoints">{{ problem.acceptNum || '-' }} / {{ problem.submitNum || '-' }}</div>
        </th>
      </tr>
      </thead>
@@ -192,7 +192,7 @@
 import SubmissionList from '_c/SubmissionList';
 import SubmissionDetailView from '@/views/submission/SubmissionDetailView';
 
-import { contestProblemId } from '_u/transform';
+import { contestProblemIdEncode } from '_u/transform';
 import { CONTEST_MODE, CONTEST_STATUS } from '_u/constants';
 
 import { mapState, mapGetters } from 'vuex';
@@ -221,7 +221,7 @@ export default {
     }
   },
   filters: {
-    contestProblemId: problemCode => contestProblemId(problemCode),
+    contestProblemId: problemCode => contestProblemIdEncode(problemCode),
     time2minutes: time => {
       if (time === 0) {
         return '\b';

@@ -192,7 +192,7 @@ import Markdown from '_c/Markdown';
 import moment from 'moment';
 
 import api from '_u/api';
-import { contestProblemId } from '_u/transform';
+import { contestProblemIdEncode } from '_u/transform';
 
 import { mapGetters, mapState } from 'vuex';
 import store from '@/store';
@@ -239,7 +239,7 @@ export default {
         {
           key: 'problemCode',
           maxWidth: 60,
-          render: (h, params) => h('strong', contestProblemId(params.row.problemCode))
+          render: (h, params) => h('strong', contestProblemIdEncode(params.row.problemCode))
         },
         { key: 'problemTitle', minWidth: 80, slot: 'title' },
         { slot: 'ratio' },
@@ -265,7 +265,7 @@ export default {
   },
   filters: {
     parseInt: str => parseInt(str),
-    contestProblemId: problemCode => contestProblemId(problemCode)
+    contestProblemId: problemCode => contestProblemIdEncode(problemCode)
   },
   methods: {
     copyToClipboard: function (content) {

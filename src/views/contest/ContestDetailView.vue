@@ -41,7 +41,7 @@
               <Icon type="ios-people-outline"/>
               {{ contest.participantNum }}
             </li>
-            <li>
+            <li v-if="contestOpenness !== CONTEST_OPENNESS.PRIVATE || hasParticipatedIn">
               <div class="hover-background" @click="contestSettingsModal=true">
                 <Icon type="md-settings" :size="20"/>
               </div>
@@ -53,7 +53,7 @@
           <ContestProcess />
         </div>
       </div>
-      <Menu mode="horizontal" theme="light" :active-name="$route.path.split('/')[3]" class="contest__menu">
+      <Menu mode="horizontal" theme="light" :active-name="$route.path.split('/')[3]" class="contest__menu" v-if="contestLoaded">
         <MenuItem name="overview" :to="{
           name: 'contest-overview'
         }">
@@ -88,11 +88,14 @@
       <Modal
         title="Settings"
         v-model="contestSettingsModal"
-        :mask-closable="false"
-        @on-ok="$store.dispatch('contest/settingso', $store.state.contest.settings)">
+        footer-hide
+        scrollable>
         <Form>
           <FormItem label="Show Practice">
             <i-switch v-model="showPractice" />
+          </FormItem>
+          <FormItem label="Export">
+            <Button @click="exportRank" :loading="exportLoading">Rank</Button>
           </FormItem>
         </Form>
       </Modal>
@@ -111,6 +114,8 @@ import { s2hs } from '_u/transform';
 import ContestProcess from '_c/ContestProcess';
 import Markdown from '_c/Markdown';
 
+import rankHandler from '@/store/modules/ranks';
+
 export default {
   name: 'ContestDetailView',
   components: { Markdown, ContestProcess },
@@ -120,7 +125,8 @@ export default {
       contestSettingsModal: false,
       contestSettingsForm: {
         showPractice: false
-      }
+      },
+      exportLoading: false
     }
   },
   filters: {
@@ -130,6 +136,7 @@ export default {
     ...mapState('contest', ['contest', 'sliderTime']),
     ...mapGetters('user', ['username']),
     ...mapGetters('contest', [
+      'contestLoaded',
       'hasParticipatedIn',
       'contestStatus',
       'contestStartTime',
@@ -138,7 +145,8 @@ export default {
       'contestMode',
       'contestStarted',
       'contestOpenness',
-      'countdown'
+      'countdown',
+      'scores'
     ]),
     showPractice: {
       get: function() {
@@ -151,13 +159,23 @@ export default {
     CONTEST_OPENNESS: () => CONTEST_OPENNESS,
     CONTEST_STATUS: () => CONTEST_STATUS
   },
-  mounted: function() {
-    this.$Spin.show();
-    this.$store.dispatch('contest/getContest', this.$route.params.contestId)
-      .catch(_ => {
-        this.$Message.error('Permission denied');
+  methods: {
+    exportRank: function() {
+      import('_u/excel').then(excel => {
+        this.exportLoading = true;
+        const ret = rankHandler[this.contestMode].exportScore(this.scores, this.contest.problems);
+        excel.export_json_to_excel({
+          ...ret,
+          filename: this.contest.contestTitle
+        });
+        this.exportLoading = false;
       })
-      .finally(() => this.$Spin.hide());
+    }
+  },
+  beforeCreate: function() {
+    this.$store.dispatch('contest/getContest', this.$route.params.contestId).catch(err => {
+      this.$Message.error(err.message);
+    });
   },
   beforeDestroy: function () {
     this.$store.commit('contest/clearContest');
@@ -190,7 +208,7 @@ export default {
   .contest__subtitle {
     word-wrap: break-word;
     word-break: break-all;
-    margin-top: 5px;
+    margin: 5px 5px 0;
     font-size: 14px;
     color: #aaa;
   }

@@ -93,11 +93,13 @@ const routes = [
       {
         name: 'contest-submission-detail',
         path: 'submission/:submissionId',
+        meta: { scrollToTop: true },
         component: () => import('@/views/submission/SubmissionDetailView')
       },
       {
         name: 'contest-rank',
         path: 'rank',
+        meta: { scrollToTop: true },
         component: () => import('@/views/contest/ContestRank')
       }
     ]

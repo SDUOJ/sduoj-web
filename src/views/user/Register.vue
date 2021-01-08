@@ -175,18 +175,17 @@ export default {
           api.register(dataForm).then(ret => {
             this.apply = false;
             this.message = 'Success, check your email for activation';
+            this.$refs[name].resetFields();
           }).catch(err => {
             this.$Message.error(err.message);
             this.btnRegisterLoading = false;
           }).finally(() => {
             this.registerForm.captcha = '';
-            this.registerForm.confirmPassword = '';
             this.getCaptcha();
           })
           return;
         }
         this.registerForm.captcha = '';
-        this.registerForm.confirmPassword = '';
       });
     }
   },
