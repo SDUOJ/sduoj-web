@@ -71,12 +71,16 @@
               <Divider size="small"/>
               <template v-if="contestId">
                 <Cell
+                  ref="contest_cell"
                   title="Contest"
-                  :extra="$store.state.contest.contest.contestTitle"
                   :to="{
                         name: 'contest-overview',
                         params: { contestId }
-                      }"/>
+                      }">
+                  <span slot="extra" class="ellipsis" :style="`width: ${getEllipsisWidth('contest_cell')}px`">
+                   {{ $store.state.contest.contest.contestTitle }}
+                  </span>
+                </Cell>
                 <Cell
                   title="Problem Code"
                   :extra="submission.problemCode | contestProblemId"
@@ -91,7 +95,11 @@
                   <ProblemCode slot="extra" :problemCode="submission.problemCode"/>
                 </Cell>
               </template>
-              <Cell title="Problem Title" :extra="submission.problemTitle"/>
+              <Cell ref="problem_title_cell" title="Problem Title">
+                <span class="ellipsis" :style="`width: ${getEllipsisWidth('problem_title_cell')}px`">
+                  {{ submission.problemTitle }}
+                </span>
+              </Cell>
             </div>
             <Divider size="small"/>
             <div style="margin-bottom: 24px;">
@@ -163,6 +171,11 @@ export default {
     contestProblemId: problemCode => contestProblemIdEncode(problemCode)
   },
   methods: {
+    // 获得元素宽度并且计算文本最大显示宽度
+    getEllipsisWidth: function(ref) {
+      const cell = this.$refs[ref];
+      return cell ? cell.$el.clientWidth - 107 : 200;
+    },
     copyToClipboard: function (content) {
       this.$copyText(content).then(_ => this.$Message.success('已复制到剪切板'));
     },
@@ -370,6 +383,15 @@ export default {
     word-wrap: break-word;
     word-break: break-all;
     overflow-x: scroll;
+  }
+
+  .ellipsis {
+    float: right;
+    text-align: right;
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
 </style>
