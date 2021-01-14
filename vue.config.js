@@ -1,3 +1,4 @@
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const resolve = dir => require('path').join(__dirname, dir);
 
 module.exports = {
@@ -20,7 +21,24 @@ module.exports = {
           ]
         }
       ]
-    }
+    },
+    plugins: [
+      new CopyWebpackPlugin({
+        patterns: [
+          {
+            from: 'node_modules/mavon-editor/dist/highlightjs',
+            to: resolve('dist/highlightjs'), // 插件将会把文件导出于/dist/highlightjs之下
+          },
+          {
+            from: 'node_modules/mavon-editor/dist/markdown',
+            to: resolve('dist/markdown'), // 插件将会把文件导出于/dist/markdown之下
+          },
+          {
+            from: 'node_modules/mavon-editor/dist/katex', // 插件将会把文件导出
+            to: resolve('dist/katex')
+          }]
+      })
+    ]
   },
   devServer: {
     disableHostCheck: true
