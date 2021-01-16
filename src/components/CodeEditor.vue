@@ -104,7 +104,6 @@ export default {
     }
   },
   mounted: function() {
-    this.$refs.myEditor.editor.focus();
   },
   methods: {
     onEditorCodeChange: function(newCode) {

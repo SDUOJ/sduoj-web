@@ -63,6 +63,8 @@
 import api from '_u/api';
 import { mapGetters } from 'vuex';
 
+import { SDUOJ_ENV } from '_u/env';
+
 export default {
   inject: ['reload'],
   methods: {
@@ -99,7 +101,7 @@ export default {
   computed: {
     ...mapGetters('user', ['isLogin', 'username', 'avatar', 'isAdmin']),
     manageUrl: function() {
-      if (process.env.NODE_ENV === 'production') {
+      if (SDUOJ_ENV.PROD) {
         return `${location.origin}${process.env.VUE_APP_OJ_MANAGE}`;
       } else {
         return process.env.VUE_APP_OJ_MANAGE;

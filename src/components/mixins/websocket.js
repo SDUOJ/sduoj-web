@@ -8,11 +8,13 @@
  *      https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
+import { SDUOJ_ENV } from '_u/env';
+
 function getWsURL() {
   if (process.env.VUE_APP_OJ_WS) {
     return `${process.env.VUE_APP_OJ_WS}/ws`;
   }
-  if (process.env.NODE_ENV === 'production') { // 生产环境
+  if (SDUOJ_ENV.PROD) { // 生产环境
     // https 对应 wss，http 对应 ws
     const WS_PROTOCOL = location.protocol === 'https:' ? 'wss:' : 'ws:';
     return `${WS_PROTOCOL}//${location.host}/ws`;
