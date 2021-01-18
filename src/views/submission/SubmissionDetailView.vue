@@ -96,7 +96,7 @@
                 </Cell>
               </template>
               <Cell ref="problem_title_cell" title="Problem Title">
-                <span class="ellipsis" :style="`width: ${getEllipsisWidth('problem_title_cell')}px`">
+                <span slot="extra" class="ellipsis" :style="`width: ${getEllipsisWidth('problem_title_cell')}px`">
                   {{ submission.problemTitle }}
                 </span>
               </Cell>
