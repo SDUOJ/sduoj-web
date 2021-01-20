@@ -36,7 +36,8 @@
                 <Icon type="ios-arrow-down"></Icon>
               </div>
               <DropdownMenu slot="list">
-                <DropdownItem name="home">Profile</DropdownItem>
+                <DropdownItem name="user">Profile</DropdownItem>
+                <DropdownItem name="group">Groups</DropdownItem>
                 <DropdownItem name="logout" divided>Logout</DropdownItem>
               </DropdownMenu>
             </Dropdown>
@@ -72,7 +73,7 @@ export default {
       this.$router.push({
         name: 'login',
         query: {
-          to: this.$route.fullPath
+          to: this.$route.fullPath === '/login' ? '/home' : this.$route.fullPath
         }
       });
     },
@@ -84,18 +85,24 @@ export default {
     onClick: function (name) {
       if (name === 'logout') {
         this.handleLogout();
-      } else if (name === 'home') {
-        this.toHome();
+      } else if (name === 'user') {
+        this.toUser();
+      } else if (name === 'group') {
+        this.toGroup();
       }
     },
     handleLogout: function () {
       api.logout().then(_ => {
         this.$store.dispatch('user/clearProfile');
-        this.reload();
+        // this.reload();
+        this.$router.push({ name: 'home' });
       });
     },
-    toHome: function () {
+    toUser: function () {
       this.$router.push({ name: 'user' });
+    },
+    toGroup: function () {
+      this.$router.push({ name: 'group' });
     }
   },
   computed: {

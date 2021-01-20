@@ -105,6 +105,16 @@ const routes = [
     ]
   },
   {
+    name: 'group',
+    path: '/group',
+    component: () => import('@/views/group/GroupList')
+  },
+  {
+    name: 'group-detail',
+    path: '/group/:groupId',
+    component: () => import('@/views/group/GroupDetail')
+  },
+  {
     path: '*',
     name: '404',
     component: () => import('@/views/404View')
