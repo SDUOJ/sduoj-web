@@ -8,7 +8,7 @@
  *      https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
-import md5 from '_u/md5';
+import { getGravatarUrl } from '_u/md5';
 import { USER_ROLE } from '_u/constants';
 
 const state = {
@@ -18,7 +18,8 @@ const state = {
 const getters = {
   profile: state => state.profile || {},
   username: state => state.profile.username || '',
-  avatar: state => `https://cn.gravatar.com/avatar/${md5(state.profile.email || '')}?s=200&d=mp&r=g`,
+  avatar: state => getGravatarUrl(state.profile.email || ''),
+  // avatar: state => `https://cn.gravatar.com/avatar/${md5(state.profile.email || '')}?s=200&d=mp&r=g`,
   isLogin: state => !!state.profile.userId,
   isVerified: state => !!state.profile.emailVerified,
   isAdmin: (state, getters) => {
