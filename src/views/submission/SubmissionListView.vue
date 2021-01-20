@@ -88,7 +88,7 @@ import { contestProblemIdDecode } from '_u/transform';
 import { Page } from '_c/mixins';
 
 export default {
-  name: 'SubmissionView',
+  name: 'SubmissionListView',
   components: { SubmissionList, JudgeResult },
   mixins: [Page],
   data: function() {
