@@ -189,7 +189,7 @@
 </template>
 
 <script>
-import SubmissionList from '_c/SubmissionList';
+import SubmissionList from '_c/submission/SubmissionList';
 import SubmissionDetailView from '@/views/submission/SubmissionDetailView';
 
 import { contestProblemIdEncode } from '_u/transform';

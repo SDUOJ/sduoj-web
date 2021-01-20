@@ -78,7 +78,7 @@
 </template>
 
 <script>
-import SubmissionList from '_c/SubmissionList';
+import SubmissionList from '_c/submission/SubmissionList';
 import JudgeResult from '_c/JudgeResult';
 import { mapGetters, mapState } from 'vuex';
 import api from '_u/api';

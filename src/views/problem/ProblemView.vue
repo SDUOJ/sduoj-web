@@ -119,7 +119,7 @@
 </template>
 
 <script>
-import ProblemCode from '_c/ProblemCode';
+import ProblemCode from '_c/problem/ProblemCode';
 import api from '_u/api';
 
 import { Page } from '_c/mixins';

@@ -185,7 +185,7 @@
 </template>
 
 <script>
-import ProblemCode from '_c/ProblemCode';
+import ProblemCode from '_c/problem/ProblemCode';
 import CodeEditor from '_c/editor/CodeEditor';
 import JudgeResult from '_c/JudgeResult';
 import Markdown from '_c/editor/Markdown';
