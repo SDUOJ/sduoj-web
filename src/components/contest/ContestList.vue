@@ -9,7 +9,9 @@
  -->
 
 <template>
-  <Spin size="large" fix v-if="spinShow"></Spin>
+  <div class="spin-container center" v-if="spinShow">
+    <Spin size="large" fix />
+  </div>
   <div v-else>
     <List size="large" item-layout="vertical">
       <ListItem v-for="contest in contestList" :key="contest.contestId">
