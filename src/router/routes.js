@@ -43,7 +43,7 @@ const routes = [
   {
     name: 'problem',
     path: '/problem',
-    component: () => import('@/views/problem/ProblemView'),
+    component: () => import('@/views/problem/ProblemListView'),
     meta: { title: '题库' }
   },
   {
