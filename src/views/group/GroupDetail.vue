@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import Markdown from '_c/Markdown';
+import Markdown from '_c/editor/Markdown';
 
 export default {
   name: 'GroupDetail',

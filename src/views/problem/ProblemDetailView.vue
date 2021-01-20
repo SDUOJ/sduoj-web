@@ -186,9 +186,9 @@
 
 <script>
 import ProblemCode from '_c/ProblemCode';
-import CodeEditor from '_c/CodeEditor';
+import CodeEditor from '_c/editor/CodeEditor';
 import JudgeResult from '_c/JudgeResult';
-import Markdown from '_c/Markdown';
+import Markdown from '_c/editor/Markdown';
 import moment from 'moment';
 
 import api from '_u/api';

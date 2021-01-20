@@ -112,7 +112,7 @@ import { CONTEST_OPENNESS, CONTEST_STATUS } from '_u/constants';
 import { s2hs } from '_u/transform';
 
 import ContestProcess from '_c/ContestProcess';
-import Markdown from '_c/Markdown';
+import Markdown from '_c/editor/Markdown';
 
 import rankHandler from '@/store/modules/ranks';
 
