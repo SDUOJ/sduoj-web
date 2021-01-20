@@ -160,7 +160,7 @@
     </tr>
      </tbody>
    </table>
-   <Modal v-model="modelSubmissions" width="40%" footer-hide :closable="false" scrollable>
+   <Modal v-model="modelSubmissions" width="60%" footer-hide :closable="false" scrollable>
      <SubmissionList
        ref="SubmissionList"
        size="small"
@@ -169,7 +169,7 @@
        @on-sort="onSort"
        @on-cell-click="onSubmissionListCellClick">
        <template>
-         <div class="right footer-pages">
+         <div class="float-right footer-pages">
            <Page
              size="small" show-elevator show-sizer
              :total="total"
@@ -182,7 +182,7 @@
        </template>
      </SubmissionList>
    </Modal>
-   <Modal v-model="modelSubmissionDetail" width="60%" footer-hide :closable="false" scrollable>
+   <Modal v-model="modelSubmissionDetail" width="80%" footer-hide :closable="false">
      <SubmissionDetailView ref="SubmissionDetailView" />
    </Modal>
  </div>

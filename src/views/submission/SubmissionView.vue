@@ -59,10 +59,10 @@
       @on-sort="onSort"
       @on-cell-click="onSubmissionListCellClick">
       <template>
-        <div v-if="canDoRejudge" class="left footer-btns">
+        <div v-if="canDoRejudge" class="float-left footer-btns">
           <Button @click="handleRejudge(selectedSubmissions)"><Icon type="md-refresh" />&nbsp;Rejudge</Button>
         </div>
-        <div class="right footer-pages">
+        <div class="float-right footer-pages">
           <Page
             size="small" show-elevator show-sizer
             :total="total"

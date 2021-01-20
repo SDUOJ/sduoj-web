@@ -15,7 +15,8 @@ https://www.gnu.org/licenses/gpl-3.0.en.html
 @import './iview-component.less';
 
 body {
-  font-family: "AlibabaSans", "Microsoft YaHei", "微软雅黑", Arial, serif !important;
+  //font-family: "AlibabaSans", "Microsoft YaHei", "微软雅黑", Arial, serif !important;
+  font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
 }
 
 .hover:hover {
@@ -50,7 +51,7 @@ body {
 
 .card-extra {
   position: relative;
-  top: -7px;
+  top: -6px;
 }
 
 .contest-type--acm {
@@ -78,10 +79,28 @@ body {
   font-weight: 600;
 }
 
-.left {
+.border {
+  border: solid 1px #e8eaec;
+  border-radius: .75rem;
+}
+
+.footer-tools {
+  margin-top: 12px;
+}
+
+.float-right {
+  float: right;
+}
+
+.float-left {
   float: left;
 }
 
-.right {
-  float: right;
+.center {
+  display:flex;
+  justify-content:center;
+}
+
+.footer-btn {
+  margin-right: 5px;
 }

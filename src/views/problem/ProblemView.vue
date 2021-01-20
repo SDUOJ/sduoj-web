@@ -166,7 +166,7 @@ export default {
           }
         },
         { title: 'Title', slot: 'title' },
-        { title: 'Accept', key: 'acceptNum', width: 100, sortable: 'custom' }
+        { title: 'Accept', key: 'acceptNum', width: 120, sortable: 'custom' }
       ],
       acproblems: [],
       problems: [],
