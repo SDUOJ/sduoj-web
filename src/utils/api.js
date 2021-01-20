@@ -214,5 +214,9 @@ export default {
     } else {
       return get('/submit/invalidateSubmission', params);
     }
+  },
+  /* *************** groups ************************* */
+  getGroupDetail: function(params) {
+    return get('/group/query', params);
   }
 }

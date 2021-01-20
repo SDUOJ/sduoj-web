@@ -171,3 +171,16 @@ export const USER_ROLE = {
     isAdmin: true
   }
 };
+
+export const GROUP_OPENNESS_TYPE = {
+  PUBLIC: 0,
+  PROTECTED: 1,
+  PRIVATE: 2
+};
+
+export const GROUP_STATUS_TYPE = {
+  NONE: 0,
+  APPLIED: 1,
+  JOINED: 2,
+  REJECTED: 3
+};
