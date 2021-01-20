@@ -32,7 +32,7 @@
 import { Page } from '_c/mixins';
 
 export default {
-  name: 'GroupList',
+  name: 'GroupListView',
   mixins: [Page],
   data: function () {
     return {

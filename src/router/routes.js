@@ -107,12 +107,12 @@ const routes = [
   {
     name: 'group',
     path: '/group',
-    component: () => import('@/views/group/GroupList')
+    component: () => import('@/views/group/GroupListView')
   },
   {
     name: 'group-detail',
     path: '/group/:groupId',
-    component: () => import('@/views/group/GroupDetail')
+    component: () => import('@/views/group/GroupDetailView')
   },
   {
     path: '*',

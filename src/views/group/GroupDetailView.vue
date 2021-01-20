@@ -44,11 +44,6 @@
           <div slot="extra" class="card-extra">
             <Input placeholder="Find" suffix="ios-search"/>
           </div>
-          <Scroll :on-reach-bottom="handleReachBottom">
-            <Card dis-hover v-for="(item, index) in list1" :key="index" style="margin: 32px 0">
-              Content {{ item }}
-            </Card>
-          </Scroll>
         </Card>
       </Col>
     </Row>
@@ -59,7 +54,7 @@
 import Markdown from '_c/editor/Markdown';
 
 export default {
-  name: 'GroupDetail',
+  name: 'GroupDetailView',
   components: { Markdown },
   data: function () {
     return {
