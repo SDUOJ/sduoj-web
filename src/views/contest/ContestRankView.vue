@@ -198,7 +198,7 @@ import { CONTEST_MODE, CONTEST_STATUS } from '_u/constants';
 import { mapState, mapGetters } from 'vuex';
 
 export default {
-  name: 'ContestRank',
+  name: 'ContestRankView',
   components: { SubmissionList, SubmissionDetailView },
   data: function() {
     return {

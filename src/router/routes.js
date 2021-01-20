@@ -65,7 +65,7 @@ const routes = [
   {
     name: 'contest',
     path: '/contest',
-    component: () => import('@/views/contest/ContestView')
+    component: () => import('@/views/contest/ContestListView')
   },
   {
     name: 'contest-detail',
@@ -100,7 +100,7 @@ const routes = [
         name: 'contest-rank',
         path: 'rank',
         meta: { scrollToTop: true },
-        component: () => import('@/views/contest/ContestRank')
+        component: () => import('@/views/contest/ContestRankView')
       }
     ]
   },
