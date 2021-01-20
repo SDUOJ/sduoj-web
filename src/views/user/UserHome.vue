@@ -24,7 +24,7 @@
             <img :src="avatar" />
           </div>
           <div style="text-align: center;">
-            <span style="color: #aaa;">We use <a href="https://en.gravatar.com/" target="_blank">Gravatar</a> to present your avatar icon</span>
+            <span style="color: #aaa;">We use <a href="https://cn.gravatar.com/" target="_blank">Gravatar</a> to present your avatar icon</span>
           </div>
           <!--          TODO：暂不可用 需要后端支持-->
 <!--          <div class="statistic clearfix">-->

@@ -18,7 +18,7 @@ const state = {
 const getters = {
   profile: state => state.profile || {},
   username: state => state.profile.username || '',
-  avatar: state => `https://www.gravatar.com/avatar/${md5(state.profile.email || '')}?s=200&d=mp&r=g`,
+  avatar: state => `https://cn.gravatar.com/avatar/${md5(state.profile.email || '')}?s=200&d=mp&r=g`,
   isLogin: state => !!state.profile.userId,
   isVerified: state => !!state.profile.emailVerified,
   isAdmin: (state, getters) => {
