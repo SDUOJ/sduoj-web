@@ -40,10 +40,20 @@
         </Card>
       </Col>
       <Col span="6">
-        <Card dis-hover title="Members" :padding="0">
+        <Card dis-hover title="Members">
           <div slot="extra" class="card-extra">
             <Input placeholder="Find" suffix="ios-search"/>
           </div>
+          <Scroll>
+            <List>
+              <ListItem>
+                <ListItemMeta
+                  avatar=""
+                  title=""
+                  description="" />
+              </ListItem>
+            </List>
+          </Scroll>
         </Card>
       </Col>
     </Row>

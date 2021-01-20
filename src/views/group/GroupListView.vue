@@ -1,38 +1,45 @@
 <template>
   <div class="container">
     <Card dis-hover title="My Groups">
-    <div slot="extra" class="card-extra">
-      <Input placeholder="Search a group" suffix="ios-search"/>
-    </div>
-    <Row type="flex" justify="space-between" :gutter="20">
-      <Col span="6" v-for="group in groupList" :key="group.id">
-        <Card class="group-card">
-          <p slot="title">{{ group.name }}</p>
-          <a slot="extra" @click.prevent="toGroupDetail(group.id)">View</a>
-          <p>{{ group.description }}</p>
-        </Card>
-      </Col>
-    </Row>
-    <div class="footer-tools">
-      <Page
-        class="center"
-        size="small" show-elevator show-sizer
-        :total="total"
-        :current.sync="pageNow"
-        :page-size="pageSize"
-        :page-size-opts="pageSizeOpts"
-        @on-change="onPageChange"
-        @on-page-size-change="onPageSizeChange"/>
-    </div>
+      <div slot="extra" class="card-extra">
+        <Input placeholder="Search a group" suffix="ios-search"/>
+      </div>
+      <template v-if="groupList.length > 0">
+        <Row type="flex" justify="space-between" :gutter="20">
+          <Col span="6" v-for="group in groupList" :key="group.id">
+            <Card class="group-card">
+              <p slot="title">{{ group.name }}</p>
+              <a slot="extra" @click.prevent="toGroupDetail(group.id)">View</a>
+              <p>{{ group.description }}</p>
+            </Card>
+          </Col>
+        </Row>
+        <div class="footer-tools">
+          <Page
+            class="center"
+            size="small" show-elevator show-sizer
+            :total="total"
+            :current.sync="pageNow"
+            :page-size="pageSize"
+            :page-size-opts="pageSizeOpts"
+            @on-change="onPageChange"
+            @on-page-size-change="onPageSizeChange"/>
+        </div>
+      </template>
+      <template v-else>
+        <NoGroups />
+      </template>
     </Card>
   </div>
 </template>
 
 <script>
 import { Page } from '_c/mixins';
+import NoGroups from '_c/group/NoGroups';
 
 export default {
   name: 'GroupListView',
+  components: { NoGroups },
   mixins: [Page],
   data: function () {
     return {
