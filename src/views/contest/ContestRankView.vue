@@ -296,12 +296,4 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.footer-btns {
-  margin: 15px;
-}
-
-.footer-pages {
-  margin: 15px auto;
-  padding-right: 15px;
-}
 </style>

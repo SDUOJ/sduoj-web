@@ -59,7 +59,7 @@
       @on-sort="onSort"
       @on-cell-click="onSubmissionListCellClick">
       <template>
-        <div v-if="canDoRejudge" class="float-left footer-btns">
+        <div v-if="canDoRejudge" class="float-left footer-tools">
           <Button @click="handleRejudge(selectedSubmissions)"><Icon type="md-refresh" />&nbsp;Rejudge</Button>
         </div>
         <div class="float-right footer-pages">
@@ -245,14 +245,4 @@ export default {
     background: rgba(0, 0, 0, .05);
   }
 }
-
-.footer-btns {
-  margin: 15px;
-}
-
-.footer-pages {
-  margin: 15px auto;
-  padding-right: 15px;
-}
-
 </style>

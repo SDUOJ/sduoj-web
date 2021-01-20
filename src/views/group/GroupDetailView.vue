@@ -1,41 +1,48 @@
+<!--
+   Copyright 2020-2021 the original author or authors.
+
+   Licensed under the General Public License, Version 3.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+        https://www.gnu.org/licenses/gpl-3.0.en.html
+ -->
+
 <template>
   <div class="container">
     <Row>
       <Col span="18">
         <Card style="margin-right: 30px;" dis-hover>
-          <div class="section">
-            <div class="profile-header">
-              <div class="profile-header__content">
-                <div class="media">
-                  <div class="media__left">
-                    <img src="//cn.gravatar.com/avatar/?d=mm&s=200" width="120" height="120" class="avatar">
-                  </div>
-                  <div class="media__body profile-header__main">
-                    <h1>
-                      {{ group.name }}
-                      <small>(Group ID: {{ group.id }})</small>
-                    </h1>
-                    <p>{{ group.description }}</p>
-                    <div class="profile-header__tool-bar">
-                      <Button class="profile-header__tol-bar__item" type="info">Join</Button>
-                      <Button class="profile-header__tol-bar__item" type="default">Applied</Button>
-                      <Button class="profile-header__tol-bar__item" type="warning">Exit</Button>
-                    </div>
-
+          <div class="profile-header">
+            <div class="profile-header__content">
+              <div class="media">
+                <div class="media__left">
+                  <img src="//cn.gravatar.com/avatar/?d=mm&s=200" width="120" height="120" class="avatar">
+                </div>
+                <div class="media__body profile-header__main">
+                  <h1>
+                    {{ group.name }}
+                    <small>(Group ID: {{ group.id }})</small>
+                  </h1>
+                  <p>{{ group.description }}</p>
+                  <div class="profile-header__tool-bar">
+                    <Button class="profile-header__tol-bar__item" type="info">Join</Button>
+                    <Button class="profile-header__tol-bar__item" type="default">Applied</Button>
+                    <Button class="profile-header__tol-bar__item" type="warning">Exit</Button>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="profile-content">
-              <Tabs value="announcement">
-                <TabPane label="Announcement" name="announcement">
-                  <Markdown v-if="group.announcement" :value="group.announcement"/>
-                </TabPane>
-                <TabPane label="Contest" name="contest">
-                  aaaaa 好多比赛
-                </TabPane>
-              </Tabs>
-            </div>
+          </div>
+          <div class="profile-content">
+            <Tabs value="announcement" @on-click="onClickTabs" :animated="false">
+              <TabPane label="Announcement" name="announcement">
+                <Markdown v-if="group.announcement" :value="group.announcement"/>
+              </TabPane>
+              <TabPane label="Contest" name="contest">
+                <ContestInGroup ref="contestList" />
+              </TabPane>
+            </Tabs>
           </div>
         </Card>
       </Col>
@@ -62,10 +69,11 @@
 
 <script>
 import Markdown from '_c/editor/Markdown';
+import ContestInGroup from '_c/group/ContestInGroup';
 
 export default {
   name: 'GroupDetailView',
-  components: { Markdown },
+  components: { Markdown, ContestInGroup },
   data: function () {
     return {
       group: {}
@@ -77,6 +85,14 @@ export default {
         id: 1,
         name: 'test',
         description: 'To be or not to be 该用户太懒，这里啥也没写 (´・ω・｀)'
+      }
+    },
+    getContestList: function () {
+      this.$refs.contestList.getContestList(this.group.id);
+    },
+    onClickTabs: function (name) {
+      if (name === 'contest') {
+        this.getContestList();
       }
     }
   },
@@ -92,9 +108,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.section {
-  margin-bottom: 1.875rem;
-}
 .profile-header {
   position: relative;
   background-position: 50%;
@@ -147,9 +160,7 @@ export default {
 .media__left img {
   display: block;
 }
-.avatar {
-  //border-radius: 50%;
-}
+
 .media__body, .media__left, .media__right {
   display: table-cell;
   vertical-align: middle;
