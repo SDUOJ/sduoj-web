@@ -55,6 +55,7 @@ import moment from 'moment';
 import { mapState } from 'vuex';
 import { s2hs } from '_u/transform';
 import api from '_u/api';
+import { CONTEST_MODE } from '_u/constants';
 
 import { Page } from '_c/mixins';
 import ContestList from '_c/contest/ContestList';
@@ -70,6 +71,7 @@ export default {
   },
   computed: {
     ...mapState(['now']),
+    CONTEST_MODE: () => CONTEST_MODE,
     countdown: function () {
       const startTime = moment(new Date(parseInt(this.upcomingContest.gmtStart)));
       if (startTime > this.now) {

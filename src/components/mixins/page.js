@@ -43,7 +43,7 @@ export default {
     },
     pageSize: {
       get: function() {
-        return Math.min(parseInt(this.$route.query.pageSize) || 15, this.pageSizeOpts[this.pageSizeOpts.length - 1]);
+        return Math.min(parseInt(this.$route.query.pageSize) || this.pageSizeOpts[0], this.pageSizeOpts[this.pageSizeOpts.length - 1]);
       },
       set: function(pageSize) {
         pageSize = Math.min(pageSize, this.pageSizeOpts[this.pageSizeOpts.length - 1]);
