@@ -1,16 +1,24 @@
 <template>
   <div class="container">
-    <Card dis-hover title="My Groups">
-      <div slot="extra" class="card-extra">
-        <Input placeholder="Search a group" suffix="ios-search"/>
+      <div class="center search-title">
+        <Row type="flex" align="middle">
+          <Col span="9">
+            <h1>Groups</h1>
+          </Col>
+          <Col span="15">
+            <Input v-model="tmpTitle" @on-enter="onSearchGroup" search enter-button placeholder="Search a group" style="width: 500px" />
+          </Col>
+        </Row>
       </div>
-      <template v-if="groupList.length > 0">
-        <Row type="flex" justify="space-between" :gutter="20">
+
+      <div class="spin-container center" v-if="spinShow">
+        <Spin size="large" fix />
+      </div>
+      <template v-else-if="groupList.length > 0">
+        <Row :gutter="20">
           <Col span="6" v-for="group in groupList" :key="group.id">
-            <Card class="group-card">
-              <p slot="title">{{ group.name }}</p>
-              <a slot="extra" @click.prevent="toGroupDetail(group.id)">View</a>
-              <p>{{ group.description }}</p>
+            <Card class="group-card" :padding="10">
+              <GroupCard :group="group" size="small" @click-title="toGroupDetail" />
             </Card>
           </Col>
         </Row>
@@ -26,24 +34,26 @@
             @on-page-size-change="onPageSizeChange"/>
         </div>
       </template>
-      <template v-else>
-        <NoGroups />
-      </template>
-    </Card>
+      <h1 v-else class="nogroup-hint">No groups</h1>
   </div>
 </template>
 
 <script>
 import { Page } from '_c/mixins';
-import NoGroups from '_c/group/NoGroups';
+import GroupCard from '_c/group/GroupCard';
+
+import api from '_u/api';
 
 export default {
   name: 'GroupListView',
-  components: { NoGroups },
+  components: { GroupCard },
   mixins: [Page],
   data: function () {
     return {
-      groupList: []
+      groupList: [],
+      tmpTitle: '',
+      spinShow: false,
+      pageSizeOpts: [20, 40, 80, 100]
     }
   },
   methods: {
@@ -54,9 +64,40 @@ export default {
       });
     },
     getGroupList: function () {
+      this.spinShow = true;
+      api.getGroupList({
+        pageNow: this.pageNow,
+        pageSize: this.pageSize,
+        title: this.title
+      }).then(ret => {
+        this.groupList = ret.rows;
+      }).catch(err => {
+        this.$Message.error(err.message);
+      }).finally(() => {
+        this.spinShow = false;
+      });
+    },
+    onSearchGroup: function () {
+      this.$router.replace({
+        query: {
+          ...this.$route.query,
+          title: this.tmpTitle
+        }
+      });
+    }
+  },
+  computed: {
+    title: {
+      get: function () {
+        return this.$route.query.title || '';
+      },
+      set: function (title) {
+        this.$router.push({ query: { ...this.$route.query, title } });
+      }
     }
   },
   mounted: function () {
+    this.tmpTitle = this.title;
     this.getGroupList();
   },
   watch: {
@@ -70,5 +111,29 @@ export default {
 <style lang="less" scoped>
 .group-card {
   margin: 10px;
+}
+.search-title {
+  display: table;
+  width: 100%;
+  margin-bottom: 1.0625rem;
+  h1 {
+    color: #515a6e;
+    position: absolute;
+    right: 1.25rem;
+    top: -1.385rem;
+  }
+}
+
+.nogroup-hint {
+  display: block;
+  width: 100%;
+  text-align: center;
+  margin: 20px auto;
+  color: #c5c8ce;
+  h1 {
+    display: block;
+    font-size: 40px;
+    line-height: 80px;
+  }
 }
 </style>

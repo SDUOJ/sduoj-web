@@ -218,5 +218,14 @@ export default {
   /* *************** groups ************************* */
   getGroupDetail: function(params) {
     return get('/group/query', params);
+  },
+  getGroupList: function(params) {
+    return get('/group/page', params);
+  },
+  joinGroup: function(params) {
+    return get('/group/apply', params);
+  },
+  exitGroup: function(params) {
+    return get('/group/quit', params);
   }
 }
