@@ -34,7 +34,7 @@
         </Card>
       </Col>
       <Col span="6">
-        <Card dis-hover title="Members" :padding="0">
+        <Card dis-hover :title="`Members (${members.length})`" :padding="0">
           <div slot="extra" class="card-extra">
             <Input placeholder="Find" suffix="ios-search" v-model="search"/>
           </div>
@@ -83,7 +83,7 @@ export default {
       });
     },
     getContestList: function () {
-      this.$refs.contestList.getContestList(this.group.id);
+      this.$refs.contestList.getContestList(this.group.groupId);
     },
     onClickTabs: function (name) {
       if (name === 'contest') {

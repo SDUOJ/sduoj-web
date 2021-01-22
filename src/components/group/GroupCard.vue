@@ -17,7 +17,7 @@
     <div class="media__body">
       <h1>
         <span :class="titleClasses" @click="clickTitle">{{ group.title }}</span>
-        <small v-if="size === 'default'"> (Group ID: {{ group.id }})</small>
+        <small v-if="size === 'default'"> (Group ID: {{ group.groupId }})</small>
       </h1>
       <Tooltip>
         <p class="before-by">
@@ -164,12 +164,12 @@ export default {
   methods: {
     handleJoin: function () {
       this.$Modal.confirm({
-        title: `Confirm join #${this.group.id} `,
+        title: `Confirm join #${this.group.groupId} `,
         content: `Do you want to join group ${this.group.title} ?`,
         loading: true,
         onOk: () => {
           api.joinGroup({
-            groupId: this.group.id
+            groupId: this.group.groupId
           }).then(ret => {
             this.$Message.success('Applied');
             this.$Modal.remove();
@@ -183,12 +183,12 @@ export default {
     },
     handleExit: function () {
       this.$Modal.confirm({
-        title: `Confirm exit #${this.group.id}`,
+        title: `Confirm exit #${this.group.groupId}`,
         content: `Do you want to exit group ${this.group.title} ?`,
         loading: true,
         onOk: () => {
           api.exitGroup({
-            groupId: this.group.id
+            groupId: this.group.groupId
           }).then(ret => {
             this.$Message.success('Exited');
             this.$Modal.remove();
@@ -202,7 +202,7 @@ export default {
     },
     clickTitle: function () {
       if (this.$listeners['click-title']) {
-        this.$emit('click-title', this.group.id);
+        this.$emit('click-title', this.group.groupId);
       }
     }
   }

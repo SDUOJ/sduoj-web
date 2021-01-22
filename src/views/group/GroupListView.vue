@@ -16,7 +16,7 @@
       </div>
       <template v-else-if="groupList.length > 0">
         <Row :gutter="20">
-          <Col span="6" v-for="group in groupList" :key="group.id">
+          <Col span="6" v-for="group in groupList" :key="group.groupId">
             <Card class="group-card" :padding="10">
               <GroupCard :group="group" size="small" @click-title="toGroupDetail" />
             </Card>
