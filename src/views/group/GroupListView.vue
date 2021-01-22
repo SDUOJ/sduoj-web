@@ -6,7 +6,7 @@
             <h1>Groups</h1>
           </Col>
           <Col span="15">
-            <Input :value="title" @on-search="onSearchGroup" search enter-button placeholder="Search a group" style="width: 500px" />
+            <Input :value="title" @on-search="onSearchGroup" search enter-button placeholder="Search other groups" style="width: 500px" />
           </Col>
         </Row>
       </div>
