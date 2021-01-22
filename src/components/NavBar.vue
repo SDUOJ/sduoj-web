@@ -27,6 +27,9 @@
         <MenuItem name="submission" :to="{ name: 'submission' }">
           <span class="span__menu">Submission</span>
         </MenuItem>
+        <MenuItem name="group" :to="{ name: 'group' }">
+          <span class="span__menu">Group</span>
+        </MenuItem>
         <div class="navbar-user">
           <template v-if="isLogin">
             <Avatar :src="avatar"/>
@@ -37,7 +40,6 @@
               </div>
               <DropdownMenu slot="list">
                 <DropdownItem name="user">Profile</DropdownItem>
-                <DropdownItem name="group">Groups</DropdownItem>
                 <DropdownItem name="logout" divided>Logout</DropdownItem>
               </DropdownMenu>
             </Dropdown>
@@ -87,8 +89,6 @@ export default {
         this.handleLogout();
       } else if (name === 'user') {
         this.toUser();
-      } else if (name === 'group') {
-        this.toGroup();
       }
     },
     handleLogout: function () {
@@ -100,9 +100,6 @@ export default {
     },
     toUser: function () {
       this.$router.push({ name: 'user' });
-    },
-    toGroup: function () {
-      this.$router.push({ name: 'group' });
     }
   },
   computed: {
