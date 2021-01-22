@@ -180,7 +180,7 @@ export const GROUP_OPENNESS_TYPE = {
 
 export const GROUP_STATUS_TYPE = {
   NONE: 0,
-  APPLIED: 1,
+  APPLYING: 1,
   JOINED: 2,
   REJECTED: 3
 };

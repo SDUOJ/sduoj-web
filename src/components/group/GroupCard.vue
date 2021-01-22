@@ -46,10 +46,10 @@
           </div>
         </template>
         <template v-else>
-          <div class="btn__clickable--apply" @click="handleJoin" v-if="group.status === GROUP_STATUS_TYPE.APPLIED">
+          <div class="btn__clickable--apply" @click="handleJoin" v-if="group.status === GROUP_STATUS_TYPE.APPLYING">
             <Row type="flex" align="middle">
               <Col span="14">
-                <span :class="`btn-font__${size}`">Applied</span>
+                <span :class="`btn-font__${size}`">Applying</span>
               </Col>
               <Col span="10" v-if="size==='default'">
                 <Icon type="md-information" :size="iconSize"/>
