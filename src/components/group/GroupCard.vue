@@ -83,6 +83,12 @@
         </template>
       </div>
     </div>
+    <div v-if="size === 'small'" class="media__right">
+      <div class="media__extra">
+        <Icon type="md-people" color="#808695" />&nbsp;
+        <span>{{ group.memberNum }}</span>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -222,7 +228,7 @@ export default {
     padding-right: 1.875rem;
   }
 
-  .media__body, .media__left {
+  .media__body, .media__left, .media__right {
     display: table-cell;
     vertical-align: top;
   }
@@ -272,7 +278,7 @@ export default {
     padding-right: 1.075rem;
   }
 
-  .media__body, .media__left {
+  .media__body, .media__left, media__right {
     display: table-cell;
     vertical-align: middle;
   }
@@ -295,6 +301,19 @@ export default {
     small {
       color: rgba(128, 134, 149, .7);
       font-size: .85em;
+    }
+  }
+
+  .media__right {
+    span {
+      color: #515a6e;
+      font-size: .7em;
+      //margin-left: 2px;
+    }
+    .media__extra {
+      position: absolute;
+      right: .75rem;
+      top: 3.705rem;
     }
   }
 

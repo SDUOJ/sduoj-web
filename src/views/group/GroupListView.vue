@@ -6,7 +6,7 @@
             <h1>Groups</h1>
           </Col>
           <Col span="15">
-            <Input v-model="tmpTitle" @on-enter="onSearchGroup" search enter-button placeholder="Search a group" style="width: 500px" />
+            <Input :value="title" @on-search="onSearchGroup" search enter-button placeholder="Search a group" style="width: 500px" />
           </Col>
         </Row>
       </div>
@@ -51,7 +51,6 @@ export default {
   data: function () {
     return {
       groupList: [],
-      tmpTitle: '',
       spinShow: false,
       pageSizeOpts: [20, 40, 80, 100]
     }
@@ -77,11 +76,11 @@ export default {
         this.spinShow = false;
       });
     },
-    onSearchGroup: function () {
+    onSearchGroup: function (title) {
       this.$router.replace({
         query: {
           ...this.$route.query,
-          title: this.tmpTitle
+          title
         }
       });
     }
@@ -97,7 +96,6 @@ export default {
     }
   },
   mounted: function () {
-    this.tmpTitle = this.title;
     this.getGroupList();
   },
   watch: {

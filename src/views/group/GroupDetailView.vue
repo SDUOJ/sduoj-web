@@ -65,7 +65,8 @@ export default {
   data: function () {
     return {
       group: {
-        owner: {}
+        owner: {},
+        members: []
       },
       spinShow: false,
       search: ''
