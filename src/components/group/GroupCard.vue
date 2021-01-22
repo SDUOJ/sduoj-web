@@ -32,11 +32,18 @@
         <template v-if="group.openness === GROUP_OPENNESS_TYPE.PRIVATE">
           <Button :size="size" shape="circle" type="info"
                   v-if="group.status === null || group.status === GROUP_STATUS_TYPE.NONE" disabled>
-            <span :class="`btn-font__${size} private`">Private</span>
+            <span :class="`btn-font__${size}`">Private</span>
           </Button>
-          <Button :size="size" shape="circle" type="warning" @click="handleExit" v-else>
-            <span :class="`btn-font__${size} exit`">Exit</span>
-          </Button>
+          <div class="btn__clickable--exit" @click="handleExit" v-else-if="group.status === GROUP_STATUS_TYPE.JOINED">
+            <Row type="flex" align="middle">
+              <Col span="14">
+                <span :class="`btn-font__${size}`">Exit</span>
+              </Col>
+              <Col span="10" v-if="size==='default'">
+                <Icon type="ios-arrow-forward" :size="iconSize"/>
+              </Col>
+            </Row>
+          </div>
         </template>
         <template v-else>
           <div class="btn__clickable--apply" @click="handleJoin" v-if="group.status === GROUP_STATUS_TYPE.APPLIED">
