@@ -184,8 +184,8 @@ export default {
   getContest: function(contestId) {
     return get('/contest/query', { contestId });
   },
-  getUpcomingContest: function() {
-    return get('/contest/queryUpcomingContest');
+  getUpcomingContest: function(params) {
+    return get('/contest/queryUpcomingContest', params);
   },
   getContestProblem: function(params) {
     return get('/contest/queryProblem', params);
@@ -227,5 +227,8 @@ export default {
   },
   exitGroup: function(params) {
     return get('/group/quit', params);
+  },
+  getMyGroupList: function (params) {
+    return get('/group/my', params);
   }
 }

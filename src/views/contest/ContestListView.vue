@@ -9,45 +9,51 @@
  -->
 
 <template>
-  <Row class="container">
-    <Col span="18">
-      <div style="margin-right: 20px">
-        <Card title="Contest List" :padding="0" dis-hover>
-          <Select size="small" v-model="selectContestMode" style="width: 100px" slot="extra">
-            <Option value="all" label="All" />
-            <Option v-for="mode in CONTEST_MODE" :key="mode" :value="mode" :label="mode.toUpperCase()" />
-          </Select>
-          <ContestList ref="contestList"/>
-          <div class="float-right footer-pages">
-            <Page
-              size="small" show-elevator show-sizer
-              :total="total"
-              :current.sync="pageNow"
-              :page-size="pageSize"
-              :page-size-opts="pageSizeOpts"
-              @on-change="onPageChange"
-              @on-page-size-change="onPageSizeChange"/>
+  <div class="container">
+    <Tabs v-model="groupId" :animated="false" @on-click="getContestList">
+      <TabPane name="all" label="All" />
+      <TabPane v-for="group in mygroups" :key="group.groupId" :name="group.groupId" :label="`${group.groupId}: ${group.title}`" />
+    </Tabs>
+    <Row>
+      <Col span="18">
+        <div style="margin-right: 20px">
+          <Card title="Contest List" :padding="0" dis-hover>
+            <Select size="small" v-model="selectContestMode" style="width: 100px" slot="extra">
+              <Option value="all" label="All" />
+              <Option v-for="mode in CONTEST_MODE" :key="mode" :value="mode" :label="mode.toUpperCase()" />
+            </Select>
+            <ContestList ref="contestList"/>
+            <div class="float-right footer-pages">
+              <Page
+                size="small" show-elevator show-sizer
+                :total="total"
+                :current.sync="pageNow"
+                :page-size="pageSize"
+                :page-size-opts="pageSizeOpts"
+                @on-change="onPageChange"
+                @on-page-size-change="onPageSizeChange"/>
+            </div>
+          </Card>
+        </div>
+      </Col>
+      <Col span="6">
+        <Card
+          style="margin-bottom: 30px"
+          title="Upcoming"
+          :padding="0"
+          dis-hover
+          v-if="upcomingContest">
+          <div class="upcoming-title" @click="toContestDetail(upcomingContest.contestId)">
+            {{ upcomingContest.contestTitle }}
+          </div>
+          <div class="upcoming-countdown"><span>{{ countdown }}</span>
           </div>
         </Card>
-      </div>
-    </Col>
-    <Col span="6">
-      <Card
-        style="margin-bottom: 30px"
-        title="Upcoming"
-        :padding="0"
-        dis-hover
-        v-if="upcomingContest">
-        <div class="upcoming-title" @click="toContestDetail(upcomingContest.contestId)">
-          {{ upcomingContest.contestTitle }}
-        </div>
-        <div class="upcoming-countdown"><span>{{ countdown }}</span>
-        </div>
-      </Card>
-      <!--      <Card title="My participation" :padding="0" dis-hover>-->
-      <!--      </Card>-->
-    </Col>
-  </Row>
+        <!--      <Card title="My participation" :padding="0" dis-hover>-->
+        <!--      </Card>-->
+      </Col>
+    </Row>
+  </div>
 </template>
 
 <script>
@@ -60,11 +66,22 @@ import { CONTEST_MODE } from '_u/constants';
 import { Page } from '_c/mixins';
 import ContestList from '_c/contest/ContestList';
 
+const STORAGE_KEY = 'contest#groupId';
+
+function getGroupIdFromStorage() {
+  return localStorage.getItem(STORAGE_KEY) || null;
+}
+
+function setGroupIdToStorage(groupId) {
+  localStorage.setItem(STORAGE_KEY, groupId);
+}
+
 export default {
   mixins: [Page],
   components: { ContestList },
   data: function () {
     return {
+      mygroups: [],
       upcomingContest: {},
       selectContestMode: 'all'
     }
@@ -83,14 +100,36 @@ export default {
         }
       }
       return '\b';
+    },
+    groupId: {
+      get: function () {
+        return this.$route.query.groupId || getGroupIdFromStorage() || 'all';
+      },
+      set: function (groupId) {
+        setGroupIdToStorage(groupId);
+        this.$router.push({
+          query: {
+            ...this.$route.query,
+            groupId: groupId === 'all' ? undefined : groupId
+          }
+        });
+      }
     }
   },
   methods: {
-    getContestList: function () {
+    getMyGroupList: function () {
+      api.getMyGroupList().then(ret => {
+        this.mygroups = ret;
+      }).catch(err => {
+        this.$Message.error(err.message);
+      });
+    },
+    getContestList: function (groupId) {
       this.$refs.contestList.getContestList({
         pageNow: this.pageNow,
         pageSize: this.pageSize,
-        mode: this.selectContestMode === 'all' ? '' : this.selectContestMode
+        mode: this.selectContestMode === 'all' ? '' : this.selectContestMode,
+        groupId: groupId === 'all' ? undefined : groupId
       }).then(ret => {
         this.total = parseInt(ret.totalPage) * this.pageSize;
       }).catch(err => {
@@ -100,28 +139,31 @@ export default {
       this.$refs.contestList.getParticipatedContests().catch(err => {
         this.$Message.error(err.message);
       });
-    }
-  },
-  watch: {
-    selectContestMode: function () {
-      this.getContestList();
     },
-    $route: function () {
-      this.getContestList();
-      api.getUpcomingContest().then(ret => {
+    getUpcomingContest: function (groupId) {
+      api.getUpcomingContest({
+        groupId: groupId === 'all' ? undefined : groupId
+      }).then(ret => {
         this.upcomingContest = ret;
       }).catch(err => {
         this.$Message.error(err.message);
       });
     }
   },
+  watch: {
+    selectContestMode: function () {
+      this.getContestList(this.groupId);
+      this.getUpcomingContest(this.groupId);
+    },
+    $route: function () {
+      this.getContestList(this.groupId);
+      this.getUpcomingContest(this.groupId);
+    }
+  },
   mounted: function () {
-    this.getContestList();
-    api.getUpcomingContest().then(ret => {
-      this.upcomingContest = ret;
-    }).catch(err => {
-      this.$Message.error(err.message);
-    });
+    this.getMyGroupList();
+    this.getContestList(this.groupId);
+    this.getUpcomingContest(this.groupId);
   }
 }
 </script>
