@@ -12,7 +12,7 @@
   <div>
     <ContestList ref="contestList"/>
     <div class="float-left footer-tools">
-      <Select size="small" v-model="selectContestMode" style="width: 100px" slot="extra" transfer>
+      <Select size="small" v-model="selectContestMode" style="width: 100px" transfer>
         <Option value="all" label="All" />
         <Option v-for="mode in CONTEST_MODE" :key="mode" :value="mode" :label="mode.toUpperCase()" />
       </Select>
@@ -90,6 +90,9 @@ export default {
       this.getContestList();
     },
     ascending: function () {
+      this.getContestList();
+    },
+    selectContestMode: function () {
       this.getContestList();
     }
   },

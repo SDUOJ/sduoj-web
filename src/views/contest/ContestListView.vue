@@ -154,10 +154,6 @@ export default {
     selectContestMode: function () {
       this.getContestList(this.groupId);
       this.getUpcomingContest(this.groupId);
-    },
-    $route: function () {
-      this.getContestList(this.groupId);
-      this.getUpcomingContest(this.groupId);
     }
   },
   mounted: function () {

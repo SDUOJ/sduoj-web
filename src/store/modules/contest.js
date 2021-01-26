@@ -72,7 +72,7 @@ const getters = {
   },
   hasParticipatedIn: (state, getters, rootState, rootGetters) => {
     const username = rootGetters['user/username'];
-    return state.contest.participants.includes(username) || state.contest.unofficialParticipants.includes(username);
+    return state.contest.participants.includes(username);
   },
   contestStartTime: state => {
     return moment(new Date(parseInt(state.contest.gmtStart)));

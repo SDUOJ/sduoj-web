@@ -26,7 +26,8 @@
         </p>
         <span slot="content">Created at {{ group.gmtCreate | timeformat('yyyy-MM-DD HH:mm:ss') }}</span>
       </Tooltip>
-      <p :class="descClasses">{{ group.description }}</p>
+      <p :class="descClasses" v-if="group.description">{{ group.description }}</p>
+      <p :class="descClasses" style="font-style: italic" v-else>No description</p>
 
       <div class="media__tool-bar">
         <template v-if="group.openness === GROUP_OPENNESS_TYPE.PRIVATE">
