@@ -59,10 +59,10 @@
       @on-sort="onSort"
       @on-cell-click="onSubmissionListCellClick">
       <template>
-        <div v-if="canDoRejudge" class="left footer-btns">
+        <div v-if="canDoRejudge" class="float-left footer-tools">
           <Button @click="handleRejudge(selectedSubmissions)"><Icon type="md-refresh" />&nbsp;Rejudge</Button>
         </div>
-        <div class="right footer-pages">
+        <div class="float-right footer-pages">
           <Page
             size="small" show-elevator show-sizer
             :total="total"
@@ -78,7 +78,7 @@
 </template>
 
 <script>
-import SubmissionList from '_c/SubmissionList';
+import SubmissionList from '_c/submission/SubmissionList';
 import JudgeResult from '_c/JudgeResult';
 import { mapGetters, mapState } from 'vuex';
 import api from '_u/api';
@@ -88,7 +88,7 @@ import { contestProblemIdDecode } from '_u/transform';
 import { Page } from '_c/mixins';
 
 export default {
-  name: 'SubmissionView',
+  name: 'SubmissionListView',
   components: { SubmissionList, JudgeResult },
   mixins: [Page],
   data: function() {
@@ -245,14 +245,4 @@ export default {
     background: rgba(0, 0, 0, .05);
   }
 }
-
-.footer-btns {
-  margin: 15px;
-}
-
-.footer-pages {
-  margin: 15px auto;
-  padding-right: 15px;
-}
-
 </style>

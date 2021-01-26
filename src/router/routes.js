@@ -43,7 +43,7 @@ const routes = [
   {
     name: 'problem',
     path: '/problem',
-    component: () => import('@/views/problem/ProblemView'),
+    component: () => import('@/views/problem/ProblemListView'),
     meta: { title: '题库' }
   },
   {
@@ -54,7 +54,7 @@ const routes = [
   {
     name: 'submission',
     path: '/submission',
-    component: () => import('@/views/submission/SubmissionView')
+    component: () => import('@/views/submission/SubmissionListView')
   },
   {
     name: 'submission-detail',
@@ -65,7 +65,7 @@ const routes = [
   {
     name: 'contest',
     path: '/contest',
-    component: () => import('@/views/contest/ContestView')
+    component: () => import('@/views/contest/ContestListView')
   },
   {
     name: 'contest-detail',
@@ -88,7 +88,7 @@ const routes = [
         name: 'contest-submission',
         path: 'submission',
         meth: { scrollToTop: true },
-        component: () => import('@/views/submission/SubmissionView')
+        component: () => import('@/views/submission/SubmissionListView')
       },
       {
         name: 'contest-submission-detail',
@@ -100,9 +100,19 @@ const routes = [
         name: 'contest-rank',
         path: 'rank',
         meta: { scrollToTop: true },
-        component: () => import('@/views/contest/ContestRank')
+        component: () => import('@/views/contest/ContestRankView')
       }
     ]
+  },
+  {
+    name: 'group',
+    path: '/group',
+    component: () => import('@/views/group/GroupListView')
+  },
+  {
+    name: 'group-detail',
+    path: '/group/:groupId',
+    component: () => import('@/views/group/GroupDetailView')
   },
   {
     path: '*',

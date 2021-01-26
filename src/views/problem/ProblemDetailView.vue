@@ -185,10 +185,10 @@
 </template>
 
 <script>
-import ProblemCode from '_c/ProblemCode';
-import CodeEditor from '_c/CodeEditor';
+import ProblemCode from '_c/problem/ProblemCode';
+import CodeEditor from '_c/editor/CodeEditor';
 import JudgeResult from '_c/JudgeResult';
-import Markdown from '_c/Markdown';
+import Markdown from '_c/editor/Markdown';
 import moment from 'moment';
 
 import api from '_u/api';
@@ -202,7 +202,7 @@ function getStorage(problemCode, contestId) {
   if (contestId) {
     _key += `_${contestId}`;
   }
-  return JSON.parse(sessionStorage.getItem(_key)) || null;
+  return JSON.parse(localStorage.getItem(_key)) || null;
 }
 
 function setStorage(problemCode, contestId, value) {
@@ -210,7 +210,7 @@ function setStorage(problemCode, contestId, value) {
   if (contestId) {
     _key += `_${contestId}`;
   }
-  sessionStorage.setItem(_key, JSON.stringify(value));
+  localStorage.setItem(_key, JSON.stringify(value));
 }
 
 export default {

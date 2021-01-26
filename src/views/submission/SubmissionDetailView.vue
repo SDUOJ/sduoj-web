@@ -134,7 +134,7 @@
 </template>
 
 <script>
-import ProblemCode from '_c/ProblemCode';
+import ProblemCode from '_c/problem/ProblemCode';
 import JudgeResult from '_c/JudgeResult';
 import { Websocket } from '_c/mixins';
 

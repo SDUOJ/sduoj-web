@@ -160,7 +160,7 @@
     </tr>
      </tbody>
    </table>
-   <Modal v-model="modelSubmissions" width="40%" footer-hide :closable="false" scrollable>
+   <Modal v-model="modelSubmissions" width="60%" footer-hide :closable="false" scrollable>
      <SubmissionList
        ref="SubmissionList"
        size="small"
@@ -169,7 +169,7 @@
        @on-sort="onSort"
        @on-cell-click="onSubmissionListCellClick">
        <template>
-         <div class="right footer-pages">
+         <div class="float-right footer-pages">
            <Page
              size="small" show-elevator show-sizer
              :total="total"
@@ -182,14 +182,14 @@
        </template>
      </SubmissionList>
    </Modal>
-   <Modal v-model="modelSubmissionDetail" width="60%" footer-hide :closable="false" scrollable>
+   <Modal v-model="modelSubmissionDetail" width="80%" footer-hide :closable="false">
      <SubmissionDetailView ref="SubmissionDetailView" />
    </Modal>
  </div>
 </template>
 
 <script>
-import SubmissionList from '_c/SubmissionList';
+import SubmissionList from '_c/submission/SubmissionList';
 import SubmissionDetailView from '@/views/submission/SubmissionDetailView';
 
 import { contestProblemIdEncode } from '_u/transform';
@@ -198,7 +198,7 @@ import { CONTEST_MODE, CONTEST_STATUS } from '_u/constants';
 import { mapState, mapGetters } from 'vuex';
 
 export default {
-  name: 'ContestRank',
+  name: 'ContestRankView',
   components: { SubmissionList, SubmissionDetailView },
   data: function() {
     return {
@@ -296,12 +296,4 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.footer-btns {
-  margin: 15px;
-}
-
-.footer-pages {
-  margin: 15px auto;
-  padding-right: 15px;
-}
 </style>
