@@ -64,7 +64,8 @@
         <!-- 页面左边部分 -->
 
         <!-- 页面右边部分 -->
-        <Col span="5" class="main-rf">
+<!--        TODO: 这里把tags隐藏了，等做好了再放出来-->
+        <Col span="5" class="main-rf" v-show="false">
           <!-- 搜索框 -->
           <div class="problem-search">
             <Input suffix="ios-search" placeholder="Search"/>
@@ -166,6 +167,7 @@ export default {
           }
         },
         { title: 'Title', slot: 'title' },
+        { title: 'Source', key: 'source' },
         { title: 'Accept', key: 'acceptNum', width: 120, sortable: 'custom' }
       ],
       acproblems: [],
