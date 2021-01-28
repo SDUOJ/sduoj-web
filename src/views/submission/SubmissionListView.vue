@@ -54,7 +54,6 @@
     <SubmissionList
       ref="SubmissionList"
       :selection="canDoRejudge"
-      @update-total-page="onUpdateTotal"
       @on-selection-change="onSelectionChange"
       @on-sort="onSort"
       @on-cell-click="onSubmissionListCellClick">
@@ -140,9 +139,6 @@ export default {
     onSelectionChange: function(selections) {
       this.selectedSubmissions = selections;
     },
-    onUpdateTotal: function(totalPage) {
-      this.total = totalPage * this.pageSize;
-    },
     handleRejudge: function(submissions) {
       if (submissions.length === 0) {
         this.$Message.error('Select submissions');
@@ -163,6 +159,10 @@ export default {
         pageSize: this.pageSize,
         sortBy: this.sortBy,
         ascending: this.ascending
+      }).then(ret => {
+        this.total = parseInt(ret.totalPage) * this.pageSize;
+      }).catch(err => {
+        this.$Message.error(err.message);
       });
     }
   },

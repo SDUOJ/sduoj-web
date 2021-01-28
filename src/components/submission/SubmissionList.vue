@@ -34,7 +34,7 @@
         }">{{ row.problemTitle }}</router-link>
       </template>
       <template slot-scope="{ row }" slot="judge-result">
-        <JudgeResult :result="row.judgeResult" :total="row.checkpointNum" :current="row._judgedNum" />
+        <JudgeResult :result="row.judgeResult" :total="row.checkpointNum" :current="row.$judgedNum" />
       </template>
       <template slot-scope="{ row }" slot="time">
         <span class="time">{{ row.usedTime || 0 }}</span>
@@ -205,16 +205,14 @@ export default {
     },
     fillCheckpointResults: function (oneJudge) {
       const index = this.listenedSubmissions[oneJudge[0]];
-      if (index === undefined) {
-        return;
-      }
+      if (index === undefined) return;
       if (oneJudge[1] < JUDGE_RESULT_TYPE.PD) {
         if (oneJudge[1] === JUDGE_RESULT_TYPE.END) {
           this.submissions[index].judgeResult = oneJudge[2];
           this.submissions[index].judgeScore = oneJudge[3];
           this.submissions[index].usedTime = oneJudge[4].toString();
           this.submissions[index].usedMemory = oneJudge[5].toString();
-          if (--this.listenedSubmissions.length === 0) {
+          if (--this.listenedSubmissions.$length === 0) {
             this.websock.close();
           }
         } else {
@@ -222,48 +220,49 @@ export default {
         }
       } else {
         // 统计该submission一共评了几个测试点
-        this.submissions[index]._judgedNum++;
+        this.submissions[index].$judgedNum++;
       }
     },
     querySubmissionList: function(params) {
-      this.loading = true;
-      api.getSubmissionList({
-        ...params,
-        contestId: this.contestId
-      }).then(ret => {
-        this.submissions = ret.rows;
-        this.$emit('update-total-page', parseInt(ret.totalPage));
+      return new Promise((resolve, reject) => {
+        this.loading = true;
+        api.getSubmissionList({
+          ...params,
+          contestId: this.contestId
+        }).then(ret => {
+          resolve(ret);
+          this.submissions = ret.rows;
 
-        // 所有人都看不到 websocket
-        if (this.contestId) {
-          const infoOpenness = this.contest.features[this.contestStatus === CONTEST_STATUS.RUNNING ? 'contestRunning' : 'contestEnd'];
-          const displayCheckpointResult = infoOpenness.displayCheckpointResult;
-          if (!displayCheckpointResult) {
-            return;
+          // 所有人都看不到 websocket
+          if (this.contestId) {
+            const infoOpenness = this.contest.features[this.contestStatus === CONTEST_STATUS.RUNNING ? 'contestRunning' : 'contestEnd'];
+            const displayCheckpointResult = infoOpenness.displayCheckpointResult;
+            if (!displayCheckpointResult) return;
           }
-        }
 
-        let length = 0;
-        this.listenedSubmissions = {};
-        ret.rows.forEach((o, i) => {
-          if (o.judgeResult <= JUDGE_RESULT_TYPE.PD) {
-            o._judgedNum = 0;
-            this.listenedSubmissions[o.submissionId] = i;
-            length++;
-          }
-        });
+          let length = 0;
+          this.listenedSubmissions = {};
+          ret.rows.forEach((o, i) => {
+            if (o.judgeResult <= JUDGE_RESULT_TYPE.PD) {
+              this.$set(o, '$judgedNum', 0);
+              this.listenedSubmissions[o.submissionId] = i;
+              length++;
+            }
+          });
 
-        if (length === 0) {
-          return;
-        }
-        const listenedSubmissionIds = Object.keys(this.listenedSubmissions);
-        this.listenedSubmissions.length = length;
-        this.initWebSocket(
-          '/submission',
-          listenedSubmissionIds,
-          this.wsSuccess
-        )
-      }).finally(() => (this.loading = false));
+          if (length === 0) return;
+
+          this.$set(this.listenedSubmissions, '$length', length);
+          this.initWebSocket(
+            '/submission',
+            Object.keys(this.listenedSubmissions),  // 监听的 submissionId
+            this.wsSuccess
+          );
+        }).catch(reject)
+          .finally(() => {
+            this.loading = false;
+          });
+      });
     }
   },
   created: function() {

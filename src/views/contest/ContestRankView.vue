@@ -165,7 +165,6 @@
        ref="SubmissionList"
        size="small"
        :bannedKey="['problemCode', 'username', 'problemTitle']"
-       @update-total-page="onUpdateTotal"
        @on-sort="onSort"
        @on-cell-click="onSubmissionListCellClick">
        <template>
@@ -259,9 +258,6 @@ export default {
         this.ascending = (order === 'asc');
       }
     },
-    onUpdateTotal: function(totalPage) {
-      this.total = totalPage * this.pageSize;
-    },
     setUserLiked: function(userId, status) {
       this.$store.commit('contest/setScoreLiked', { userId, status });
     },
@@ -276,8 +272,12 @@ export default {
           pageNow: this.pageNow,
           sortBy: this.sortBy,
           ascending: this.ascending
+        }).then(ret => {
+          this.total = parseInt(ret.totalPage) * this.pageSize;
+          this.modelSubmissions = true;
+        }).catch(err => {
+          this.$Message.error(err.message);
         });
-        this.modelSubmissions = true;
       }
     },
     onSubmissionListCellClick: function(row, col) {
