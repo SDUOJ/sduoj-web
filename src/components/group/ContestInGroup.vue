@@ -20,6 +20,7 @@
     <div class="float-right footer-pages">
       <Page
         size="small" show-elevator show-sizer
+        transfer
         :total="total"
         :current.sync="pageNow"
         :page-size="pageSize"
@@ -43,7 +44,8 @@ export default {
       pageSize: 15,
       pageSizeOpts: [15, 30, 50, 100],
       total: 0,
-      selectContestMode: 'all'
+      selectContestMode: 'all',
+      groupId: undefined
     }
   },
   methods: {
@@ -62,9 +64,16 @@ export default {
         this.ascending = (order === 'asc');
       }
     },
-    getContestList: function (groupId) {
+    setGroupId: function (groupId) {
+      this.groupId = groupId;
+    },
+    getContestList: function () {
+      if (this.groupId === undefined || this.groupId === null) {
+        this.$Message.error('Invalid Group ID');
+        return;
+      }
       this.$refs.contestList.getContestList({
-        groupId,
+        groupId: this.groupId,
         pageNow: this.pageNow,
         pageSize: this.pageSize,
         mode: this.selectContestMode === 'all' ? '' : this.selectContestMode
