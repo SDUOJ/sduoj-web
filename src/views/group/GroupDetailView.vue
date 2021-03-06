@@ -84,7 +84,8 @@ export default {
       });
     },
     getContestList: function () {
-      this.$refs.contestList.getContestList(this.group.groupId);
+      this.$refs.contestList.setGroupId(this.groupId);
+      this.$refs.contestList.getContestList();
     },
     onClickTabs: function (name) {
       if (name === 'contest') {
