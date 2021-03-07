@@ -225,7 +225,7 @@ export default {
   joinGroup: function(params) {
     return get('/group/apply', params);
   },
-  exitGroup: function(params) {
+  quitGroup: function(params) {
     return get('/group/quit', params);
   },
   getMyGroupList: function (params) {
