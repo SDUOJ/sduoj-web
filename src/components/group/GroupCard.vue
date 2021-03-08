@@ -35,10 +35,10 @@
                   v-if="group.status === null || group.status === GROUP_STATUS_TYPE.NONE" disabled>
             <span :class="`btn-font__${size}`">Private</span>
           </Button>
-          <div class="btn__clickable--exit" @click="handleExit" v-else-if="group.status === GROUP_STATUS_TYPE.JOINED">
+          <div class="btn__clickable--quit" @click="handleQuit" v-else-if="group.status === GROUP_STATUS_TYPE.JOINED">
             <Row type="flex" align="middle">
               <Col span="14">
-                <span :class="`btn-font__${size}`">Exit</span>
+                <span :class="`btn-font__${size}`">Quit</span>
               </Col>
               <Col span="10" v-if="size==='default'">
                 <Icon type="ios-arrow-forward" :size="iconSize"/>
@@ -57,10 +57,10 @@
               </Col>
             </Row>
           </div>
-          <div class="btn__clickable--exit" @click="handleExit" v-else-if="group.status === GROUP_STATUS_TYPE.JOINED">
+          <div class="btn__clickable--quit" @click="handleQuit" v-else-if="group.status === GROUP_STATUS_TYPE.JOINED">
             <Row type="flex" align="middle">
               <Col span="14">
-                <span :class="`btn-font__${size}`">Exit</span>
+                <span :class="`btn-font__${size}`">Quit</span>
               </Col>
               <Col span="10" v-if="size==='default'">
                 <Icon type="ios-arrow-forward" :size="iconSize"/>
@@ -195,16 +195,16 @@ export default {
         }
       });
     },
-    handleExit: function () {
+    handleQuit: function () {
       this.$Modal.confirm({
-        title: `Confirm exit #${this.group.groupId}`,
-        content: `Do you want to exit group ${this.group.title} ?`,
+        title: `Confirm quit #${this.group.groupId}`,
+        content: `Do you want to quit group ${this.group.title} ?`,
         loading: true,
         onOk: () => {
-          api.exitGroup({
+          api.quitGroup({
             groupId: this.group.groupId
           }).then(ret => {
-            this.$Message.success('Exited');
+            this.$Message.success('Group quited');
             this.$Modal.remove();
             this.reload();
           }).catch(err => {
@@ -397,7 +397,7 @@ export default {
   }
 }
 
-.btn__clickable--exit {
+.btn__clickable--quit {
   color: #ff9900;
 
   span:hover {
