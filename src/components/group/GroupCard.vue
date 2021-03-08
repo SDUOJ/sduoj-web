@@ -204,7 +204,7 @@ export default {
           api.quitGroup({
             groupId: this.group.groupId
           }).then(ret => {
-            this.$Message.success('Quited');
+            this.$Message.success('Group quited');
             this.$Modal.remove();
             this.reload();
           }).catch(err => {
