@@ -35,7 +35,7 @@ function calculateProblemResult(submissions, problemNum, endTime) {
     let maxScoreSubmission = null;
     for (let i1 = 0; i1 < problemSubmissionMap[i].length; ++i1) {
       const oneSubmission = problemSubmissionMap[i][i1];
-      if (!maxScoreSubmission || oneSubmission.judgeScore > maxScoreSubmission.judgeScore) {
+      if (!maxScoreSubmission || oneSubmission.judgeScore > maxScoreSubmission.judgeScore || (oneSubmission.judgeScore === maxScoreSubmission.judgeScore && oneSubmission.judgeResult === JUDGE_RESULT_TYPE.AC)) {
         maxScoreSubmission = oneSubmission;
       }
       if (oneSubmission.judgeResult === JUDGE_RESULT_TYPE.PD) {
