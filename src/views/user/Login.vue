@@ -14,6 +14,17 @@
           <span>Welcome to SDUOJ</span>
       </div>
       <div class="body">
+        3rd-Party Login
+        <hr>
+        <div style="text-align:center">
+          <Button type="error"
+                  size="small"
+                  to="http://pass.sdu.edu.cn/cas/login?service=https://oj.qd.sdu.edu.cn/api/user/sduCasLogin">
+                  SDU 统一身份认证</Button>（In Experiment）
+        </div>
+        <br />
+        Account Login
+        <hr>
         <Form ref="loginForm"
           :model="loginForm"
           :rules="loginRules"
@@ -100,7 +111,7 @@ export default {
 }
 
 .body {
-  padding: 1.5em 1em 0 1em;
+  padding: 0.5em 1em 0 1em;
 }
 
 /deep/.ivu-form-item-label {
