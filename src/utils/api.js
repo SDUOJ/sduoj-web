@@ -230,5 +230,10 @@ export default {
   },
   getMyGroupList: function (params) {
     return get('/group/my', params);
+  },
+  /* ************* file upload ************* */
+  // 单文件上传
+  singleUpload: function(data) {
+    return post('/filesys/upload', data);
   }
 }

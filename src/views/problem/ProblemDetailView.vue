@@ -57,20 +57,18 @@
             <CodeEditor
               :code.sync="code"
               :file.sync="file"
-              :judgeTemplate="judgeTemplate"
-              :judgeTemplateSet="problem.judgeTemplates"
-              @changeJudgeTemplate="onChangeJudgeTemplate">
+              :judgeTemplate.sync="judgeTemplate"
+              :judgeTemplateSet="problem.judgeTemplates">
             </CodeEditor>
             <Button
               style="float: right; margin: 5px 0 5px 10px;"
               :loading="submitBtnLoading"
-              :disabled="submitColdDown"
               @click="onSubmit">Submit</Button>
             <Input
+              size="small"
               style="float: right; width: 200px; margin: 8px 0;"
               placeholder="Contest Password"
               v-if="contestId && !hasParticipatedIn"
-              size="small"
               v-model="contestPassword" />
           </div>
         </Card>
@@ -257,7 +255,6 @@ export default {
         id: ''
       },
       submitBtnLoading: false,
-      submitColdDown: false,
       showTags: true,
       showContestProblems: false,
       problemLoaded: false
@@ -291,9 +288,6 @@ export default {
         });
       }
     },
-    onChangeJudgeTemplate: function (newJudgeTemplate) {
-      this.judgeTemplate = newJudgeTemplate;
-    },
     switchContestProblem: function(problemCode) {
       this.$router.push({
         name: 'contest-problem',
@@ -301,52 +295,71 @@ export default {
       });
     },
     onSubmit: async function () {
-      if (this.judgeTemplate === '') {
+      if (this.judgeTemplate.id === '') {
         this.$Message.error('Choose one judge template');
         return;
       }
+
+      // protected contest problem
+      if (this.contestId && !this.hasParticipatedIn) {
+        if (this.contestPassword === '') {
+          this.$Message.error('Please input contest password');
+          return;
+        }
+        try {
+          await api.participateIn({
+            contestId: this.contestId,
+            password: this.contestPassword
+          });
+        } catch (err) {
+          this.$Message.error(err.message);
+          return;
+        }
+      }
+
+      const submitForm = {
+        problemCode: this.problem.problemCode,
+        judgeTemplateId: this.judgeTemplate.id
+      };
+
       if (this.file) {
         // 交文件
-      } else {
-        if (this.contestId && !this.hasParticipatedIn) {
-          if (this.contestPassword === '') {
-            this.$Message.error('Please input contest password');
-            return;
-          }
-          try {
-            await api.participateIn({
-              contestId: this.contestId,
-              password: this.contestPassword
-            });
-          } catch (_) {
-            return;
-          }
+        const formdata = new FormData();
+        formdata.append('file', this.file);
+
+        const removeLoading = this.$Message.loading({
+          content: 'Uploading',
+          duration: 0
+        });
+
+        try {
+          const ret = await api.singleUpload(formdata);
+          submitForm.zipFileId = ret.id;
+          removeLoading();
+        } catch (err) {
+          this.$Message.error(err.message);
+          removeLoading();
+          return;
         }
+      } else {
         if (this.code.length > 60000) {
           this.$Message.error('Source code should contain 60000 bytes in UTF-8 at most');
           return;
         }
-        this.submitBtnLoading = true;
-        api.submit({
-          problemCode: this.problem.problemCode,
-          judgeTemplateId: this.judgeTemplate.id,
-          code: this.code
-        }).then(submissionId => {
-          this.submitColdDown = true;
-          setTimeout(() => {
-            this.submitColdDown = false
-          }, 5000);
-          this.$router.push({
-            name: this.contestId ? 'contest-submission-detail' : 'submission-detail',
-            params: { submissionId }
-          });
-          this.reload();
-        }, err => {
-          this.$Message.error(err.message);
-        }).finally(() => {
-          this.submitBtnLoading = false;
-        })
+        submitForm.code = this.code || '';
       }
+
+      this.submitBtnLoading = true;
+      api.submit(submitForm).then(submissionId => {
+        this.$router.push({
+          name: this.contestId ? 'contest-submission-detail' : 'submission-detail',
+          params: { submissionId }
+        });
+      }).catch(err => {
+        this.$Message.error(err.message);
+      }).finally(() => {
+        this.submitBtnLoading = false;
+      });
     },
     showAllSubmission: function () {
       this.$router.push({

@@ -28,26 +28,27 @@
           </template>
         </Select>
       </div>
-      <Upload
-        class="upload"
-        :show-upload-list="false"
-        :format="judgeTemplate.acceptFileExtensions || []"
-        :accept="(judgeTemplate.acceptFileExtensions || []).map(o => `.${o}`).join(',')"
-        :file-list.sync="fileList">
-<!--        TODO: 上传文件暂不可用-->
-        <Tooltip :disabled="true">
-          <div slot="content">
-            {{ judgeTemplate.acceptFileExtensions }} ALLOWED
-          </div>
-          <Button icon="ios-cloud-upload-outline" v-if="fileList.length === 0" :disabled="true">
-            Upload
-          </Button>
-          <Button icon="ios-cloud-upload-outline" v-else>{{ fileList[0].name }}</Button>
-        </Tooltip>
+      <div class="upload">
+        <Upload
+          style="display: inline"
+          :file-list.sync="fileList"
+          :show-upload-list="false"
+          :format="['zip']"
+          accept=".zip">
+          <!--:format="judgeTemplate.acceptFileExtensions || []"
+          :accept="(judgeTemplate.acceptFileExtensions || []).map(o => `.${o}`).join(',')">-->
+          <div v-if="uploadFile">
 
-      </Upload>
+            <Button icon="ios-cloud-upload-outline" v-if="fileList.length === 0">
+              Upload
+            </Button>
+            <Button icon="ios-cloud-upload-outline" v-else>{{ fileList[0].name }}</Button>
+          </div>
+        </Upload>
+        <Button icon="md-close" v-if="fileList.length > 0" @click="clearFiles"/>
+      </div>
     </div>
-    <div class="editor">
+    <div v-if="!this.uploadFile" class="editor">
       <codemirror :value="code" :options="options" @change="onEditorCodeChange" ref="myEditor"></codemirror>
     </div>
   </div>
@@ -55,7 +56,7 @@
 <script>
 import { codemirror } from 'vue-codemirror-lite'
 import 'codemirror/addon/selection/active-line.js'
-import { JUDGE_TEMPLATE_PROPERITY } from '_u/constants';
+import { JUDGE_TEMPLATE_PROPERITY, JUDGE_TEMPLATE_TYPE } from '_u/constants';
 import Upload from '_c/upload/upload';
 
 export default {
@@ -106,20 +107,33 @@ export default {
   mounted: function() {
   },
   methods: {
+    clearFiles: function () {
+      this.fileList = [];
+    },
     onEditorCodeChange: function(newCode) {
       this.$emit('update:code', newCode);
     },
     onJudgeTemplateChange: function(newVal) {
       for (let i = 0; i < this.judgeTemplateSet.length; ++i) {
         if (this.judgeTemplateSet[i].id === newVal) {
-          this.$emit('changeJudgeTemplate', this.judgeTemplateSet[i]);
+          this.$emit('update:judgeTemplate', this.judgeTemplateSet[i]);
         }
       }
     }
   },
+  computed: {
+    uploadFile: function () {
+      return this.judgeTemplate.type === JUDGE_TEMPLATE_TYPE.ADVANCED &&
+        this.judgeTemplate.acceptFileExtensions.includes("zip");
+    }
+  },
   watch: {
     fileList: function() {
-      this.$emit('update:file', this.fileList[0].file);
+      if (this.fileList.length > 0) {
+        this.$emit('update:file', this.fileList[0].file);
+      } else {
+        this.$emit('update:file', null);
+      }
     }
   }
 }
