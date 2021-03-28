@@ -51,6 +51,7 @@
                     slot="extra"
                     type="info"
                     size="small"
+                    target="_blank"
                     :to="downloadUrl">Download</Button>
             <div v-if="submission.code" v-highlight-linenumber="submission.code">
               <pre><code /></pre>

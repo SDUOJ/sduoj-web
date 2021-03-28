@@ -124,7 +124,7 @@ export default {
   computed: {
     uploadFile: function () {
       return this.judgeTemplate.type === JUDGE_TEMPLATE_TYPE.ADVANCED &&
-        this.judgeTemplate.acceptFileExtensions.includes("zip");
+        this.judgeTemplate.acceptFileExtensions.includes('zip');
     }
   },
   watch: {
