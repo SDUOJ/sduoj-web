@@ -27,9 +27,9 @@
         <MenuItem name="submission" :to="{ name: 'submission' }">
           <span class="span__menu">Submission</span>
         </MenuItem>
-        <MenuItem name="group" :to="{ name: 'group' }">
-          <span class="span__menu">Group</span>
-        </MenuItem>
+<!--        <MenuItem name="group" :to="{ name: 'group' }">-->
+<!--          <span class="span__menu">Group</span>-->
+<!--        </MenuItem>-->
         <div class="navbar-user">
           <template v-if="isLogin">
             <Avatar :src="avatar"/>
