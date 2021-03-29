@@ -42,12 +42,18 @@
           <Card v-if="showCode" class="box" title="Your Code" icon="md-code" dis-hover :padding="0">
             <p slot="title">
               <span>Your Code</span>
-              <Tooltip content="copy" placement="right">
+              <Tooltip v-if="submission.code" content="copy" placement="right">
                 <Icon class="hover" type="md-copy" @click="copyToClipboard(submission.code)" />
               </Tooltip>
             </p>
-            <p slot="extra" style="color: #bbb">{{ submission.codeLength || 0 }} B</p>
-            <div v-highlight-linenumber="submission.code">
+            <p v-if="submission.code" slot="extra" style="color: #bbb">{{ submission.codeLength }} B</p>
+            <Button v-else-if="submission.zipFileId"
+                    slot="extra"
+                    type="info"
+                    size="small"
+                    target="_blank"
+                    :to="downloadUrl">Download</Button>
+            <div v-if="submission.code" v-highlight-linenumber="submission.code">
               <pre><code /></pre>
             </div>
           </Card>
@@ -308,7 +314,7 @@ export default {
     ...mapGetters('contest', ['contestId']),
     ...mapState('contest', ['contest']),
     showCode: function () {
-      return !!this.submission.code;
+      return !!this.submission.code || !!this.submission.zipFileId;
     },
     showJudgeLog: function () {
       return !!this.submission.judgeLog;
@@ -333,6 +339,9 @@ export default {
     },
     judgedCheckpointNum: function() {
       return this.submission.checkpointResults.filter(o => o.judgeResult > JUDGE_RESULT_TYPE.PD).length;
+    },
+    downloadUrl: function() {
+      return `${process.env.VUE_APP_OJ_SERVER}/api/filesys/download/${this.submission.zipFileId}/source`
     }
   },
   mounted: function () {
