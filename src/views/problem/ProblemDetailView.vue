@@ -266,7 +266,7 @@ export default {
   },
   methods: {
     copyToClipboard: function (content) {
-      this.$copyText(content).then(_ => this.$Message.success('已复制到剪切板'));
+      this.$copyText(content).then(_ => this.$Message.success('Copy to Clipboard'));
     },
     onSubmissionTableClick: function (row, col) {
       if (col.key === 'judgeResult') {

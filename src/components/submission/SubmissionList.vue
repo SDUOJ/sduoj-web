@@ -252,12 +252,12 @@ export default {
 
           if (length === 0) return;
 
-          this.$set(this.listenedSubmissions, '$length', length);
           this.initWebSocket(
             '/submission',
             Object.keys(this.listenedSubmissions),  // 监听的 submissionId
             this.wsSuccess
           );
+          this.$set(this.listenedSubmissions, '$length', length);
         }).catch(reject)
           .finally(() => {
             this.loading = false;

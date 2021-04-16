@@ -120,8 +120,8 @@ export default {
       'contestEndTime',
       'contestStarted',
       'contestOpenness',
-      'contestStatus', 
-      'scores', 
+      'contestStatus',
+      'scores',
       'problems',
       'hasParticipatedIn'
     ]),
