@@ -18,12 +18,7 @@ Vue.use(VueRouter);
 const originalPush = VueRouter.prototype.push;
 const originalReplace = VueRouter.prototype.replace;
 VueRouter.prototype.push = function push(location) {
-  const that = this;
-  return originalPush.call(that, location).catch(_ => {
-    location.query = location.query || {};
-    location.query._t = Date.now();
-    originalReplace.call(that, location).catch(_ => _);
-  }).catch(_ => _);
+  return originalPush.call(this, location).catch(_ => _);
 };
 
 VueRouter.prototype.replace = function push(location) {

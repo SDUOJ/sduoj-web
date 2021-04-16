@@ -10,7 +10,7 @@
 
 <template>
   <div class="container">
-    <Tabs v-model="groupId" :animated="false" @on-click="getContestList">
+    <Tabs v-model="groupId" :animated="false">
       <TabPane name="all" label="All" />
       <TabPane v-for="group in mygroups" :key="group.groupId" :name="group.groupId" :label="`${group.groupId}: ${group.title}`" />
     </Tabs>
@@ -69,7 +69,7 @@ import ContestList from '_c/contest/ContestList';
 const STORAGE_KEY = 'contest#groupId';
 
 function getGroupIdFromStorage() {
-  return localStorage.getItem(STORAGE_KEY) || null;
+  return localStorage.getItem(STORAGE_KEY) || undefined;
 }
 
 function setGroupIdToStorage(groupId) {
@@ -107,12 +107,16 @@ export default {
       },
       set: function (groupId) {
         setGroupIdToStorage(groupId);
-        this.$router.push({
-          query: {
-            ...this.$route.query,
+        let query;
+        if (this.$route.query.groupId === groupId ||
+            (this.$route.query.groupId === undefined && groupId === 'all')) {
+          query = this.$route.query;
+        } else {
+          query = {
             groupId: groupId === 'all' ? undefined : groupId
-          }
-        });
+          };
+        }
+        this.$router.push({ query });
       }
     }
   },
