@@ -94,8 +94,8 @@ export default {
     handleLogout: function () {
       api.logout().then(_ => {
         this.$store.dispatch('user/clearProfile');
-        // this.reload();
         this.$router.push({ name: 'home' });
+        this.$Message.success('Log out successfully');
       });
     },
     toUser: function () {

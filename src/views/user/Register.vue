@@ -94,7 +94,7 @@ export default {
       // 检查用户名是否存在
       api.isExist({ username: value }).then(ret => {
         callback();
-      }, _ => {
+      }).catch(_ => {
         callback(new Error('already exists'));
       });
     };
@@ -158,6 +158,8 @@ export default {
       api.getCaptcha().then(ret => {
         this.captchaId = ret.captchaId;
         this.captchaImg = ret.captcha;
+      }).catch(err => {
+        this.$Message.error(err.message);
       });
     },
     onCaptchaInputFocus: function() {
@@ -178,8 +180,8 @@ export default {
             this.$refs[name].resetFields();
           }).catch(err => {
             this.$Message.error(err.message);
-            this.btnRegisterLoading = false;
           }).finally(() => {
+            this.btnRegisterLoading = false;
             this.registerForm.captcha = '';
             this.getCaptcha();
           })
