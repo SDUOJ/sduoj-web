@@ -10,7 +10,7 @@
 
 <template>
   <div class="container">
-    <Tabs v-model="groupId" :animated="false">
+    <Tabs v-if="mygroups.length > 0" v-model="groupId" :animated="false" type="card">
       <TabPane name="all" label="All" />
       <TabPane v-for="group in mygroups" :key="group.groupId" :name="group.groupId" :label="`${group.groupId}: ${group.title}`" />
     </Tabs>
