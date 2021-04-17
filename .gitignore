@@ -4,6 +4,7 @@ alias.config.js
 .DS_Store
 node_modules
 /dist
+dist.zip
 
 # local env files
 .env.local
