@@ -10,7 +10,7 @@
 
 <template>
   <div class="container">
-    <Tabs v-model="groupId" :animated="false" @on-click="getContestList">
+    <Tabs v-if="mygroups.length > 0" v-model="groupId" :animated="false" type="card">
       <TabPane name="all" label="All" />
       <TabPane v-for="group in mygroups" :key="group.groupId" :name="group.groupId" :label="`${group.groupId}: ${group.title}`" />
     </Tabs>
@@ -69,7 +69,7 @@ import ContestList from '_c/contest/ContestList';
 const STORAGE_KEY = 'contest#groupId';
 
 function getGroupIdFromStorage() {
-  return localStorage.getItem(STORAGE_KEY) || null;
+  return localStorage.getItem(STORAGE_KEY) || undefined;
 }
 
 function setGroupIdToStorage(groupId) {
@@ -107,24 +107,30 @@ export default {
       },
       set: function (groupId) {
         setGroupIdToStorage(groupId);
-        this.$router.push({
-          query: {
-            ...this.$route.query,
+        let query;
+        if (this.$route.query.groupId === groupId ||
+            (this.$route.query.groupId === undefined && groupId === 'all')) {
+          query = this.$route.query;
+        } else {
+          query = {
             groupId: groupId === 'all' ? undefined : groupId
-          }
-        });
+          };
+        }
+        this.$router.push({ query });
       }
     }
   },
   methods: {
-    getMyGroupList: function () {
+    getMyGroupList: function (showErrMessage = true) {
       api.getMyGroupList().then(ret => {
         this.mygroups = ret;
       }).catch(err => {
-        this.$Message.error(err.message);
+        if (showErrMessage) {
+          this.$Message.error(err.message);
+        }
       });
     },
-    getContestList: function (groupId) {
+    getContestList: function (groupId, showErrMessage = true) {
       this.$refs.contestList.getContestList({
         pageNow: this.pageNow,
         pageSize: this.pageSize,
@@ -133,33 +139,42 @@ export default {
       }).then(ret => {
         this.total = parseInt(ret.totalPage) * this.pageSize;
       }).catch(err => {
-        this.$Message.error(err.message);
+        if (showErrMessage) {
+          this.$Message.error(err.message);
+        }
       });
 
       this.$refs.contestList.getParticipatedContests().catch(err => {
-        this.$Message.error(err.message);
+        if (showErrMessage) {
+          this.$Message.error(err.message);
+        }
       });
     },
-    getUpcomingContest: function (groupId) {
+    getUpcomingContest: function (groupId, showErrMessage = true) {
       api.getUpcomingContest({
         groupId: groupId === 'all' ? undefined : groupId
       }).then(ret => {
         this.upcomingContest = ret;
       }).catch(err => {
-        this.$Message.error(err.message);
+        if (showErrMessage) {
+          this.$Message.error(err.message);
+        }
       });
     }
   },
   watch: {
     selectContestMode: function () {
       this.getContestList(this.groupId);
+    },
+    $route: function () {
+      this.getContestList(this.groupId);
       this.getUpcomingContest(this.groupId);
     }
   },
   mounted: function () {
-    this.getMyGroupList();
-    this.getContestList(this.groupId);
-    this.getUpcomingContest(this.groupId);
+    this.getMyGroupList(false);
+    this.getContestList(this.groupId, false);
+    this.getUpcomingContest(this.groupId, false);
   }
 }
 </script>

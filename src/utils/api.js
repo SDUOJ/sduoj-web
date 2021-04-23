@@ -20,23 +20,38 @@ function post(url, data) {
   return new Promise((resolve, reject) => {
     axios.post(url, data)
       .then(response => {
-        if (response.data.code === 0) {
-          // everything alright
-          resolve(response.data.data);
-        } else {
-          Vue.prototype.$Message.error(response.data.message);
-          reject(response.data);
+        switch (response.data.code) {
+          case 0:
+            resolve(response.data.data);
+            break;
+          case 429:
+            Vue.prototype.$Message.error(response.data.message);
+            break;
+          default:
+            reject(response.data);
+            break;
         }
+
         store.commit('updateNow', {
           now: response.data.timestamp
         });
-      }, err => {
+      })
+      .catch(err => {
         Vue.prototype.$Loading.finish();
-        reject(err.response.data);
+
+        switch (err.response.status) {
+          case 429:
+            Vue.prototype.$Message.error(err.response.data.message);
+            break;
+          default:
+            reject(err.response.data);
+            break;
+        }
+
         store.commit('updateNow', {
           now: err.response.data.timestamp
         });
-      })
+      });
   });
 }
 
@@ -45,18 +60,34 @@ function get(url, params) {
   return new Promise((resolve, reject) => {
     axios.get(url, { params })
       .then(response => {
-        if (response.data.code === 0) {
-          resolve(response.data.data);
-        } else {
-          Vue.prototype.$Message.error(response.data.message);
-          reject(response.data);
+        switch (response.data.code) {
+          case 0:
+            resolve(response.data.data);
+            break;
+          case 429:
+            Vue.prototype.$Message.error(response.data.message);
+            break;
+          default:
+            reject(response.data);
+            break;
         }
+
         store.commit('updateNow', {
           now: response.data.timestamp
         });
-      }, err => {
+      })
+      .catch(err => {
         Vue.prototype.$Loading.finish();
-        reject(err.response.data);
+
+        switch (err.response.status) {
+          case 429:
+            Vue.prototype.$Message.error(err.response.data.message);
+            break;
+          default:
+            reject(err.response.data);
+            break;
+        }
+
         store.commit('updateNow', {
           now: err.response.data.timestamp
         });
