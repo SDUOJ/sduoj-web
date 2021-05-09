@@ -26,93 +26,6 @@ export const CONTEST_MODE = {
   IOI: 'ioi'
 };
 
-export const JUDGE_RESULT = {
-  '-3': {
-    name: 'Compiling',
-    abbr: 'CP',
-    css: 'verdict-pending',
-    color: 'grey',
-    icon: 'md-information'
-  },
-  '-2': {
-    name: 'Judging',
-    abbr: 'JG',
-    css: 'verdict-pending',
-    color: 'grey',
-    icon: 'md-information'
-  },
-  0: {
-    name: 'Pending',
-    abbr: 'PD',
-    css: 'verdict-pending',
-    color: 'grey',
-    icon: 'md-information'
-  },
-  1: {
-    name: 'Accepted',
-    abbr: 'AC',
-    css: 'verdict-accepted',
-    color: '#5cb85c',
-    icon: 'md-checkmark'
-  },
-  2: {
-    name: 'Time Limit Exceeded',
-    abbr: 'TLE',
-    css: 'verdict-failed',
-    color: '#d9534f',
-    icon: 'md-close'
-  },
-  3: {
-    name: 'Memory Limit Exceeded',
-    abbr: 'MLE',
-    css: 'verdict-failed',
-    color: '#d9534f',
-    icon: 'md-close'
-  },
-  4: {
-    name: 'Runtime Error',
-    abbr: 'RE',
-    css: 'verdict-failed',
-    color: '#d9534f',
-    icon: 'md-close'
-  },
-  5: {
-    name: 'System Error',
-    abbr: 'SE',
-    css: 'verdict-system-error',
-    color: 'rebeccapurple',
-    icon: 'md-close'
-  },
-  6: {
-    name: 'Wrong Answer',
-    abbr: 'WA',
-    css: 'verdict-failed',
-    color: '#d9534f',
-    icon: 'md-close'
-  },
-  7: {
-    name: 'Presentation Error',
-    abbr: 'PE',
-    css: 'verdict-failed',
-    color: '#d9534f',
-    icon: 'md-close'
-  },
-  8: {
-    name: 'Compilation Error',
-    abbr: 'CE',
-    css: 'verdict-compile-error',
-    color: 'orange',
-    icon: 'md-close'
-  },
-  9: {
-    name: 'Canceled',
-    abbr: 'CAN',
-    css: 'verdict-canceled',
-    color: '#220048',
-    icon: 'md-close'
-  }
-};
-
 export const JUDGE_RESULT_TYPE = {
   PD: 0,
   AC: 1,
@@ -123,11 +36,107 @@ export const JUDGE_RESULT_TYPE = {
   WA: 6,
   PE: 7,
   CE: 8,
-  CAN: 9,
+  OLE: 9,
+
+  CAN: 555,
 
   CP: -3,
   JG: -2,
   END: -1
+};
+
+export const JUDGE_RESULT = {
+  [JUDGE_RESULT_TYPE.CP]: {
+    name: 'Compiling',
+    abbr: 'CP',
+    css: 'verdict-pending',
+    color: 'grey',
+    icon: 'md-information'
+  },
+  [JUDGE_RESULT_TYPE.JG]: {
+    name: 'Judging',
+    abbr: 'JG',
+    css: 'verdict-pending',
+    color: 'grey',
+    icon: 'md-information'
+  },
+  [JUDGE_RESULT_TYPE.PD]: {
+    name: 'Pending',
+    abbr: 'PD',
+    css: 'verdict-pending',
+    color: 'grey',
+    icon: 'md-information'
+  },
+  [JUDGE_RESULT_TYPE.AC]: {
+    name: 'Accepted',
+    abbr: 'AC',
+    css: 'verdict-accepted',
+    color: '#5cb85c',
+    icon: 'md-checkmark'
+  },
+  [JUDGE_RESULT_TYPE.TLE]: {
+    name: 'Time Limit Exceeded',
+    abbr: 'TLE',
+    css: 'verdict-failed',
+    color: '#d9534f',
+    icon: 'md-close'
+  },
+  [JUDGE_RESULT_TYPE.MLE]: {
+    name: 'Memory Limit Exceeded',
+    abbr: 'MLE',
+    css: 'verdict-failed',
+    color: '#d9534f',
+    icon: 'md-close'
+  },
+  [JUDGE_RESULT_TYPE.RE]: {
+    name: 'Runtime Error',
+    abbr: 'RE',
+    css: 'verdict-failed',
+    color: '#d9534f',
+    icon: 'md-close'
+  },
+  [JUDGE_RESULT_TYPE.SE]: {
+    name: 'System Error',
+    abbr: 'SE',
+    css: 'verdict-system-error',
+    color: 'rebeccapurple',
+    icon: 'md-close'
+  },
+  [JUDGE_RESULT_TYPE.WA]: {
+    name: 'Wrong Answer',
+    abbr: 'WA',
+    css: 'verdict-failed',
+    color: '#d9534f',
+    icon: 'md-close'
+  },
+  [JUDGE_RESULT_TYPE.PE]: {
+    name: 'Presentation Error',
+    abbr: 'PE',
+    css: 'verdict-failed',
+    color: '#d9534f',
+    icon: 'md-close'
+  },
+  [JUDGE_RESULT_TYPE.CE]: {
+    name: 'Compilation Error',
+    abbr: 'CE',
+    css: 'verdict-compile-error',
+    color: 'orange',
+    icon: 'md-close'
+  },
+  [JUDGE_RESULT_TYPE.OLE]: {
+    name: 'Output Limit Exceeded',
+    abbr: 'OLE',
+    css: 'verdict-failed',
+    color: '#d9534f',
+    icon: 'md-close'
+  },
+  [JUDGE_RESULT_TYPE.CAN]: {
+    name: 'Canceled',
+    abbr: 'CAN',
+    css: 'verdict-canceled',
+    color: '#220048',
+    icon: 'md-close'
+  }
 };
 
 export const JUDGE_TEMPLATE_TYPE = {
