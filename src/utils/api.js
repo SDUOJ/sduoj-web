@@ -32,13 +32,14 @@ function post(url, data) {
             break;
         }
 
-        store.commit('updateNow', {
-          now: response.data.timestamp
-        });
+        if (response.data.timestamp !== undefined && response.data.timestamp !== null) {
+          store.commit('updateNow', {
+            now: response.data.timestamp
+          });
+        }
       })
       .catch(err => {
         Vue.prototype.$Loading.finish();
-
         switch (err.response.status) {
           case 429:
             Vue.prototype.$Message.error(err.response.data.message);
@@ -48,9 +49,11 @@ function post(url, data) {
             break;
         }
 
-        store.commit('updateNow', {
-          now: err.response.data.timestamp
-        });
+        if (err.response.data.timestamp !== undefined && err.response.data.timestamp !== null) {
+          store.commit('updateNow', {
+            now: err.response.data.timestamp
+          });
+        }
       });
   });
 }
@@ -72,9 +75,11 @@ function get(url, params) {
             break;
         }
 
-        store.commit('updateNow', {
-          now: response.data.timestamp
-        });
+        if (response.data.timestamp !== undefined && response.data.timestamp !== null) {
+          store.commit('updateNow', {
+            now: response.data.timestamp
+          });
+        }
       })
       .catch(err => {
         Vue.prototype.$Loading.finish();
@@ -88,10 +93,12 @@ function get(url, params) {
             break;
         }
 
-        store.commit('updateNow', {
-          now: err.response.data.timestamp
-        });
-      })
+        if (err.response.data.timestamp !== undefined && err.response.data.timestamp !== null) {
+          store.commit('updateNow', {
+            now: err.response.data.timestamp
+          });
+        }
+      });
   })
 }
 

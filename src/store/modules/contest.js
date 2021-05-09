@@ -267,14 +267,14 @@ const actions = {
         if (contestStatus === CONTEST_STATUS.RUNNING) {
           dispatch('getQuestions');
           if (showRank) {
-            dispatch('getContestRank');
+            dispatch('getContestRank').catch(reject);
             commit('setScoreTimer', { interval: 30000 });
           }
         } else if (contestStatus === CONTEST_STATUS.FINISHED) {
           dispatch('getQuestions');
-          dispatch('getContestRank');
+          dispatch('getContestRank').catch(reject);
         }
-      }, err => (reject(err)));
+      }).catch(reject);
     });
   },
   getQuestions: function() {
@@ -285,7 +285,7 @@ const actions = {
       api.getContestRank(this.getters['contest/contestId']).then(ret => {
         resolve(ret);
         commit('setAllSubmissions', { allSubmissions: ret });
-      }, err => (reject(err)));
+      }).catch(reject);
     })
   },
   settings: function({ commit }, settings) {
