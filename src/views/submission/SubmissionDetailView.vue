@@ -322,7 +322,8 @@ export default {
       return !!this.submission.judgeLog;
     },
     showCheckpointResults: function() {
-      if (this.submission.checkpointResults === null) {
+      if (this.submission.checkpointResults === undefined || this.submission.checkpointResults === null ||
+          this.submission.checkpointResults.length === 0) {
         return false;
       }
       if (this.submission.judgeResult === JUDGE_RESULT_TYPE.CAN) {

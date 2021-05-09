@@ -101,8 +101,8 @@ export default {
     columns: {
       type: Array,
       default: () => [
-        { title: '#', key: 'submissionId', minWidth: 60, slot: 'id', props: { vOnce: true } },
-        { title: 'Username', key: 'username', props: { vOnce: true } },
+        { title: '#', key: 'submissionId', width: 165, slot: 'id', props: { vOnce: true } },
+        { title: 'Username', key: 'username', width: 200, props: { vOnce: true } },
         { title: 'Problem', key: 'problemCode', slot: 'title', align: 'center' },
         { title: 'Judge Result', key: 'judgeResult', slot: 'judge-result', width: 200, align: 'center' },
         { title: 'Score', key: 'judgeScore', maxWidth: 100, slot: 'score', align: 'center' },
