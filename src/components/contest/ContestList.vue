@@ -27,7 +27,16 @@
             <div class="numbox__text">{{ contest.gmtStart | timeformat('yyyy-MM') }}</div>
           </div>
           <div slot="title">
-            <span class="ivu-list-item-meta-title" @click="toContestDetail(contest.contestId)">{{ contest.contestTitle }}</span>
+            <router-link
+              :to="{
+                name: 'contest-detail',
+                params: { contestId: contest.contestId }
+              }"
+              v-slot="{ href, navigate }"
+              custom
+            >
+              <a :href="href" @click="navigate" class="contest__title">{{ contest.contestTitle }}</a>
+            </router-link>
             <template v-if="contest.features.openness === CONTEST_OPENNESS.PRIVATE">
               <Icon type="ios-unlock" color="#d9534f" size="19" v-if="participatedContest.includes(contest.contestId)"/>
               <Icon type="md-lock" color="#d9534f" size="19" v-else/>
@@ -158,11 +167,6 @@ export default {
   color: #AAA;
 }
 
-.contest__date {
-  margin: 0 10px 0 15px;
-  white-space: nowrap;
-}
-
 /deep/ .ivu-list-item {
   padding: 10px 0;
 }
@@ -179,18 +183,22 @@ export default {
   .ivu-list-item-meta-title {
     margin-bottom: 4px;
     margin-top: 4px;
-
-    :hover {
-      span {
-        cursor: pointer;
-        text-decoration: underline;
-      }
-    }
   }
 }
 
 /deep/ .ivu-list-item-meta-avatar {
-  margin-right: 0;
-  margin-top: -4px;
+  //padding-right: 5px;
+  margin-top: -2px;
+}
+.contest__title {
+  color: rgba(0, 0, 0, 0.85);
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.contest__date {
+  margin: 0 10px 0 15px;
+  white-space: nowrap;
 }
 </style>
