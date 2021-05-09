@@ -245,16 +245,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-///deep/ .ivu-table-cell {
-//  overflow: hidden;
-//  text-overflow: ellipsis;
-//  white-space: normal;
-//  word-break: break-all;
-//  box-sizing: border-box;
-//  padding-left: 18px;
-//  padding-right: 5px;
-//}
-
 .time::after {
   content: " ms";
   white-space: pre;

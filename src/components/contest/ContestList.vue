@@ -187,7 +187,6 @@ export default {
 }
 
 /deep/ .ivu-list-item-meta-avatar {
-  //padding-right: 5px;
   margin-top: -2px;
 }
 .contest__title {
