@@ -28,13 +28,18 @@
         }">{{ row.submissionId }}</router-link>
       </template>
       <template slot-scope="{ row }" slot="title" v-once>
-        <router-link :to="{
-          name: contestId ? 'contest-problem' : 'problem-detail',
-          params: { problemCode: row.problemCode }
-        }">{{ row.problemTitle }}</router-link>
+        <Tooltip :content="row.problemTitle" theme="light" transfer>
+          <router-link :to="{
+            name: contestId ? 'contest-problem' : 'problem-detail',
+            params: { problemCode: row.problemCode }
+          }">{{ row.problemCode | problemCodeEncode }}</router-link>
+        </Tooltip>
       </template>
       <template slot-scope="{ row }" slot="judge-result">
         <JudgeResult :result="row.judgeResult" :total="row.checkpointNum" :current="row.$judgedNum" />
+      </template>
+      <template slot-scope="{ row }" slot="score">
+        <span>{{ row.judgeScore === null ? '' : row.judgeScore }}</span>
       </template>
       <template slot-scope="{ row }" slot="time">
         <span class="time">{{ row.usedTime || 0 }}</span>
@@ -55,7 +60,6 @@
 </template>
 
 <script>
-import ProblemCode from '_c/problem/ProblemCode';
 import JudgeResult from '_c/JudgeResult';
 import { Websocket } from '_c/mixins';
 import { JUDGE_RESULT_TYPE, CONTEST_STATUS } from '_u/constants';
@@ -97,58 +101,15 @@ export default {
     columns: {
       type: Array,
       default: () => [
-        { title: '#', key: 'submissionId', minWidth: 60, slot: 'id', props: { vOnce: true } },
-        { title: 'Username', key: 'username', props: { vOnce: true } },
-        {
-          title: 'Problem',
-          key: 'problemCode',
-          minWidth: 15,
-          props: {
-            vOnce: true
-          },
-          render: function(h, params) {
-            if (store.state.contest.contest.contestId) {
-              return h('strong', contestProblemIdEncode(params.row.problemCode));
-            } else {
-              if (params.row.problemCode !== undefined) {
-                if (params.row.problemCode.length > 20) {
-                  const texts = params.row.problemCode.substring(0, 20) + '...';
-                  return h('Tooltip', {
-                    props: {
-                      placement: 'top',
-                      maxWidth: '180'
-                    }
-                  }, [
-                    h(ProblemCode, {
-                      props: {
-                        problemCode: texts
-                      }
-                    }),
-                    h('span', {
-                      slot: 'content',
-                      style: {
-                        whiteSpace: 'normal',
-                        wordBreak: 'break-all'
-                      }
-                    }, params.row.problemCode)
-                  ]);
-                } else {
-                  return h(ProblemCode, {
-                    props: {
-                      problemCode: params.row.problemCode
-                    }
-                  });
-                }
-              }
-            }
-          }
-        },
-        { title: 'Title', key: 'problemTitle', slot: 'title' },
-        { title: 'Judge Result', key: 'judgeResult', slot: 'judge-result', minWidth: 95 },
-        { title: 'Time', key: 'usedTime', slot: 'time', sortable: true, maxWidth: 100 },
-        { title: 'Memory', key: 'usedMemory', slot: 'mem', sortable: true, maxWidth: 120 },
-        { title: 'Template', key: 'judgeTemplateTitle', props: { vOnce: true } },
-        { title: 'Submit Time', key: 'gmtCreate', sortable: true, slot: 'submit-time' }
+        { title: '#', key: 'submissionId', width: 165, slot: 'id', props: { vOnce: true } },
+        { title: 'Username', key: 'username', width: 200, props: { vOnce: true } },
+        { title: 'Problem', key: 'problemCode', slot: 'title', align: 'center' },
+        { title: 'Judge Result', key: 'judgeResult', slot: 'judge-result', width: 200, align: 'center' },
+        { title: 'Score', key: 'judgeScore', maxWidth: 100, slot: 'score', align: 'center' },
+        { title: 'Time', key: 'usedTime', slot: 'time', sortable: true, align: 'right' },
+        { title: 'Memory', key: 'usedMemory', slot: 'mem', sortable: true, align: 'right' },
+        { title: 'Template', key: 'judgeTemplateTitle', props: { vOnce: true }, align: 'center' },
+        { title: 'Submit Time', key: 'gmtCreate', sortable: true, slot: 'submit-time', align: 'center' }
       ]
     }
   },
@@ -164,6 +125,12 @@ export default {
         timestamp = parseInt(timestamp);
       }
       return moment(new Date(timestamp)).fromNow();
+    },
+    problemCodeEncode: function(problemCode) {
+      if (store.state.contest.contest.contestId) {
+        return contestProblemIdEncode(problemCode);
+      }
+      return problemCode;
     }
   },
   data: function() {
@@ -270,7 +237,7 @@ export default {
     if (this.selection) {
       this.filteredColumns = [{
         type: 'selection',
-        width: 60
+        width: 55
       }].concat(this.filteredColumns);
     }
   }
@@ -278,22 +245,21 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.time::after {
+  content: " ms";
+  white-space: pre;
+}
 
-  .time::after {
-    content: " ms";
-    white-space: pre;
-  }
+.mem::after {
+  content: " KiB";
+  white-space: pre;
+}
 
-  .mem::after {
-    content: " KiB";
-    white-space: pre;
+.underline {
+  color: #2D8cF0;
+  &:hover {
+    cursor: pointer;
+    text-decoration: underline;
   }
-
-  .underline {
-    color: #2D8cF0;
-    &:hover {
-      cursor: pointer;
-      text-decoration: underline;
-    }
-  }
+}
 </style>
