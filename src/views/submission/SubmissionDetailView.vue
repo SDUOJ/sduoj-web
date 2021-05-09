@@ -246,11 +246,17 @@ export default {
     getSubmissionDetail: function(submissionId) {
       api.getSubmissionDetail({ submissionId }).then(ret => {
         this.submission = { ...ret };
-        this.submission.checkpointResults = [];
+        // 数据脱敏后 ret.checkpointResults === null
+        if (this.submission.checkpointResults) {
+          this.submission.checkpointResults.forEach((o, i) => {
+            this.fillCheckpointResults([ret.submissionId, i, ...o]);
+          });
+        }
+
         if (!this.showCode) {
           return;
         }
-        // 所有人都看不到 websocket
+
         if (this.contestId) {
           const infoOpenness = this.contest.features[this.contestStatus === CONTEST_STATUS.RUNNING ? 'contestRunning' : 'contestEnd'];
           const displayCheckpointResult = infoOpenness.displayCheckpointResult;
@@ -274,10 +280,6 @@ export default {
             [this.submission.submissionId],
             this.wsSuccess
           );
-        } else {
-          ret.checkpointResults.forEach((o, i) => {
-            this.fillCheckpointResults([ret.submissionId, i, ...o])
-          });
         }
       }).finally(() => {
         this.spinShow = false;
@@ -320,7 +322,7 @@ export default {
       return !!this.submission.judgeLog;
     },
     showCheckpointResults: function() {
-      if (this.submission.checkpointResults.length === 0) {
+      if (this.submission.checkpointResults === null) {
         return false;
       }
       if (this.submission.judgeResult === JUDGE_RESULT_TYPE.CAN) {
@@ -338,7 +340,10 @@ export default {
       return this.isAdmin || (this.contestId && this.isLogin && this.username === this.contest.username);
     },
     judgedCheckpointNum: function() {
-      return this.submission.checkpointResults.filter(o => o.judgeResult > JUDGE_RESULT_TYPE.PD).length;
+      if (this.submission.checkpointResults) {
+        return this.submission.checkpointResults.filter(o => o.judgeResult > JUDGE_RESULT_TYPE.PD).length;
+      }
+      return 0;
     },
     downloadUrl: function() {
       return `${process.env.VUE_APP_OJ_SERVER}/api/filesys/download/${this.submission.zipFileId}/source`
