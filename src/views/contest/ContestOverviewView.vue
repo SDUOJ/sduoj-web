@@ -94,6 +94,9 @@ export default {
       this.participateForm.contestId = this.contest.contestId;
       if (this.contestOpenness !== CONTEST_OPENNESS.PROTECTED && !this.hasParticipatedIn) {
         api.participateIn(this.participateForm)
+          .then(_ => {
+            this.reload();
+          })
           .catch(err => {
             this.$Message.error(err.message);
           });
