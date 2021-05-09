@@ -38,7 +38,7 @@ export const JUDGE_RESULT_TYPE = {
   CE: 8,
   OLE: 9,
 
-  CAN: 555,
+  CAN: 99,
 
   CP: -3,
   JG: -2,
