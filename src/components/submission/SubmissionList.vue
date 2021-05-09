@@ -104,7 +104,7 @@ export default {
         { title: '#', key: 'submissionId', width: 165, slot: 'id', props: { vOnce: true } },
         { title: 'Username', key: 'username', width: 200, props: { vOnce: true } },
         { title: 'Problem', key: 'problemCode', slot: 'title', align: 'center' },
-        { title: 'Judge Result', key: 'judgeResult', slot: 'judge-result', width: 200, align: 'center' },
+        { title: 'Judge Result', key: 'judgeResult', slot: 'judge-result', width: 210, align: 'center' },
         { title: 'Score', key: 'judgeScore', maxWidth: 100, slot: 'score', align: 'center' },
         { title: 'Time', key: 'usedTime', slot: 'time', sortable: true, align: 'right' },
         { title: 'Memory', key: 'usedMemory', slot: 'mem', sortable: true, align: 'right' },
