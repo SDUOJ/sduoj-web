@@ -216,7 +216,10 @@ export default {
       pageSize: 15,
       pageSizeOpts: [15, 30, 50],
       ascending: '',
-      sortBy: ''
+      sortBy: '',
+
+      targetUsername: '',
+      targetProblemCode: ''
     }
   },
   filters: {
@@ -245,9 +248,11 @@ export default {
   methods: {
     onPageChange: function (pageNow) {
       this.pageNow = pageNow;
+      this.showAllSubmissions(this.targetUsername, this.targetProblemCode);
     },
     onPageSizeChange: function (pageSize) {
       this.pageSize = pageSize;
+      this.showAllSubmissions(this.targetUsername, this.targetProblemCode);
     },
     onSort: function({ key, order }) {
       if (order === 'normal') {
@@ -262,6 +267,8 @@ export default {
       this.$store.commit('contest/setScoreLiked', { userId, status });
     },
     showAllSubmissions: function(username, problemCode) {
+      this.targetUsername = username;
+      this.targetProblemCode = problemCode;
       const infoOpenness = this.contest.features[this.contestStatus === CONTEST_STATUS.RUNNING ? 'contestRunning' : 'contestEnd'];
       const displayPeerSubmission = infoOpenness.displayPeerSubmission;
       if (displayPeerSubmission || this.isAdmin || username === this.profile.username) {
