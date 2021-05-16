@@ -244,9 +244,6 @@ export default {
       targetProblemCode: ''
     }
   },
-  created() {
-    console.log(this.$store.getters);
-  },
   filters: {
     contestProblemId: problemCode => contestProblemIdEncode(problemCode),
     time2minutes: time => {
@@ -295,7 +292,6 @@ export default {
       this.$store.commit('contest/setScoreLiked', { userId, status });
     },
     showAllSubmissions: function(username, problemCode) {
-      console.log(this.$store.getters);
       this.targetUsername = username;
       this.targetProblemCode = problemCode;
       const infoOpenness = this.contest.features[this.contestStatus === CONTEST_STATUS.RUNNING ? 'contestRunning' : 'contestEnd'];
