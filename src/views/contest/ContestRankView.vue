@@ -158,6 +158,28 @@
         </a>
       </td>
     </tr>
+
+     <tr class="summary">
+       <td colspan="3">Summary</td>
+       <td colspan="2">{{ scores.length }}</td>
+       <td v-for="(problem, index) in problems" :key="problem.problemCode">
+         <div>
+           <span class="iconfont">&#xe66e; {{ problems[index].acceptNum }}</span>
+         </div>
+         <div>
+           <span class="iconfont">&#xe60f; {{ problems[index].submitNum }}</span>
+         </div>
+         <div>
+           <span class="iconfont">&#xe8d9; {{ totalPassUser[index] }}</span>
+         </div>
+         <div>
+           <span class="iconfont">&#xe60c {{ totalCommitUser[index] }}</span>
+         </div>
+         <div>
+           <span class="iconfont">&#xe66d; {{firstSuccess[index]}}min </span>
+         </div>
+       </td>
+     </tr>
      </tbody>
    </table>
    <Modal v-model="modelSubmissions" width="60%" footer-hide :closable="false" scrollable>
@@ -222,6 +244,9 @@ export default {
       targetProblemCode: ''
     }
   },
+  created() {
+    console.log(this.$store.getters);
+  },
   filters: {
     contestProblemId: problemCode => contestProblemIdEncode(problemCode),
     time2minutes: time => {
@@ -240,7 +265,10 @@ export default {
       'contestStatus',
       'scores',
       'likedScores',
-      'problems'
+      'problems',
+      'totalCommitUser',
+      'totalPassUser',
+      'firstSuccess'
     ]),
     ...mapGetters('user', ['profile']),
     CONTEST_MODE: () => CONTEST_MODE
@@ -267,6 +295,7 @@ export default {
       this.$store.commit('contest/setScoreLiked', { userId, status });
     },
     showAllSubmissions: function(username, problemCode) {
+      console.log(this.$store.getters);
       this.targetUsername = username;
       this.targetProblemCode = problemCode;
       const infoOpenness = this.contest.features[this.contestStatus === CONTEST_STATUS.RUNNING ? 'contestRunning' : 'contestEnd'];
@@ -303,4 +332,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.iconfont {
+  font-size: 87%;
+  text-align: left;
+  margin-left: 5%;
+}
 </style>
