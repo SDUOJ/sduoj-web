@@ -199,6 +199,7 @@ export default {
         }).then(ret => {
           resolve(ret);
           this.submissions = ret.rows;
+
           // 所有人都看不到 websocket
           if (this.contestId) {
             const infoOpenness = this.contest.features[this.contestStatus === CONTEST_STATUS.RUNNING ? 'contestRunning' : 'contestEnd'];
