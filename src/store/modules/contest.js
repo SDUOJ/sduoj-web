@@ -195,7 +195,7 @@ const getters = {
     }
   },
 
-  EndTime: (state, getters) => {
+  endTime: (state, getters) => {
     let endTime = null;
     if (getters.contestStatus === CONTEST_STATUS.FINISHED) {
       if (state.sliderTime) {
