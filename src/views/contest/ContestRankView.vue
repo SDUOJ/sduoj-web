@@ -173,10 +173,10 @@
            <span class="iconfont">&#xe8d9; {{ totalPassUser[index] }}</span>
          </div>
          <div>
-           <span class="iconfont">&#xe60c {{ totalCommitUser[index] }}</span>
+           <span class="iconfont">&#xe60c; {{ totalCommitUser[index] }}</span>
          </div>
          <div>
-           <span class="iconfont">&#xe66d; {{firstSuccess[index]}}min </span>
+           <span class="iconfont" v-format>&#xe66d; {{firstSuccess[index]}}' </span>
          </div>
        </td>
      </tr>
@@ -329,8 +329,7 @@ export default {
 
 <style lang="less" scoped>
 .iconfont {
-  font-size: 87%;
   text-align: left;
-  margin-left: 5%;
+  margin-left: 2%;
 }
 </style>
