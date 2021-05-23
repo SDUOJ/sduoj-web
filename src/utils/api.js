@@ -273,5 +273,14 @@ export default {
   // 单文件上传
   singleUpload: function(data) {
     return post('/filesys/upload', data);
+  },
+  createQuestion: function(data) {
+    return post('/contest/createQuestion', data)
+  },
+  createReply: function (data) {
+    return post('/contest/reply', data)
+  },
+  getQuestion: function (data) {
+    return get('/contest/question', data)
   }
 }

@@ -74,6 +74,11 @@
           }">
             <span class="span__menu">Rank</span>
           </MenuItem>
+          <MenuItem name="clarification" :to="{
+            name: 'contest-clarification',
+          }">
+            <span class="span__menu">Clarification</span>
+          </MenuItem>
         </template>
         <div class="contest__countdown">
           <template v-if="contestStatus === CONTEST_STATUS.FINISHED">

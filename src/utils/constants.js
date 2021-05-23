@@ -193,3 +193,8 @@ export const GROUP_STATUS_TYPE = {
   JOINED: 2,
   REJECTED: 3
 };
+
+export const CLARIFICATION_TYPE = {
+  UNPUBLIC: 'UNPUBLIC',
+  PUBLIC: 'PUBLIC'
+}
