@@ -10,69 +10,14 @@
 
 <template>
     <div class="box clearfix" v-if="apply">
-      <div class="title">
-        <span>Register in SDUOJ</span>
-      </div>
-      <div class="body">
-        <Form
-          ref="registerForm"
-          :model="registerForm"
-          :rules="registerRules"
-          label-position="right"
-          :label-width="150"
-          label-colon>
-          <FormItem prop="username" label="Username">
-            <Input
-              v-model="registerForm.username"
-              placeholder="This will be your login handler"
-              style="width: 220px"
-            />
-          </FormItem>
-          <FormItem prop="email" label="Email">
-            <Input v-model="registerForm.email" style="width: 220px" type="email" />
-          </FormItem>
-          <FormItem prop="password" label="Password">
-            <Input
-              v-model="registerForm.password"
-              placeholder="At least 6 characters"
-              style="width: 220px"
-              type="password"
-            />
-          </FormItem>
-          <FormItem prop="confirmPassword" label="Confirm Password">
-            <Input
-              v-model="registerForm.confirmPassword"
-              placeholder="Be same as your password"
-              style="width: 220px"
-              type="password"
-            />
-          </FormItem>
-          <FormItem label="Student ID">
-            <Input v-model="registerForm.studentId" style="width: 220px" />
-          </FormItem>
-          <FormItem prop="captcha" label="Captcha">
-            <div class="captcha-code">
-              <Input
-                v-model="registerForm.captcha"
-                placeholder="Click to get captcha"
-                style="width: 220px"
-                @on-focus="onCaptchaInputFocus"
-              />
-            </div>
-            <div class="captcha-img">
-              <Tooltip content="Click to refresh" placement="right">
-                <img :src="captchaImg" @click="getCaptcha"/>
-              </Tooltip>
-            </div>
-        </FormItem>
-        </Form>
-      </div>
-      <div class="bottom">
-        <div class="btns">
-          <router-link :to="{ name: 'login' }">Already registerd?</router-link>
-          <Button type="text"
-            @click="handleRegister('registerForm')"
-            :loading="btnRegisterLoading">Register</Button>
+      <div class="registerDiv">
+        <div class="registerSwitchDiv">
+          <div class="accountRegister">
+            <div class="selectedType">Register Account</div>
+          </div>
+        </div>
+        <div class="registerForm">
+          <AccountRegisterForm @on-success="handleRegister" />
         </div>
       </div>
     </div>
@@ -86,109 +31,20 @@
 
 <script>
 import api from '_u/api';
+import AccountRegisterForm from '_c/form/register/AccountRegisterForm';
 
 export default {
-  // 打开 register 页面的时候，默认调我的接口 "get验证码"，然后我把一个验证码ID，和验证码图片Base64 给你
+  components: { AccountRegisterForm },
   data: function () {
-    const validateUsername = (rule, value, callback) => {
-      // 检查用户名是否存在
-      api.isExist({ username: value }).then(ret => {
-        callback();
-      }).catch(_ => {
-        callback(new Error('already exists'));
-      });
-    };
-    const validateEmail = (rule, value, callback) => {
-      // 检查邮箱是否已被使用
-      api.isExist({ email: value }).then(ret => {
-        callback();
-      }, _ => {
-        callback(new Error('already exists'));
-      });
-    };
-    const validatePass = (rule, value, callback) => {
-      if (value !== '') {
-        this.$refs.registerForm.validateField('confirmPassword');
-      }
-      callback();
-    };
-    const validateConfirmPass = (rule, value, callback) => {
-      if (value !== this.registerForm.password) {
-        callback(new Error('Password does not match'));
-      }
-      callback();
-    };
     return {
-      registerForm: {
-        username: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        studentId: '',
-        captcha: ''
-      },
-      registerRules: {
-        username: [
-          { required: true, trigger: 'blur' },
-          { validator: validateUsername, trigger: 'blur' }
-        ],
-        email: [
-          { required: true, type: 'email', trigger: 'blur' },
-          { validator: validateEmail, trigger: 'blur' }
-        ],
-        password: [
-          { required: true, trigger: 'blur', min: 6, max: 32 },
-          { validator: validatePass, trigger: 'blur' }
-        ],
-        confirmPassword: [
-          { required: true, validator: validateConfirmPass, trigger: 'change' }
-        ],
-        captcha: [{ required: true, trigger: 'blur', min: 1, max: 10 }]
-      },
-      captchaId: 0,
-      captchaImg: '',
-      btnRegisterLoading: false,
       apply: true,
       message: ''
     };
   },
   methods: {
-    getCaptcha: function() {
-      // 模拟获得图形验证码
-      api.getCaptcha().then(ret => {
-        this.captchaId = ret.captchaId;
-        this.captchaImg = ret.captcha;
-      }).catch(err => {
-        this.$Message.error(err.message);
-      });
-    },
-    onCaptchaInputFocus: function() {
-      if (!this.captchaId) {
-        this.getCaptcha();
-      }
-    },
-    handleRegister: function (name) {
-      this.$refs[name].validate((valid) => {
-        if (valid) {
-          const dataForm = Object.assign({}, this.registerForm);
-          delete dataForm.confirmPassword;
-          dataForm.captchaId = this.captchaId;
-          this.btnRegisterLoading = true;
-          api.register(dataForm).then(ret => {
-            this.apply = false;
-            this.message = 'Success, check your email for activation';
-            this.$refs[name].resetFields();
-          }).catch(err => {
-            this.$Message.error(err.message);
-          }).finally(() => {
-            this.btnRegisterLoading = false;
-            this.registerForm.captcha = '';
-            this.getCaptcha();
-          })
-          return;
-        }
-        this.registerForm.captcha = '';
-      });
+    handleRegister: function() {
+      this.apply = false;
+      this.message = 'Success, check your email for activation';
     }
   },
   mounted: function() {
@@ -206,6 +62,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
+@sdu-red: #d84a2b;
 .box {
   width: 420px;
   margin: 0 auto;
@@ -215,50 +72,56 @@ export default {
   box-shadow: 0 0 10px #f5f7f9;
 }
 
-.title {
-  margin: 0.2em 0;
-  padding: 0 0.5em;
-  position: relative;
-  color: #9e0a11;
-  font-size: 1rem;
-  font-weight: bold;
-  border-bottom: 1px solid rgb(185, 185, 185);
+.registerDiv {
+  background: #fff;
+  border-radius: 4px
 }
 
-.body {
-  padding: 1.5em 1em 0 1em;
-}
+.registerSwitchDiv {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  height: 65px;
+  border-bottom: 1px solid #DFE1E6;
+  font-size: 18px;
+  color: rgba(0, 0, 0, .5);
+  cursor: pointer;
 
-/deep/.ivu-form-item-label {
-  font-weight: 500;
-}
-
-.btns {
-  float: right;
-  margin: 5px 0;
-  .ivu-btn:hover {
-    background: rgba(0, 0, 0, 0.05);
-  }
-  a {
-    color: #000;
-    text-decoration: underline;
-    margin-right: 8px;
+  .intervalDiv {
+    height: 20px;
+    border-right: 1px solid #DFE1E6
   }
 }
 
-.captcha-img {
-  margin-top: 5px;
-  :hover {
-    cursor: pointer;
+.registerSwitchDiv .accountRegister {
+  flex-grow: 1;
+  text-align: center;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  div {
+    height: calc(100% - 5px);
+    display: flex;
+    align-items: center;
+    border-bottom: 3px solid transparent;
+    border-top: 3px solid transparent;
   }
 }
 
-.bottom {
-  border-top: 1px solid rgb(185, 185, 185);
-  padding-right: 10px;
+.registerSwitchDiv div.selectedType {
+  border-bottom: 3px solid @sdu-red;
+  color: @sdu-red;
 }
 
 .activation {
   text-align: center;
+}
+
+.registerForm {
+  margin: 20px 10px;
+
 }
 </style>
