@@ -26,8 +26,21 @@
         <ClarificationComment v-for="index in testArray" :props="index" :key="index" @change-form-visible="ChangeFormVisible" />
       </div>
       <div  v-show="submitFormVisible">
-        <MarkdownEditor style="margin: 20px 20px;" />
-        <Button type="primary" class="btn">Submit</Button>
+        <div class="createClaHeader">
+          <div style="margin:20px 20px">
+            <h1>Title:</h1>
+          </div>
+          <div>
+            <Select v-model="Clarification.QuestionTitle" filterable allow-create @on-create="handleCreate" style="margin: 20px 20px; width: 700px">
+              <Option v-for="item in nowOptions" :value="item.problemTitle" :key="item.problemTitle" v-show="item.problemCode">{{ item.problemTitle }}</Option>
+            </Select>
+          </div>
+          <div style="margin: 20px 20px">
+            <h1>Question</h1>
+          </div>
+        </div>
+        <MarkdownEditor style="margin: 50px 20px;" :markdown="Clarification.QuestionContent" ref="md" />
+        <Button type="primary" class="btn" @click="SubmitQuestionForm">Submit</Button>
         <Button type="success" class="btn" @click="ChangeFormVisible(false)">Cancel</Button>
       </div>
     </Content>
@@ -38,6 +51,7 @@
 import { CLARIFICATION_TYPE } from '_u/constants';
 import ClarificationComment from '_c/ClarificationComment';
 import MarkdownEditor from '_c/editor/MarkdownEditor';
+import { mapGetters, mapState } from 'vuex';
 
 export default {
   name: 'ContestClarification',
@@ -51,15 +65,35 @@ export default {
         QuestionTitle: '',
         QuestionContent: ''
       },
+      nowOptions: [],
       testArray: [1, 2, 3, 4, 5, 6, 7]
     }
   },
   methods: {
     ChangeFormVisible(e) {
       this.submitFormVisible = e;
+    },
+    SubmitQuestionForm() {
+      this.Clarification.QuestionContent = this.$refs.md.getMarkdown()
+    },
+    handleCreate(val) {
+      this.nowOptions.push({
+        problemTitle: val,
+        problemCode: false
+      })
     }
   },
+  created() {
+    this.nowOptions = this.$store.getters['contest/problems']
+  },
   computed: {
+    ...mapGetters('user', ['isAdmin']),
+    ...mapState('contest', ['contest', 'problems', 'likedScoresMap']),
+    ...mapGetters('contest', [
+      'contestId',
+      'problems'
+    ]),
+    ...mapGetters('user', ['profile']),
     CLARIFICATION_TYPE: () => CLARIFICATION_TYPE
   }
 }
@@ -142,4 +176,7 @@ export default {
   margin-right: 20px;
 }
 
+/deep/ .v-note-wrapper {
+  z-index: 0;
+}
 </style>

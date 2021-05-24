@@ -41,7 +41,7 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style scoped>
 .CommentHeader {
   background: #e1f0fe;
   padding-left: 2%;
@@ -83,7 +83,7 @@ export default {
 }
 
 /deep/ .v-note-wrapper {
-  z-index: 0;
+  z-index: 0 !important;
 }
 
 </style>

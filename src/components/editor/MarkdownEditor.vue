@@ -1,10 +1,27 @@
 <template>
   <div>
+    <details style="margin-bottom: 5px" v-show="false">
+      <summary>Upload File Attachment</summary>
+      <Upload
+        multiple
+        paste
+        type="drag"
+        :max-size="102400"
+        :file-list.sync="fileList"
+        ref="upload">
+        <div style="padding: 20px 0">
+          <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+          <p>Click or drag files here to upload</p>
+        </div>
+      </Upload>
+      <Button size="small" type="info" @click="attachAdd">Add</Button>
+    </details>
     <mavon-editor
       ref="md"
       @imgAdd="$imgAdd"
       v-model="markdown"
       :externalLink="externalLink"
+      :toolbars="toolbars"
       style="min-height: 600px"/>
   </div>
 </template>
@@ -99,7 +116,19 @@ export default {
     return {
       externalLink,
       markdown: '',
-      fileList: []
+      fileList: [],
+      toolbars: {
+        bold: true, // 粗体
+        italic: true, // 斜体
+        superscript: true, // 上角标
+        subscript: true, // 下角标
+        code: true, // code
+        fullscreen: true, // 全屏编辑
+        /* 1.3.5 */
+        undo: true, // 上一步
+        redo: true, // 下一步
+        preview: true, // 预览
+      }
     }
   },
   methods: {
