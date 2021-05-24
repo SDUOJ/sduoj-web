@@ -22,7 +22,7 @@
       v-model="markdown"
       :externalLink="externalLink"
       :toolbars="toolbars"
-      style="min-height: 600px"/>
+      style="min-height: 600px;"/>
   </div>
 </template>
 

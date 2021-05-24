@@ -13,10 +13,12 @@ import axios from 'axios';
 import store from '@/store';
 
 axios.defaults.baseURL = `${process.env.VUE_APP_OJ_SERVER}/api`;
+// axios.defaults.baseURL = '101.76.220.225:80/api';
 axios.defaults.withCredentials = true;
 
 function post(url, data) {
   data = data || {};
+
   return new Promise((resolve, reject) => {
     axios.post(url, data)
       .then(response => {
@@ -281,6 +283,9 @@ export default {
     return post('/contest/reply', data)
   },
   getQuestion: function (data) {
-    return get('/contest/question', data)
+    return get('/contest/listQuestion', data)
+  },
+  getQuestionDetail: function (data) {
+    return get('/contest/questionDetail', data)
   }
 }

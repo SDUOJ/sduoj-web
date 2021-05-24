@@ -32,6 +32,7 @@ export default {
       }
       if (name === 'Edit') {
         this.$emit('change-form-visible', true)
+        this.$emit('on-edit', this.ClarificationContent)
       }
       if (name === 'Copy') {
 
