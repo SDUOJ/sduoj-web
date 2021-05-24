@@ -18,6 +18,7 @@ export const THIRD_PARTY_ENUM = {
 
 export const THIRD_PARTY_CAS = {
   [THIRD_PARTY_ENUM.SDUCAS]: {
+    name: 'SDUCAS',
     description: 'Shandong University Central Authentication Service',
     targetUrl: function (params) {
       let url = `https://pass.sdu.edu.cn/cas/login?service=${location.origin}${TARGET_ROUTER}${THIRD_PARTY_ENUM.SDUCAS}`;
@@ -39,6 +40,9 @@ export const THIRD_PARTY_CAS = {
       const span1 = h('div', { class: { center: true }, style: { color: '#000000A6' } }, tip1);
       const span2 = h('div', { class: { center: true }, style: { color: '#000000A6' } }, tip2);
       return h('div', [span1, span2]);
+    },
+    getId: function(profile) {
+      return profile.sduId;
     }
   }
 };

@@ -283,5 +283,8 @@ export default {
   },
   thirdPartyRegister: function(data) {
     return post('/user/thirdPartyRegister', data);
+  },
+  thirdPartyUnbinding: function(params) {
+    return get('/user/thirdPartyUnbinding', params);
   }
 }

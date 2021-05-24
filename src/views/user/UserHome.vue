@@ -42,6 +42,24 @@
 <!--            </div>-->
 <!--          </div>-->
         </Card>
+        <Card class="profile clearfix" style="margin: 20px 0;" :padding="20" dis-hover>
+          <List>
+            <ListItem v-for="cas in THIRD_PARTY_ENUM" :key="cas">
+              <ListItemMeta :title="cas" :description="THIRD_PARTY_CAS[cas].description"/>
+              <template slot="action" v-if="THIRD_PARTY_CAS[cas].getId(profile)">
+                <li>
+                  <span>{{ THIRD_PARTY_CAS[cas].getId(profile) }}</span>
+                </li>
+                <li>
+                  <a v-if="!thirdPartyStatus[cas]" href="javascript:void(0)" @click="handleUnbind(cas)">Unbind</a>
+                </li>
+                </template>
+                <template slot="action" v-else>
+                  <li>NONE</li>
+                </template>
+            </ListItem>
+          </List>
+        </Card>
       </Col>
     </Row>
   </div>
@@ -53,11 +71,40 @@ import UserProfile from '@/views/user/children/UserProfile';
 import UserPassword from '@/views/user/children/UserPassword';
 import UserEmail from '@/views/user/children/UserEmail';
 
+import { THIRD_PARTY_CAS, THIRD_PARTY_ENUM } from '../third-party/js/ThirdPartyEnum';
+import api from '_u/api';
+
 export default {
   components: { UserProfile, UserPassword, UserEmail },
+  inject: ['reload'],
+  data: function() {
+    return {
+      thirdPartyStatus: {}
+    };
+  },
   computed: {
     ...mapState('user', ['profile']),
-    ...mapGetters('user', ['avatar', 'isVerified'])
+    ...mapGetters('user', ['avatar', 'isVerified']),
+    THIRD_PARTY_CAS: () => THIRD_PARTY_CAS,
+    THIRD_PARTY_ENUM: () => THIRD_PARTY_ENUM
+  },
+  methods: {
+    handleUnbind: function(thirdParty) {
+      this.thirdPartyStatus[thirdParty] = true;
+      api.thirdPartyUnbinding({ thirdParty }).then(ret => {
+        this.$Message.success('Success');
+        this.reload();
+      }).catch(err => {
+        this.$Message.error(err.message);
+      }).finally(() => {
+        this.thirdPartyStatus[thirdParty] = false;
+      });
+    }
+  },
+  mounted: function() {
+    for (const cas in THIRD_PARTY_ENUM) {
+      this.$set(this.thirdPartyStatus, cas, false);
+    }
   }
 }
 </script>
