@@ -88,17 +88,25 @@ export default {
     const validateUsername = (rule, value, callback) => {
       // 检查用户名是否存在
       api.isExist({ username: value }).then(ret => {
-        callback();
-      }).catch(_ => {
-        callback(new Error('already exists'));
+        if (ret) {
+          callback(new Error('already exists'));
+        } else {
+          callback();
+        }
+      }).catch(err => {
+        this.$Message.error(err.message);
       });
     };
     const validateEmail = (rule, value, callback) => {
       // 检查邮箱是否已被使用
       api.isExist({ email: value }).then(ret => {
-        callback();
-      }, _ => {
-        callback(new Error('already exists'));
+        if (ret) {
+          callback(new Error('already exists'));
+        } else {
+          callback();
+        }
+      }).catch(err => {
+        this.$Message.error(err.message);
       });
     };
     const validatePass = (rule, value, callback) => {
