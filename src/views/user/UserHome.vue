@@ -62,6 +62,10 @@
         </Card>
       </Col>
     </Row>
+    <Reconfirm ref="reconfirm"
+               message="Are you sure to unbind this third party certification?"
+               :confirm-text.sync="confirmText"
+               button-text="I confirm to unbind" />
   </div>
 </template>
 
@@ -70,16 +74,18 @@ import { mapGetters, mapState } from 'vuex';
 import UserProfile from '@/views/user/children/UserProfile';
 import UserPassword from '@/views/user/children/UserPassword';
 import UserEmail from '@/views/user/children/UserEmail';
+import Reconfirm from '_c/Reconfirm';
 
 import { THIRD_PARTY_CAS, THIRD_PARTY_ENUM } from '../third-party/js/ThirdPartyEnum';
 import api from '_u/api';
 
 export default {
-  components: { UserProfile, UserPassword, UserEmail },
+  components: { UserProfile, UserPassword, UserEmail, Reconfirm },
   inject: ['reload'],
   data: function() {
     return {
-      thirdPartyStatus: {}
+      thirdPartyStatus: {},
+      confirmText: ''
     };
   },
   computed: {
@@ -90,14 +96,18 @@ export default {
   },
   methods: {
     handleUnbind: function(thirdParty) {
-      this.thirdPartyStatus[thirdParty] = true;
-      api.thirdPartyUnbinding({ thirdParty }).then(ret => {
-        this.$Message.success('Success');
-        this.reload();
-      }).catch(err => {
-        this.$Message.error(err.message);
-      }).finally(() => {
-        this.thirdPartyStatus[thirdParty] = false;
+      this.confirmText = THIRD_PARTY_CAS[thirdParty].getId(this.profile);
+      console.log(this.confirmText);
+      this.$refs.reconfirm.reconfirm(() => {
+        this.thirdPartyStatus[thirdParty] = true;
+        api.thirdPartyUnbinding({ thirdParty }).then(ret => {
+          this.$Message.success('Success');
+          this.reload();
+        }).catch(err => {
+          this.$Message.error(err.message);
+        }).finally(() => {
+          this.thirdPartyStatus[thirdParty] = false;
+        });
       });
     }
   },

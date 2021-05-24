@@ -47,7 +47,7 @@
 
 <script>
 import { mapActions } from 'vuex';
-import { THIRD_PARTY_CAS, THIRD_PARTY_ENUM } from '@/third-party/ThirdPartyEnum';
+import { THIRD_PARTY_CAS, THIRD_PARTY_ENUM } from '@/views/third-party/js/ThirdPartyEnum';
 import AccountLoginForm from '_c/form/login/AccountLoginForm';
 
 export default {
@@ -70,7 +70,7 @@ export default {
       this.$router.replace(this.$route.query.to || '/');
     },
     handleThirdPartyLogin: function(direct) {
-      window.location = THIRD_PARTY_CAS[direct].targetUrl({ to: this.$route.query.to || '/' });
+      window.location = THIRD_PARTY_CAS[direct].targetUrl();
     }
   }
 }
