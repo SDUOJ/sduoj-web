@@ -27,7 +27,7 @@
         <h1 style="font-size: 300%">{{ ClarificationToShow[getSelected - 1].title }}</h1>
         <div class="clarification state" style="padding: 10px 10px; color: #f5a623">
           <div :class=" 'dot bigger ' + ClarificationToShow[getSelected - 1].isPublic" style="margin-top: 30px;"></div>
-          <h5 style="font-size: 120%; display: inline-block;">UNPUBLICED</h5>
+          <h5 style="font-size: 120%; display: inline-block;">{{ ClarificationToShow[getSelected - 1].isPublic }}</h5>
           <checkbox v-model="isPublic" v-if="isAdmin" @on-change ="SetPublic(isPublic, ClarificationToShow[getSelected - 1].contestClarificationId)"
             style="display: inline-block; color: black; margin-left: 20px">public</checkbox>
         </div>
@@ -204,20 +204,23 @@ export default {
     },
     EditReply(data) {
       api.editReply({
-        contestClarificationId: this.targetItem,
+        clarificationId: this.targetItem,
         content: this.$refs.md.getMarkdown()
       }).then(ret => {
         this.ChangeSubmitFormShow(false);
+        this.getClarificationDetail(this.ClarificationToShow[this.getSelected - 1].contestClarificationId)
       }).catch(err => {
         this.$Message.error(err.message)
       })
     },
     SetPublic(data, id) {
       data = (data ? 1 : 0);
-      const formData = new FormData()
-      formData.append('clarificationId', id);
-      formData.append('opt', data)
-      api.setPublic(formData).catch(err => {
+      api.setPublic({
+        clarificationId: id,
+        opt: data
+      }).then(ret => {
+        this.getClarification()
+      }).catch(err => {
         this.$Message.error(err.message)
       })
     }

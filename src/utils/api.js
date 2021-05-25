@@ -292,9 +292,9 @@ export default {
     return get('/contest/delete', data)
   },
   editReply: function (data) {
-    return post('/manage/contest/edit', data)
+    return get('/manage/contest/edit', data)
   },
   setPublic: function (data) {
-    return get('/manage/contest/publicIt', data)
+    return post('/manage/contest/publicIt', data)
   }
 }
