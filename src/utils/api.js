@@ -287,5 +287,14 @@ export default {
   },
   getQuestionDetail: function (data) {
     return get('/contest/questionDetail', data)
+  },
+  deleteQuestion: function (data) {
+    return get('/contest/delete', data)
+  },
+  editReply: function (data) {
+    return post('/manage/contest/edit', data)
+  },
+  setPublic: function (data) {
+    return get('/manage/contest/publicIt', data)
   }
 }

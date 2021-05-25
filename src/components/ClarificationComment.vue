@@ -7,7 +7,7 @@
         <DropdownMenu slot="list">
           <DropdownItem name="Copy">Copy Link</DropdownItem>
           <DropdownItem name="QA">Quick Answer</DropdownItem>
-          <DropdownItem name="Edit">Edit</DropdownItem>
+          <DropdownItem name="Edit" v-if="isAdmin">Edit</DropdownItem>
         </DropdownMenu>
       </Dropdown>
     </div>
@@ -17,27 +17,34 @@
 
 <script>
 import Markdown from './editor/Markdown';
+import { mapGetters } from 'vuex';
 export default {
   name: 'ClarificationComment',
   components: { Markdown },
   props: [
     'username',
     'time',
-    'ClarificationContent'
+    'ClarificationContent',
+    'contestClarificationId'
   ],
   methods: {
     selectMenu(name) {
       if (name === 'QA') {
-        this.$emit('change-form-visible', true)
+        this.$emit('on-reply')
       }
       if (name === 'Edit') {
-        this.$emit('change-form-visible', true)
-        this.$emit('on-edit', this.ClarificationContent)
+        this.$emit('on-edit', {
+          clarification: this.ClarificationContent,
+          id: this.contestClarificationId
+        })
       }
       if (name === 'Copy') {
 
       }
     }
+  },
+  computed: {
+    ...mapGetters('user', ['isAdmin'])
   }
 }
 </script>

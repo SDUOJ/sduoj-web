@@ -193,6 +193,9 @@ const getters = {
     } else {
       return state.contest.problems;
     }
+  },
+  template: (state) => {
+    return state.contest.template
   }
 }
 

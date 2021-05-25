@@ -1,7 +1,7 @@
 <template>
   <Layout style="min-height: 700px;">
     <Sider width="" style="width: 25%; background: #fff; border-right: #797d7f solid 3px;">
-      <div class="request" @click="ChangeFormVisible(true, true)">
+      <div class="request" @click="ChangeSubmitFormShow(true)">
         <h5>
         REQUEST
         </h5>
@@ -12,11 +12,12 @@
           :key="item.contestClarificationId"
           style="padding: 10px; margin-top: 10px; margin-right: 10px" class="listItem"
           @click.native="getClarificationDetail(item.contestClarificationId, index)">
-
-          <div :class="'dot smaller ' + item.isPublic"></div>
-          <h5 style="font-size: 120%; display: inline-block;">{{ item.title }}</h5>
-          <div class="contentOverView">
-            {{ item.message }}
+          <div style=" position: relative">
+            <div :class="'dot smaller ' + item.isPublic"></div>
+            <h5 style="font-size: 120%; display: inline-block;">{{ item.title }} <Icon type="ios-close" class="closeBtn" @click="DeleteQuestion(item, index)"/></h5>
+            <div class="contentOverView">
+              {{ item.message }}
+            </div>
           </div>
         </ListItem>
       </List>
@@ -27,13 +28,16 @@
         <div class="clarification state" style="padding: 10px 10px; color: #f5a623">
           <div :class=" 'dot bigger ' + ClarificationToShow[getSelected - 1].isPublic" style="margin-top: 30px;"></div>
           <h5 style="font-size: 120%; display: inline-block;">UNPUBLICED</h5>
+          <checkbox v-model="isPublic" v-if="isAdmin" @on-change ="SetPublic(isPublic, ClarificationToShow[getSelected - 1].contestClarificationId)"
+            style="display: inline-block; color: black; margin-left: 20px">public</checkbox>
         </div>
         <ClarificationComment v-for="item in ClarificationReply"
                               :clarification-content="item.message"
+                              :contest-clarification-id="item.contestClarificationId"
                               :username="item.username"
                               :time="item.gmtModified | fromnow"
                               :key="item.contestClarificationId"
-                              @change-form-visible="ChangeFormVisible"
+                              @on-reply="handleReply(item)"
                               @on-edit="handleEdit" />
       </div>
       <div  v-show="submitFormVisible">
@@ -51,9 +55,9 @@
             <h1>Question</h1>
           </div>
         </div>
-        <MarkdownEditor style="margin: 50px 20px;" ref="md" />
-        <Button type="primary" class="btn" @click="SubmitQuestionForm">Submit</Button>
-        <Button type="success" class="btn" @click="ChangeFormVisible(false, false)">Cancel</Button>
+        <MarkdownEditor style="margin: 50px 20px;" ref="md" v-model="QuestionContent" />
+        <Button type="primary" class="btn" @click="SubmitForm">Submit</Button>
+        <Button type="success" class="btn" @click="ChangeSubmitFormShow(false); ">Cancel</Button>
       </div>
     </Content>
   </Layout>
@@ -90,18 +94,44 @@ export default {
       ClarificationToShow: [],
       ClarificationReply: [],
       getSelected: Number,
-      isCreate: false
+      isCreate: false,
+      eventType: {
+        Question: 0,
+        Reply: 1,
+        Edit: 2
+      },
+      event: Number,
+      targetItem: {},
+      isPublic: true
     }
   },
   methods: {
-    ChangeFormVisible(e, f) {
+    ChangeSubmitFormShow(e) {
       this.submitFormVisible = e;
-      this.isCreate = f;
+      this.isCreate = e;
+      this.event = this.eventType.Question
+      this.$refs.md.setMarkdown(this.$store.getters['contest/template'])
     },
     handleEdit(e) {
-      this.$refs.md.markdown = e;
+      this.submitFormVisible = true;
+      this.isCreate = false;
+      this.$refs.md.markdown = e.clarification;
+      this.targetItem = e.id
+      this.event = this.eventType.Edit
     },
-    SubmitQuestionForm() {
+    handleReply(data) {
+      this.submitFormVisible = true;
+      this.isCreate = false;
+      this.event = this.eventType.Reply;
+      this.targetItem = data
+      this.$refs.md.markdown = '';
+    },
+    SubmitForm() {
+      if (this.event === this.eventType.Question) this.SubmitQuestion()
+      else if (this.event === this.eventType.Reply) this.SubmitReply()
+      else this.EditReply()
+    },
+    SubmitQuestion() {
       this.QuestionContent = this.$refs.md.getMarkdown()
       this.QuestionTitle += ' ' + this.extraMsg
       const that = this
@@ -111,36 +141,84 @@ export default {
         message: this.QuestionContent
       }).then(ret => {
         that.submitFormVisible = false
-        this.getClarification()
+        that.isCreate = false;
+        that.getClarification()
+      }).catch(err => {
+        that.$Message.error(err.message);
+      })
+    },
+    checkPublic() {
+      this.isPublic = (this.ClarificationToShow[this.getSelected - 1].isPublic === CLARIFICATION_TYPE.PUBLIC)
+    },
+    SubmitReply() {
+      this.QuestionContent = this.$refs.md.getMarkdown()
+      const Root = this.targetItem.rootId === '0' ? this.targetItem.contestClarificationId : this.targetItem.rootId
+      api.createReply({
+        contestId: this.$store.getters['contest/contestId'],
+        message: this.QuestionContent,
+        rootId: Root,
+        parentId: this.targetItem.contestClarificationId
+      }).then(ret => {
+        this.ChangeSubmitFormShow(false)
+        this.getClarificationDetail(this.ClarificationToShow[this.getSelected - 1].contestClarificationId)
       }).catch(err => {
         this.$Message.error(err.message);
       })
-      this.isCreate = false;
     },
     getClarification() {
-      const that = this;
       api.getQuestion({ contestId: this.$store.getters['contest/contestId'] }).then(ret => {
         ret.forEach(item => {
           if (item.isPublic) item.isPublic = CLARIFICATION_TYPE.PUBLIC
           else item.isPublic = CLARIFICATION_TYPE.UNPUBLIC
         });
-        that.ClarificationToShow = ret
+        this.ClarificationToShow = ret
       }).catch(err => {
         this.$Message.error(err.message);
       })
     },
     getClarificationDetail(data, index) {
-      const that = this;
-      this.ChangeFormVisible(false)
-      this.getSelected = index + 1;
+      if (index) this.getSelected = index + 1;
+      this.ChangeSubmitFormShow(false)
+      this.checkPublic()
       api.getQuestionDetail({ clarificationId: data }).then(ret => {
         ret.forEach(item => {
           if (item.isPublic) item.isPublic = CLARIFICATION_TYPE.PUBLIC
           else item.isPublic = CLARIFICATION_TYPE.UNPUBLIC
         });
-        that.ClarificationReply = ret
+        this.ClarificationReply = ret
       }).catch(err => {
         this.$Message.error(err.message);
+      })
+    },
+    DeleteQuestion(e, index) {
+      if (e.isPublic === 'Public') {
+        this.$Message.error('公开问题不予删除');
+      } else {
+        api.deleteQuestion({ clarificationId: e.contestClarificationId }).then(ret => {
+          this.$Message.success('删除成功')
+          this.ClarificationToShow.splice(index, 1)
+        }).catch(err => {
+          this.$Message.error(err.message)
+        })
+      }
+    },
+    EditReply(data) {
+      api.editReply({
+        contestClarificationId: this.targetItem,
+        content: this.$refs.md.getMarkdown()
+      }).then(ret => {
+        this.ChangeSubmitFormShow(false);
+      }).catch(err => {
+        this.$Message.error(err.message)
+      })
+    },
+    SetPublic(data, id) {
+      data = (data ? 1 : 0);
+      const formData = new FormData()
+      formData.append('clarificationId', id);
+      formData.append('opt', data)
+      api.setPublic(formData).catch(err => {
+        this.$Message.error(err.message)
       })
     }
   },
@@ -149,12 +227,18 @@ export default {
     this.getClarification()
     this.getSelected = 0
   },
+  mounted: function () {
+    this.$nextTick(() => {
+      this.$refs.md.setMarkdown(this.$store.getters['contest/template'])
+    })
+  },
   computed: {
     ...mapGetters('user', ['isAdmin']),
-    ...mapState('contest', ['contest', 'problems', 'likedScoresMap']),
+    ...mapState('contest', ['contest', 'problems']),
     ...mapGetters('contest', [
       'contestId',
-      'problems'
+      'problems',
+      'template'
     ]),
     ...mapGetters('user', ['profile']),
     CLARIFICATION_TYPE: () => CLARIFICATION_TYPE
@@ -250,6 +334,16 @@ export default {
   padding-left: 3px;
   padding-right: 20px;
   border-radius: 5px;
+}
+
+.closeBtn {
+  display: inline-block;
+  position: absolute;
+  right: 1px;
+}
+
+.closeBtn:hover {
+  background: #ed4014;
 }
 
 /deep/ .v-note-wrapper {
