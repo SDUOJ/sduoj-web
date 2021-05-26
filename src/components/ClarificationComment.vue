@@ -1,7 +1,7 @@
 <template>
   <div class="ClarificationComment" style="margin: 10px">
     <div class="CommentHeader">
-      <a class="username">{{username}}</a> <p style="display: inline-block; margin-left: 5px">commented {{time}} ago</p>
+      <a class="username">{{username}}</a> <p style="display: inline-block; margin-left: 5px">commented {{time}}</p>
       <Dropdown placement="bottom-start" class="options" @on-click="selectMenu">
         <a>...</a>
         <DropdownMenu slot="list">
@@ -43,7 +43,8 @@ export default {
         })
       }
       if (name === 'Copy') {
-
+        window.clipboardData.setData('Text', this.location.href);
+        this.$Message.success('复制到剪贴板')
       }
     }
   },
