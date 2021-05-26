@@ -11,7 +11,10 @@
         </DropdownMenu>
       </Dropdown>
     </div>
-    <Markdown :value="ClarificationContent || ''" style="min-height: 100px" class="markdown" />
+    <div class="markdown">
+      <Markdown class="replyRoot" :value="replyRoot" v-if="replyRoot" />
+      <Markdown :value="ClarificationContent"  style="min-height: 100px; margin-top: 10px" />
+    </div>
   </div>
 </template>
 
@@ -25,7 +28,8 @@ export default {
     'username',
     'time',
     'ClarificationContent',
-    'contestClarificationId'
+    'contestClarificationId',
+    'replyRoot'
   ],
   methods: {
     selectMenu(name) {
@@ -51,7 +55,7 @@ export default {
 
 <style scoped>
 .CommentHeader {
-  background: #e1f0fe;
+  background: #FFFFCC;
   padding-left: 2%;
   height: 40px;
   line-height: 40px;
@@ -70,13 +74,13 @@ export default {
   content: " ";
   -webkit-clip-path: polygon(0 50%,100% 0,100% 100%);
   clip-path: polygon(0 50%,100% 0,100% 100%);
-  background-color: #e1f0fe;
+  background-color: #FFFFCC;
   display: block;
 }
 
 .ClarificationComment {
   border-radius: 10px;
-  background: #e8eaec;
+  background: #fff
 }
 
 .CommentHeader .options{
@@ -88,6 +92,12 @@ export default {
 
 .username {
   border-bottom: 1px solid;
+}
+
+.replyRoot {
+  padding-left: 2px;
+  padding: 1% 1%;
+  color: #BDC3C7;
 }
 
 /deep/ .v-note-wrapper {

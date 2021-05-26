@@ -37,6 +37,7 @@
                               :username="item.username"
                               :time="item.gmtModified | fromnow"
                               :key="item.contestClarificationId"
+                              :reply-root="ClarificationReply[indexMp[item.parentId]].message"
                               @on-reply="handleReply(item)"
                               @on-edit="handleEdit" />
       </div>
@@ -102,7 +103,8 @@ export default {
       },
       event: Number,
       targetItem: {},
-      isPublic: true
+      isPublic: true,
+      indexMp: {}
     }
   },
   methods: {
@@ -177,6 +179,7 @@ export default {
       })
     },
     getClarificationDetail(data, index) {
+      let flag = 0;
       if (index) this.getSelected = index + 1;
       this.ChangeSubmitFormShow(false)
       this.checkPublic()
@@ -184,8 +187,13 @@ export default {
         ret.forEach(item => {
           if (item.isPublic) item.isPublic = CLARIFICATION_TYPE.PUBLIC
           else item.isPublic = CLARIFICATION_TYPE.UNPUBLIC
+          this.indexMp[item.contestClarificationId] = flag;
+          flag++;
         });
         this.ClarificationReply = ret
+        this.ClarificationReply['000'] = {}
+        this.ClarificationReply['000'].message = 0
+        this.indexMp[0] = '000'
       }).catch(err => {
         this.$Message.error(err.message);
       })
