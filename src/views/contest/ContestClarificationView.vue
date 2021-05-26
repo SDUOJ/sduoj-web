@@ -180,7 +180,7 @@ export default {
     },
     getClarificationDetail(data, index) {
       let flag = 0;
-      if (index) this.getSelected = index + 1;
+      if (index >= 0) this.getSelected = index + 1;
       this.ChangeSubmitFormShow(false)
       this.checkPublic()
       api.getQuestionDetail({ clarificationId: data }).then(ret => {
