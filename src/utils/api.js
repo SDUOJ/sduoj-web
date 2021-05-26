@@ -273,5 +273,18 @@ export default {
   // 单文件上传
   singleUpload: function(data) {
     return post('/filesys/upload', data);
+  },
+  /* third-party-login */
+  thirdPartyLogin: function(params) {
+    return get('/user/thirdPartyLogin', params);
+  },
+  thirdPartyBinding: function(data) {
+    return post('/user/thirdPartyBinding', data);
+  },
+  thirdPartyRegister: function(data) {
+    return post('/user/thirdPartyRegister', data);
+  },
+  thirdPartyUnbinding: function(params) {
+    return get('/user/thirdPartyUnbinding', params);
   }
 }
