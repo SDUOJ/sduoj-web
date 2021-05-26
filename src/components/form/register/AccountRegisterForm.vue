@@ -64,7 +64,7 @@
       <Button class="btn" type="error" long size="large"
               @click="handleRegister"
               :loading="btnRegisterLoading">{{ registerText }}</Button>
-      <Button v-if="token === ''" class="btn" long :to="{ name: 'reset-password'}">Already registered</Button>
+      <Button v-if="token === ''" class="btn" long :to="{ name: 'login' }">Already registered</Button>
     </div>
   </div>
 </template>

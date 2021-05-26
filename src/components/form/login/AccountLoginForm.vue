@@ -27,7 +27,7 @@
       <Button class="btn" type="error" long size="large"
               @click="handleAccountLogin"
               :loading="btnAccountLoginLoading">{{ loginText }}</Button>
-      <Button v-if="token === ''" class="btn" long :to="{ name: 'reset-password'}">Forget password</Button>
+      <Button v-if="token === ''" class="btn" long :to="{ name: 'reset-password' }">Forget password</Button>
     </div>
   </div>
 </template>
