@@ -97,7 +97,6 @@ export default {
   methods: {
     handleUnbind: function(thirdParty) {
       this.confirmText = THIRD_PARTY_CAS[thirdParty].getId(this.profile);
-      console.log(this.confirmText);
       this.$refs.reconfirm.reconfirm(() => {
         this.thirdPartyStatus[thirdParty] = true;
         api.thirdPartyUnbinding({ thirdParty }).then(ret => {
