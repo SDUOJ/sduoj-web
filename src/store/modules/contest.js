@@ -195,61 +195,54 @@ const getters = {
     }
   },
 
-  endTime: (state, getters) => {
-    let endTime = null;
-    if (getters.contestStatus === CONTEST_STATUS.FINISHED) {
-      if (state.sliderTime) {
-        endTime = state.sliderTime;
-      } else if (!state.settings.showPractice) {
-        endTime = getters.contestEndTime;
-      }
-    }
-    return endTime;
-  },
-
-  totalCommitUser: (state, getters) => {
+  submitUserNum: (state, getters) => {
     const sum = Array(state.problems.length);
-
     for (let j = 0; j < state.problems.length; j++) sum[j] = 0;
 
-    for (let i = 0; i < getters.scores.length; i++) {
-      for (let k = 0; k < getters.scores[i].problemResults.length; k++) {
-        if (getters.scores[i].problemResults[k].css !== '') sum[getters.scores[i].problemResults[k].problemCode - 1]++;
-      }
-    }
+    getters.scores.forEach(score => {
+      score.problemResults.forEach(result => {
+        if (result.time > 0) {
+          sum[result.problemCode - 1]++;
+        }
+      });
+    });
+
     return sum;
   },
 
-  totalPassUser: (state, getters) => {
+  acceptUserNum: (state, getters) => {
     const sum = Array(state.problems.length);
-
     for (let j = 0; j < state.problems.length; j++) sum[j] = 0;
 
-    for (let i = 0; i < getters.scores.length; i++) {
-      for (let k = 0; k < getters.scores[i].problemResults.length; k++) {
-        if (getters.scores[i].problemResults[k].score === 100) {
-          sum[getters.scores[i].problemResults[k].problemCode - 1]++;
+    getters.scores.forEach(score => {
+      score.problemResults.forEach(result => {
+        if (JUDGE_RESULT_TYPE.AC === result.judgeResult) {
+          sum[result.problemCode - 1]++;
         }
-      }
-    }
+      });
+    });
+
     return sum;
   },
 
-  firstSuccess: (state, getters) => {
+  firstBloodTime: (state, getters) => {
     const sum = Array(state.problems.length);
+    for (let j = 0; j < state.problems.length; j++) sum[j] = 0;
 
-    for (let j = 0; j < state.problems.length; j++) sum[j] = 1000000000;
-
-    for (let j = 0; j < getters.scores.length; j++) {
-      for (let k = 0; k < getters.scores[j].problemResults.length; k++) {
-        const temp = getters.scores[j].problemResults[k];
-        if (parseInt(temp.score) === 100 && temp.time < sum[temp.problemCode - 1]) {
-          sum[temp.problemCode - 1] = temp.time;
-        }
+    getters.scores.forEach(score => {
+      if (score.official) {
+        score.problemResults.forEach(result => {
+          if (JUDGE_RESULT_TYPE.AC === result.judgeResult) {
+            if (!sum[result.problemCode - 1] || sum[result.problemCode - 1] > result.time) {
+              sum[result.problemCode - 1] = result.time;
+            }
+          }
+        });
       }
-    }
+    });
+
     for (let k = 0; k < sum.length; k++) {
-      if (sum[k] === 1000000000) sum[k] = '';
+      if (!sum[k]) sum[k] = '';
       else sum[k] = parseInt(sum[k] / 60000).toString();
     }
     return sum;

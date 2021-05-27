@@ -39,9 +39,8 @@
           }"
           class="alike">
           <strong>{{ problem.problemCode | contestProblemId }}</strong>
-          <div class="circle" v-if="problem.problemColor" :style="`background: ${problem.problemColor}; margin-left: 5px`" />
+          <div class="circle" v-if="problem.problemColor" :style="`background: ${problem.problemColor}; margin-left: 5px; margin-top: -3px;`" />
          </router-link>
-         <div class="problempoints">{{ problem.acceptNum || '-' }} / {{ problem.submitNum || '-' }}</div>
        </th>
      </tr>
      </thead>
@@ -170,13 +169,13 @@
            <span class="iconfont">&#xe60f; {{ problems[index].submitNum }}</span>
          </div>
          <div>
-           <span class="iconfont">&#xe8d9; {{ totalPassUser[index] }}</span>
+           <span class="iconfont">&#xe8d9; {{ submitUserNum[index] }}</span>
          </div>
          <div>
-           <span class="iconfont">&#xe60c; {{ totalCommitUser[index] }}</span>
+           <span class="iconfont">&#xe60c; {{ acceptUserNum[index] }}</span>
          </div>
          <div>
-           <span class="iconfont" v-format>&#xe66d; {{firstSuccess[index]}}' </span>
+           <span class="iconfont" v-format>&#xe66d; {{ firstBloodTime[index] }}' </span>
          </div>
        </td>
      </tr>
@@ -260,9 +259,9 @@ export default {
       'scores',
       'likedScores',
       'problems',
-      'totalCommitUser',
-      'totalPassUser',
-      'firstSuccess'
+      'submitUserNum',
+      'acceptUserNum',
+      'firstBloodTime'
     ]),
     ...mapGetters('user', ['profile']),
     CONTEST_MODE: () => CONTEST_MODE
