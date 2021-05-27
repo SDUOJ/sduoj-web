@@ -198,10 +198,9 @@ const getters = {
   submitUserNum: (state, getters) => {
     const sum = Array(state.problems.length);
     for (let j = 0; j < state.problems.length; j++) sum[j] = 0;
-
     getters.scores.forEach(score => {
       score.problemResults.forEach(result => {
-        if (result.time > 0) {
+        if (result.numSubmissions + result.numSubmissionsPending > 0) {
           sum[result.problemCode - 1]++;
         }
       });

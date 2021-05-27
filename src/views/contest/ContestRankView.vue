@@ -169,10 +169,10 @@
            <span class="iconfont">&#xe60f; {{ problems[index].submitNum }}</span>
          </div>
          <div>
-           <span class="iconfont">&#xe8d9; {{ submitUserNum[index] }}</span>
+           <span class="iconfont">&#xe8d9; {{ acceptUserNum[index] }}</span>
          </div>
          <div>
-           <span class="iconfont">&#xe60c; {{ acceptUserNum[index] }}</span>
+           <span class="iconfont">&#xe60c; {{ submitUserNum[index] }}</span>
          </div>
          <div>
            <span class="iconfont" v-format>&#xe66d; {{ firstBloodTime[index] }}' </span>
