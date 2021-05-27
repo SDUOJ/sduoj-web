@@ -134,6 +134,13 @@ export default {
       else this.EditReply()
     },
     SubmitQuestion() {
+      if (!this.QuestionTitle.length > 0) {
+        this.$Message.error({
+          title: 'Error',
+          content: '请选择一个问题'
+        })
+        return;
+      }
       this.QuestionContent = this.$refs.md.getMarkdown()
       this.QuestionTitle += ' ' + this.extraMsg
       const that = this
@@ -199,16 +206,22 @@ export default {
       })
     },
     DeleteQuestion(e, index) {
-      if (e.isPublic === 'Public') {
-        this.$Message.error('公开问题不予删除');
-      } else {
-        api.deleteQuestion({ clarificationId: e.contestClarificationId }).then(ret => {
-          this.$Message.success('删除成功')
-          this.ClarificationToShow.splice(index, 1)
-        }).catch(err => {
-          this.$Message.error(err.message)
-        })
-      }
+      this.$Modal.confirm({
+        title: 'Warning',
+        content: '<p>You \'er deleting the question.</p><p>Go on?</p>',
+        onOk: () => {
+          if (e.isPublic === 'Public') {
+            this.$Message.error('公开问题不予删除');
+          } else {
+            api.deleteQuestion({ clarificationId: e.contestClarificationId }).then(ret => {
+              this.$Message.success('删除成功')
+              this.ClarificationToShow.splice(index, 1)
+            }).catch(err => {
+              this.$Message.error(err.message)
+            })
+          }
+        }
+      });
     },
     EditReply(data) {
       api.editReply({
