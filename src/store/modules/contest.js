@@ -193,6 +193,58 @@ const getters = {
     } else {
       return state.contest.problems;
     }
+  },
+
+  submitUserNum: (state, getters) => {
+    const sum = Array(state.problems.length);
+    for (let j = 0; j < state.problems.length; j++) sum[j] = 0;
+    getters.scores.forEach(score => {
+      score.problemResults.forEach(result => {
+        if (result.numSubmissions + result.numSubmissionsPending > 0) {
+          sum[result.problemCode - 1]++;
+        }
+      });
+    });
+
+    return sum;
+  },
+
+  acceptUserNum: (state, getters) => {
+    const sum = Array(state.problems.length);
+    for (let j = 0; j < state.problems.length; j++) sum[j] = 0;
+
+    getters.scores.forEach(score => {
+      score.problemResults.forEach(result => {
+        if (JUDGE_RESULT_TYPE.AC === result.judgeResult) {
+          sum[result.problemCode - 1]++;
+        }
+      });
+    });
+
+    return sum;
+  },
+
+  firstBloodTime: (state, getters) => {
+    const sum = Array(state.problems.length);
+    for (let j = 0; j < state.problems.length; j++) sum[j] = 0;
+
+    getters.scores.forEach(score => {
+      if (score.official) {
+        score.problemResults.forEach(result => {
+          if (JUDGE_RESULT_TYPE.AC === result.judgeResult) {
+            if (!sum[result.problemCode - 1] || sum[result.problemCode - 1] > result.time) {
+              sum[result.problemCode - 1] = result.time;
+            }
+          }
+        });
+      }
+    });
+
+    for (let k = 0; k < sum.length; k++) {
+      if (!sum[k]) sum[k] = '';
+      else sum[k] = parseInt(sum[k] / 60000).toString();
+    }
+    return sum;
   }
 }
 
