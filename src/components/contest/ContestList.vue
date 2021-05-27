@@ -66,8 +66,9 @@
             </li>
             <li>
               <Tag v-if="$store.state.now > contest.gmtEnd" color="green">Finished</Tag>
-              <Tag v-else-if="contest.gmtStart < $store.state.now && $store.state.now < contest.gmtEnd" color="gold">Running</Tag>
-              <Tag v-if="contest.isPublic === 0" color="red">Private</Tag>
+              <Tag v-else-if="contest.gmtStart < $store.state.now && $store.state.now < contest.gmtEnd" color="gold">
+                Running
+              </Tag>
             </li>
           </ul>
         </ListItemMeta>

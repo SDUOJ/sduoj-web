@@ -276,8 +276,6 @@ export default {
   singleUpload: function(data) {
     return post('/filesys/upload', data);
   },
-
-  // QA
   createQuestion: function(data) {
     return post('/contest/createQuestion', data)
   },
@@ -298,18 +296,5 @@ export default {
   },
   setPublic: function (data) {
     return post('/manage/contest/publicIt', data)
-  },
-  /* third-party-login */
-  thirdPartyLogin: function(params) {
-    return get('/user/thirdPartyLogin', params);
-  },
-  thirdPartyBinding: function(data) {
-    return post('/user/thirdPartyBinding', data);
-  },
-  thirdPartyRegister: function(data) {
-    return post('/user/thirdPartyRegister', data);
-  },
-  thirdPartyUnbinding: function(params) {
-    return get('/user/thirdPartyUnbinding', params);
   }
 }

@@ -97,26 +97,19 @@
         <span>{{ group.memberNum }}</span>
       </div>
     </div>
-    <Reconfirm ref="reconfirm"
-               title="Are you sure?"
-               message="This action cannot be undone. Are you sure to quit this group?"
-               :confirm-text="profile.username"
-               button-text="I confirm to quit" />
   </div>
 </template>
 
 <script>
 import moment from 'moment';
 import UserCard from '_c/UserCard';
-import Reconfirm from '_c/Reconfirm';
-import { mapState } from 'vuex';
 
 import { GROUP_OPENNESS_TYPE, GROUP_STATUS_TYPE } from '_u/constants';
 import api from '_u/api';
 
 export default {
   name: 'GroupCard',
-  components: { UserCard, Reconfirm },
+  components: { UserCard },
   inject: ['reload'],
   props: {
     group: {
@@ -142,7 +135,6 @@ export default {
     }
   },
   computed: {
-    ...mapState('user', ['profile']),
     GROUP_STATUS_TYPE: () => GROUP_STATUS_TYPE,
     GROUP_OPENNESS_TYPE: () => GROUP_OPENNESS_TYPE,
     titleClasses: function () {
@@ -204,17 +196,22 @@ export default {
       });
     },
     handleQuit: function () {
-      this.$refs.reconfirm.reconfirm(() => {
-        api.quitGroup({
-          groupId: this.group.groupId
-        }).then(ret => {
-          this.$Message.success('Group quited');
-          this.$Modal.remove();
-          this.reload();
-        }).catch(err => {
-          this.$Message.error(err.message);
-          this.reload();
-        });
+      this.$Modal.confirm({
+        title: `Confirm quit #${this.group.groupId}`,
+        content: `Do you want to quit group ${this.group.title} ?`,
+        loading: true,
+        onOk: () => {
+          api.quitGroup({
+            groupId: this.group.groupId
+          }).then(ret => {
+            this.$Message.success('Group quited');
+            this.$Modal.remove();
+            this.reload();
+          }).catch(err => {
+            this.$Message.error(err.message);
+            this.reload();
+          });
+        }
       });
     },
     clickTitle: function () {
