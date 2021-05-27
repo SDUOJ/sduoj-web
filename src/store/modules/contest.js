@@ -197,7 +197,7 @@ const getters = {
 
   template: (state) => {
     return state.contest.template
-  }
+  },
 
   submitUserNum: (state, getters) => {
     const sum = Array(state.problems.length);

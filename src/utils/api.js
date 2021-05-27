@@ -13,7 +13,6 @@ import axios from 'axios';
 import store from '@/store';
 
 axios.defaults.baseURL = `${process.env.VUE_APP_OJ_SERVER}/api`;
-// axios.defaults.baseURL = '101.76.220.225:80/api';
 axios.defaults.withCredentials = true;
 
 function post(url, data) {
@@ -296,7 +295,7 @@ export default {
   },
   setPublic: function (data) {
     return post('/manage/contest/publicIt', data)
-  }
+  },
   /* third-party-login */
   thirdPartyLogin: function(params) {
     return get('/user/thirdPartyLogin', params);
