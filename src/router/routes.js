@@ -121,6 +121,11 @@ const routes = [
     component: () => import('@/views/group/GroupDetailView')
   },
   {
+    name: 'third-party-login',
+    path: '/thirdPartyLogin',
+    component: () => import('@/views/third-party/ThirdPartyLogin')
+  },
+  {
     path: '*',
     name: '404',
     component: () => import('@/views/404View')

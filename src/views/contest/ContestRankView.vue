@@ -39,9 +39,8 @@
           }"
           class="alike">
           <strong>{{ problem.problemCode | contestProblemId }}</strong>
-          <div class="circle" v-if="problem.problemColor" :style="`background: ${problem.problemColor}; margin-left: 5px`" />
+          <div class="circle" v-if="problem.problemColor" :style="`background: ${problem.problemColor}; margin-left: 5px; margin-top: -3px;`" />
          </router-link>
-         <div class="problempoints">{{ problem.acceptNum || '-' }} / {{ problem.submitNum || '-' }}</div>
        </th>
      </tr>
      </thead>
@@ -158,6 +157,28 @@
         </a>
       </td>
     </tr>
+
+     <tr class="summary">
+       <td colspan="3">Summary</td>
+       <td colspan="2">{{ scores.length }}</td>
+       <td v-for="(problem, index) in problems" :key="problem.problemCode">
+         <div>
+           <span class="iconfont">&#xe66e; {{ problems[index].acceptNum }}</span>
+         </div>
+         <div>
+           <span class="iconfont">&#xe60f; {{ problems[index].submitNum }}</span>
+         </div>
+         <div>
+           <span class="iconfont">&#xe8d9; {{ acceptUserNum[index] }}</span>
+         </div>
+         <div>
+           <span class="iconfont">&#xe60c; {{ submitUserNum[index] }}</span>
+         </div>
+         <div>
+           <span class="iconfont" v-format>&#xe66d; {{ firstBloodTime[index] }}' </span>
+         </div>
+       </td>
+     </tr>
      </tbody>
    </table>
    <Modal v-model="modelSubmissions" width="60%" footer-hide :closable="false" scrollable>
@@ -240,7 +261,10 @@ export default {
       'contestStatus',
       'scores',
       'likedScores',
-      'problems'
+      'problems',
+      'submitUserNum',
+      'acceptUserNum',
+      'firstBloodTime'
     ]),
     ...mapGetters('user', ['profile']),
     CONTEST_MODE: () => CONTEST_MODE
@@ -303,4 +327,8 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.iconfont {
+  text-align: left;
+  margin-left: 2%;
+}
 </style>
