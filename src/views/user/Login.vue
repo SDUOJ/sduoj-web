@@ -10,76 +10,74 @@
 
 <template>
   <div class="box clearfix">
-      <div class="title">
-          <span>Welcome to SDUOJ</span>
-      </div>
-      <div class="body">
-        <Form ref="loginForm"
-          :model="loginForm"
-          :rules="loginRules"
-          label-position="right"
-          :label-width="150"
-          label-colo>
-          <FormItem prop="username" label="Username">
-            <Input v-model="loginForm.username" placeholder="Username" style="width: 220px" />
-          </FormItem>
-          <FormItem prop="password" label="Password">
-            <Input type="password" v-model="loginForm.password" placeholder="Password" style="width: 220px" @on-enter="handleLogin('loginForm')"/>
-          </FormItem>
-        </Form>
-      </div>
-      <div class="bottom">
-        <div class="btns">
-          <router-link :to="{ name: 'reset-password' }">Forgot your password?</router-link>
-          <Button type="text"
-            @click="handleLogin('loginForm')"
-            :loading="btnLoginLoading">Login</Button>
+    <div class="loginDiv">
+      <div class="loginSwitchDiv">
+        <div class="thirdPartyLogin" @click="switchLoginType(true)">
+          <div :class="{ selectedType: isThirdPartyLogin }">Third Party</div>
+        </div>
+        <div class="intervalDiv"></div>
+        <div class="accountLogin" @click="switchLoginType(false)">
+          <div :class="{ selectedType: !isThirdPartyLogin }">Account</div>
         </div>
       </div>
+      <div class="loginForm">
+        <div v-if="isThirdPartyLogin">
+<!--          <span class="loginTip">-->
+<!--            <span>SDU CAS</span>-->
+<!--          </span>-->
+          <div class="btnGroup">
+            <Button class="btn" long type="error" size="large" @click="handleThirdPartyLogin(THIRD_PARTY_ENUM.SDUCAS)"> SDU 统一身份认证 </Button>
+          </div>
+<!--          <span class="loginTip">-->
+<!--            <span>Other Certifications</span>-->
+<!--          </span>-->
+<!--          <div class="btnGroup">-->
+<!--            <Button class="btn" long size="large"> QQ </Button>-->
+<!--            <Button class="btn" long size="large"> WeChat </Button>-->
+<!--            <Button class="btn" long size="large"> Github </Button>-->
+<!--          </div>-->
+        </div>
+        <div v-else>
+          <AccountLoginForm @on-success="handleAccountLogin" />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import api from '_u/api';
 import { mapActions } from 'vuex';
+import { THIRD_PARTY_CAS, THIRD_PARTY_ENUM } from '@/views/third-party/js/ThirdPartyEnum';
+import AccountLoginForm from '_c/form/login/AccountLoginForm';
 
 export default {
+  components: { AccountLoginForm },
   data: function() {
     return {
-      loginForm: {
-        username: '',
-        password: ''
-      },
-      loginRules: {
-        username: [
-          { required: true, trigger: 'blur' }
-        ],
-        password: [
-          { required: true, trigger: 'blur', min: 6, max: 32 }
-        ]
-      },
-      btnLoginLoading: false
+      isThirdPartyLogin: true
     }
   },
+  computed: {
+    THIRD_PARTY_ENUM: () => THIRD_PARTY_ENUM
+  },
   methods: {
-    ...mapActions('user', ['setProfile', 'setLogin']),
-    handleLogin: function(name) {
-      this.$refs[name].validate(valid => {
-        if (valid) {
-          api.login(this.loginForm).then(ret => {
-            this.setProfile(ret);
-            this.$router.replace(this.$route.query.to || '/');
-          }).catch(err => {
-            this.$Message.error(err.message);
-          });
-        }
-      })
+    ...mapActions('user', ['setProfile']),
+    switchLoginType: function(type) {
+      this.isThirdPartyLogin = type;
+    },
+    handleAccountLogin: function(profile) {
+      this.setProfile(profile);
+      this.$router.replace(this.$route.query.to || '/');
+    },
+    handleThirdPartyLogin: function(direct) {
+      window.location = THIRD_PARTY_CAS[direct].targetUrl();
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
+@sdu-red: #d84a2b;
 .box {
   width: 420px;
   margin: 0 auto;
@@ -89,43 +87,96 @@ export default {
   box-shadow: 0 0 10px #f5f7f9;
 }
 
-.title {
-  margin: 0.2em 0;
-  padding: 0 0.5em;
+.loginDiv {
+  background: #fff;
+  border-radius: 4px
+}
+
+.loginSwitchDiv {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  height: 65px;
+  border-bottom: 1px solid #DFE1E6;
+  font-size: 18px;
+  color: rgba(0, 0, 0, .5);
+  cursor: pointer;
+
+  .intervalDiv {
+    height: 20px;
+    border-right: 1px solid #DFE1E6
+  }
+}
+
+.loginSwitchDiv .thirdPartyLogin,
+.loginSwitchDiv .accountLogin {
+  flex-grow: 1;
+  text-align: center;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  div {
+    height: calc(100% - 5px);
+    display: flex;
+    align-items: center;
+    border-bottom: 3px solid transparent;
+    border-top: 3px solid transparent;
+  }
+}
+
+.loginSwitchDiv div.selectedType {
+  border-bottom: 3px solid @sdu-red;
+  color: @sdu-red;
+}
+
+.loginTip {
+  width: 100%;
+  text-align: center;
   position: relative;
-  color: #9e0a11;
-  font-size: 1rem;
-  font-weight: bold;
-  border-bottom: 1px solid rgb(185, 185, 185);
+  line-height: 1;
+  margin: 12px auto;
+  display: block;
+}
+.loginTip:before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  display: block;
+  width: 100%;
+  border-top: 1px solid #DDD;
+}
+.loginTip span {
+  background-color: #fff;
+  padding: 0 7px;
+  position: relative;
+  color: rgba(0, 0, 0, .5);
 }
 
-.body {
-  padding: 1.5em 1em 0 1em;
-}
-
-/deep/.ivu-form-item-label {
-  font-weight: 500;
-}
-
-.btns {
-  float: right;
-  margin: 5px 0;
-  .ivu-btn:hover {
-    background: rgba(0, 0, 0, 0.05);
+/deep/ .ivu-btn-error {
+  background-color: @sdu-red;
+  border-color: @sdu-red;
+  &:hover {
+    color: #fff !important;
   }
-  a {
-    color: #000;
-    text-decoration: underline;
-    margin-right: 8px;
+}
+
+.loginForm {
+  margin: 20px 10px;
+  .btnGroup {
+    width: 280px;
+    margin: 15px auto;
   }
 }
 
-.captcha-img {
-  margin-top: 5px;
-}
+.btn {
+  margin: 3px auto;
 
-.bottom {
-  border-top: 1px solid rgb(185, 185, 185);
-  padding-right: 10px;
+  &:hover {
+    color: @sdu-red;
+    border-color: @sdu-red;
+  }
 }
 </style>
