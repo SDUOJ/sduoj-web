@@ -15,7 +15,7 @@
         <Input v-model="tempEmail"
                style="width: 280px"
                type="email">
-          <div slot="append">
+          <div slot="append" class="btns">
             <span v-if="captchaColdDown">{{ `${captchaColdDown} s` }}</span>
             <Button v-else size="small" type="text" @click="openCaptchaModal" :loading="captchaBtnLoading">Verify</Button>
           </div>
@@ -129,6 +129,7 @@ export default {
         api.getCaptcha().then(ret => {
           this.captchaId = ret.captchaId;
           this.captchaImg = ret.captcha;
+          this.clearCaptcha();
           resolve(ret);
         }).catch(err => {
           this.$Message.error(err.message);
@@ -176,17 +177,19 @@ export default {
           duration: 10
         });
 
-        this.captchaColdDown = 60;
+        this.captchaColdDown = ret;
         this.captchaTimer = setInterval(() => {
           if (--this.captchaColdDown <= 0) {
             clearInterval(this.captchaTimer);
-            this.timer = null;
+            this.captchaTimer = null;
+            this.captchaColdDown = 0;
           }
         }, 1000);
       }).catch(err => {
         this.$emit('on-failed', err);
         this.$Message.error(err.message);
       }).finally(() => {
+        this.getCaptcha();
         this.captchaModalLoading = false;
         this.$nextTick(() => {
           this.captchaModalLoading = true;
@@ -221,7 +224,17 @@ export default {
 </script>
 
 <style lang="less" scoped>
-/deep/ .ivu-btn-text:hover {
+/deep/ .btns .ivu-btn-text:hover {
+  border-color: transparent;
+  background-color: transparent;
+}
+
+/deep/ .btns .ivu-btn-text:focus {
+  border-color: transparent;
+  background-color: transparent;
+}
+
+/deep/ .btns .ivu-btn-loading {
   border-color: transparent;
   background-color: transparent;
 }
