@@ -11,29 +11,20 @@
 <template>
   <Card title="Your Profile" :padding="0" dis-hover>
     <div class="form">
-      <Form ref="profileForm" :model="profileForm" :rules="profileRules" label-position="right" :label-width="100">
+      <Form ref="profileForm" :model="profileForm" :rules="profileRules" label-position="right">
         <Row>
           <Col span="12">
             <FormItem label="Username">
                 <span>{{ profile.username }}</span>
             </FormItem>
             <FormItem label="Nickname">
-              <Input type="text" v-model="profileForm.nickname" style="width: 200px;">
-                <Icon type="ios-person-outline" slot="prepend" />
-              </Input>
+              <Input type="text" v-model="profileForm.nickname" style="width: 280px;" />
             </FormItem>
             <FormItem label="Student ID">
-              <Input type="text" v-model="profileForm.studentId" style="width: 200px;">
-                <Icon type="ios-person-outline" slot="prepend" />
-              </Input>
-            </FormItem>
-            <FormItem label="Confirm Password" prop="password">
-              <Input type="password" v-model="profileForm.password" style="width: 200px;">
-                <Icon type="ios-lock-outline" slot="prepend" />
-              </Input>
+              <Input type="text" v-model="profileForm.studentId" style="width: 280px;" />
             </FormItem>
             <FormItem>
-              <Button @click="handleProfileUpdate('profileForm')" :disabled="!isVerified" :loading="btnLoading">Update</Button>
+              <Button @click="handleProfileUpdate" :loading="btnLoading">Update</Button>
             </FormItem>
           </Col>
           <Col span="12">
@@ -45,17 +36,10 @@
               </RadioGroup>
             </FormItem>
             <FormItem label="Phone">
-              <Input type="text" v-model="profileForm.phone" style="width: 200px;">
-                <Icon type="ios-call-outline" slot="prepend" />
-              </Input>
+              <Input type="text" v-model="profileForm.phone" style="width: 280px;" />
             </FormItem>
             <FormItem label="Email">
-              <Tooltip v-if="isVerified" content="You are verified" placement="right">
-                <span class="email-verified" v-text="profile.email" />
-              </Tooltip>
-              <Tooltip v-else content="Click to send an email" placement="right">
-                <span class="email-unverified" v-text="profile.email" @click="sendEmail" />
-              </Tooltip>
+              <span v-text="profile.email" />
             </FormItem>
             <FormItem label="Roles">
               <span class="roles" v-for="role in profile.roles" :key="role">
@@ -93,13 +77,13 @@ export default {
     }
   },
   methods: {
-    handleProfileUpdate: function(name) {
-      this.$refs[name].validate(valid => {
+    handleProfileUpdate: function() {
+      this.$refs.profileForm.validate(valid => {
         if (valid) {
           this.btnLoading = true;
           api.updateProfile(this.profileForm).then(ret => {
             api.getProfile();
-            this.$Message.success('Updated');
+            this.$Message.success('Profile Updated');
           }).catch(err => {
             this.$Message.error(err.message);
           }).finally(() => {
@@ -107,26 +91,11 @@ export default {
           })
         }
       })
-    },
-    sendEmail: function() {
-      if (!this.isVerified) {
-        const msg = this.$Message.loading({
-          content: 'Waiting...',
-          duration: 0
-        });
-        api.sendVerificationEmail(this.username).then(ret => {
-          msg();
-          this.$Message.success(`An verification email has sent to ${ret}`);
-        }).catch(err => {
-          msg();
-          this.$Message.error(err.message);
-        })
-      }
     }
   },
   computed: {
     ...mapState('user', ['profile']),
-    ...mapGetters('user', ['isVerified', 'username']),
+    ...mapGetters('user', ['username']),
     USER_ROLE: () => USER_ROLE
   },
   mounted: function() {
@@ -141,19 +110,6 @@ export default {
 <style lang="less" scoped>
 .form {
   margin-top: 25px;
-}
-
-.email-verified::after {
-  color: #5cb85c;
-  font-weight: 500;
-  content: " (Verified)";
-}
-.email-unverified::after {
-  color: #d9534f;
-  font-weight: 500;
-  content: " (Unverified)";
-}
-.email-unverified:hover {
-  cursor: pointer;
+  margin-left: 50px;
 }
 </style>
