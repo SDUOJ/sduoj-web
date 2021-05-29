@@ -275,6 +275,7 @@ export default {
   singleUpload: function(data) {
     return post('/filesys/upload', data);
   },
+  /* QA part */
   createQuestion: function(data) {
     return post('/contest/createQuestion', data)
   },

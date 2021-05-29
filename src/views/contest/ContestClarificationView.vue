@@ -15,6 +15,9 @@
           <div style=" position: relative">
             <div :class="'dot smaller ' + item.isPublic"></div>
             <h5 style="font-size: 120%; display: inline-block;">{{ item.title }} <Icon type="ios-close" class="closeBtn" @click="DeleteQuestion(item, index)"/></h5>
+            <div class="contentOverView">
+              {{item.username}}
+            </div>
           </div>
         </ListItem>
       </List>
@@ -22,9 +25,9 @@
     <Content style="background: #fff; width: 75%">
       <div style="padding: 20px 10px; margin-left: 10px" class="clarification detail" v-if="!submitFormVisible && getSelected">
         <h1 style="font-size: 300%">{{ ClarificationToShow[getSelected - 1].title }}</h1>
-        <div class="clarification state" style="padding: 10px 10px; color: #f5a623">
-          <div :class=" 'dot bigger ' + ClarificationToShow[getSelected - 1].isPublic" style="margin-top: 30px;"></div>
-          <h5 style="font-size: 120%; display: inline-block;">{{ ClarificationToShow[getSelected - 1].isPublic }}</h5>
+        <div class="clarification state" style="color: #f5a623">
+          <div :class=" 'dot bigger ' + ClarificationToShow[getSelected - 1].isPublic" style="margin-top: 30px"></div>
+          <div style="font-size: 100%; display: inline-block;">{{ ClarificationToShow[getSelected - 1].isPublic }}</div>
           <checkbox v-model="isPublic" v-if="isAdmin" @on-change ="SetPublic(isPublic, ClarificationToShow[getSelected - 1].contestClarificationId)"
             style="display: inline-block; color: black; margin-left: 20px">public</checkbox>
         </div>
@@ -32,7 +35,7 @@
                               :clarification-content="item.message"
                               :contest-clarification-id="item.contestClarificationId"
                               :username="item.username"
-                              :time="item.gmtCreated | fromnow"
+                              :time="item.gmtCreate | fromnow"
                               :key="item.contestClarificationId"
                               :reply-root="ClarificationReply[indexMp[item.parentId]].message"
                               @on-reply="handleReply(item)"
@@ -295,9 +298,9 @@ export default {
 }
 
 .bigger {
-  width: 2%;
+  width: 1%;
   height: 0;
-  padding-bottom: 2%;
+  padding-bottom: 1%;
 }
 
 .UNPUBLIC {
@@ -371,7 +374,4 @@ export default {
   z-index: 0;
 }
 
-/deep/ .ivu-dropdown-item {
-  overflow: visible;
-}
 </style>
