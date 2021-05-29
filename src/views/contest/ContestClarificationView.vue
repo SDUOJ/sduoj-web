@@ -14,7 +14,7 @@
           @click.native="getClarificationDetail(item.contestClarificationId, index)">
           <div style=" position: relative">
             <div :class="'dot smaller ' + item.isPublic"></div>
-            <h5 style="font-size: 120%; display: inline-block;">{{ item.title }} <Icon type="ios-close" class="closeBtn" @click="DeleteQuestion(item, index)"/></h5>
+            <h5 style="font-size: 120%; display: inline-block;">{{ item.title }} <Icon type="ios-close" class="closeBtn" @click="DeleteQuestion(item, index)" v-if="isAdmin"/></h5>
             <div class="contentOverView">
               {{item.username}}
             </div>
@@ -39,7 +39,7 @@
                               :username="item.username"
                               :time="item.gmtCreate | fromnow"
                               :key="item.contestClarificationId"
-                              :reply-root="ClarificationReply[indexMp[item.parentId]].message"
+                              :reply-root="ClarificationReply[indexMp[item.parentId]]"
                               @on-reply="handleReply(item)"
                               @on-edit="handleEdit" />
       </div>
@@ -87,7 +87,7 @@ export default {
       if (typeof (timestamp) === 'string') {
         timestamp = parseInt(timestamp);
       }
-      return moment(new Date(timestamp)).fromNow();
+      return moment(new Date(timestamp)).format('YYYY-MM-DD hh:mm:ss');
     }
   },
   data: function () {
@@ -218,7 +218,7 @@ export default {
     DeleteQuestion(e, index) {
       this.$Modal.confirm({
         title: 'Warning',
-        content: '<p>You \'er deleting the question.</p><p>Go on?</p>',
+        content: '<p>You are deleting the question.</p><p>Go on?</p>',
         onOk: () => {
           if (e.isPublic === 'Public') {
             this.$Message.error('公开问题不予删除');

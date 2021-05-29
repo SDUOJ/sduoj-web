@@ -1,7 +1,7 @@
 <template>
-  <div class="ClarificationComment" style="margin: 10px">
+  <div class="ClarificationComment">
     <div class="CommentHeader">
-      <a class="username">{{username}}</a> <p style="display: inline-block; margin-left: 5px">commented {{time}}</p>
+      <a class="username">{{username}}</a> <p style="display: inline-block; margin-left: 5px">{{time}}</p>
       <Dropdown placement="bottom-end" class="options" @on-click="selectMenu">
         <a>...</a>
         <DropdownMenu slot="list">
@@ -11,8 +11,16 @@
       </Dropdown>
     </div>
     <div class="markdown">
-      <Markdown class="replyRoot" :value="replyRoot" v-if="replyRoot" />
-      <Markdown :value="ClarificationContent"  style="min-height: 100px; margin-top: 10px" />
+      <div class="replyTarget" v-if="replyRoot && replyRoot.message">
+        <p style="margin-left: 5px; margin-bottom: 5px">Reply to:</p>
+        <div class="reply">
+          <div class="CommentHeader">
+            <a class="username">{{replyRoot.username}}</a> <p style="display: inline-block; margin-left: 5px">{{replyRoot.gmtCreate | fromnow}}</p>
+          </div>
+          <Markdown :value="replyRoot.message"  style="min-height: 50px;" />
+        </div>
+      </div>
+      <Markdown :value="ClarificationContent"  style="min-height: 100px; border-top: none" />
     </div>
   </div>
 </template>
@@ -20,9 +28,18 @@
 <script>
 import Markdown from './editor/Markdown';
 import { mapGetters } from 'vuex';
+import moment from 'moment';
 export default {
   name: 'ClarificationComment',
   components: { Markdown },
+  filters: {
+    fromnow: function(timestamp) {
+      if (typeof (timestamp) === 'string') {
+        timestamp = parseInt(timestamp);
+      }
+      return moment(new Date(timestamp)).format('YYYY-MM-DD hh:mm:ss');
+    }
+  },
   props: [
     'username',
     'time',
@@ -50,32 +67,22 @@ export default {
 </script>
 
 <style scoped>
+.ClarificationComment {
+  margin: 10px;
+  border: #e1e4e8 1px solid;
+}
+
 .CommentHeader {
-  background: #FFFFCC;
+  background: #f6f8fa;
   padding-left: 2%;
   height: 40px;
   line-height: 40px;
   position: relative;
-}
-
-.CommentHeader::before {
-  position: absolute;
-  top: 11px;
-  right: 100%;
-  left: -8px;
-  display: block;
-  width: 8px;
-  height: 16px;
-  pointer-events: none;
-  content: " ";
-  -webkit-clip-path: polygon(0 50%,100% 0,100% 100%);
-  clip-path: polygon(0 50%,100% 0,100% 100%);
-  background-color: #FFFFCC;
-  display: block;
+  border-bottom: #e1e4e8 1px solid;
+  box-sizing: border-box;
 }
 
 .ClarificationComment {
-  border-radius: 10px;
   background: #fff
 }
 
@@ -90,14 +97,21 @@ export default {
   border-bottom: 1px solid;
 }
 
-.replyRoot {
-  padding-left: 2px;
-  padding: 1% 1%;
-  color: #BDC3C7;
+.replyTarget {
+  padding: 20px 20px;
+  border-bottom: none;
+}
+
+.reply {
+  border: #e1e4e8 1px solid;
 }
 
 /deep/ .v-note-wrapper {
   z-index: 0 !important;
+}
+
+/deep/ .v-show-content {
+  background-color: #fff !important;
 }
 
 </style>
