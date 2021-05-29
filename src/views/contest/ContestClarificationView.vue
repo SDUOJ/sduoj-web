@@ -15,9 +15,6 @@
           <div style=" position: relative">
             <div :class="'dot smaller ' + item.isPublic"></div>
             <h5 style="font-size: 120%; display: inline-block;">{{ item.title }} <Icon type="ios-close" class="closeBtn" @click="DeleteQuestion(item, index)"/></h5>
-            <div class="contentOverView">
-              {{ item.message }}
-            </div>
           </div>
         </ListItem>
       </List>
@@ -372,5 +369,9 @@ export default {
 
 /deep/ .v-note-wrapper {
   z-index: 0;
+}
+
+/deep/ .ivu-dropdown-item {
+  overflow: visible;
 }
 </style>
