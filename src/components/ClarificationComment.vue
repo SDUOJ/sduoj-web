@@ -5,7 +5,7 @@
       <Dropdown placement="bottom-end" class="options" @on-click="selectMenu">
         <a>...</a>
         <DropdownMenu slot="list">
-          <DropdownItem name="QA">Quick Answer</DropdownItem>
+          <DropdownItem name="QA" v-if="isAdmin || isPublic === CLARIFICATION_TYPE.UNPUBLIC">Quick Answer</DropdownItem>
           <DropdownItem name="Edit" v-if="isAdmin">Edit</DropdownItem>
         </DropdownMenu>
       </Dropdown>
@@ -29,6 +29,7 @@
 import Markdown from './editor/Markdown';
 import { mapGetters } from 'vuex';
 import moment from 'moment';
+import { CLARIFICATION_TYPE } from '_u/constants';
 export default {
   name: 'ClarificationComment',
   components: { Markdown },
@@ -45,6 +46,7 @@ export default {
     'time',
     'ClarificationContent',
     'contestClarificationId',
+    'isPublic',
     'replyRoot'
   ],
   methods: {
@@ -61,7 +63,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('user', ['isAdmin'])
+    ...mapGetters('user', ['isAdmin']),
+    CLARIFICATION_TYPE: () => CLARIFICATION_TYPE
   }
 }
 </script>

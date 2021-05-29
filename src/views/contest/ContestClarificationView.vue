@@ -40,6 +40,7 @@
                               :time="item.gmtCreate | fromnow"
                               :key="item.contestClarificationId"
                               :reply-root="ClarificationReply[indexMp[item.parentId]]"
+                              :isPublic="ClarificationToShow[getSelected - 1].isPublic"
                               @on-reply="handleReply(item)"
                               @on-edit="handleEdit" />
       </div>
