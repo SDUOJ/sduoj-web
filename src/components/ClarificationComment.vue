@@ -87,7 +87,7 @@ export default {
 .CommentHeader .options{
   display: inline-block;
   position: absolute;
-  right: 3%;
+  right: 5%;
   font-size: 150%;
 }
 

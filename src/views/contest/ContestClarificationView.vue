@@ -35,7 +35,7 @@
                               :clarification-content="item.message"
                               :contest-clarification-id="item.contestClarificationId"
                               :username="item.username"
-                              :time="item.gmtModified | fromnow"
+                              :time="item.gmtCreated | fromnow"
                               :key="item.contestClarificationId"
                               :reply-root="ClarificationReply[indexMp[item.parentId]].message"
                               @on-reply="handleReply(item)"
