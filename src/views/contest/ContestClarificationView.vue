@@ -14,7 +14,10 @@
           @click.native="getClarificationDetail(item.contestClarificationId, index)">
           <div style=" position: relative">
             <div :class="'dot smaller ' + item.isPublic"></div>
-            <h5 style="font-size: 120%; display: inline-block;">{{ item.title }} <Icon type="ios-close" class="closeBtn" @click="DeleteQuestion(item, index)" v-if="isAdmin"/></h5>
+            <h5 style="font-size: 120%; display: inline-block;">{{ item.title }}
+              <Icon type="ios-close" class="closeBtn"
+                    @click="DeleteQuestion(item, index)"
+                    v-if="isAdmin || item.username === username"/></h5>
             <div class="contentOverView">
               {{item.username}}
             </div>
@@ -268,7 +271,7 @@ export default {
     })
   },
   computed: {
-    ...mapGetters('user', ['isAdmin']),
+    ...mapGetters('user', ['isAdmin', 'username']),
     ...mapState('contest', ['contest', 'problems']),
     ...mapGetters('contest', [
       'contestId',
