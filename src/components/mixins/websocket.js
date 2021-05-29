@@ -34,12 +34,27 @@ export default {
   methods: {
     initWebSocket: function(url, params, onmessage, onerror, onclose) {
       this.websock = new WebSocket(getWsURL() + url);
+
+      // proxy function that wait readyState === 1
+      const waitForConnection = (callback, interval) => {
+        if (this.websock.readyState === 1) {
+          callback();
+        } else {
+          setTimeout(() => {
+            waitForConnection(callback, interval);
+          }, interval);
+        }
+      }
       this.websock.onopen = () => {
-        this.websock.send(JSON.stringify(params));
+        waitForConnection(() => {
+          this.websock.send(JSON.stringify(params));
+        }, 500);
       };
+
       this.websock.onmessage = ret => {
         onmessage(JSON.parse(ret.data));
       };
+
       this.websock.onerror = onerror;
       this.websock.onclose = onclose;
     },
