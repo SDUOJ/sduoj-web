@@ -126,14 +126,14 @@ export default {
   updateProfile: function(data) {
     return post('/user/updateProfile', data);
   },
-  sendVerificationEmail: function(username) {
-    return post('/user/sendVerificationEmail', { username });
+  sendVerificationEmail: function(data) {
+    return post('/user/sendVerificationEmail', data);
   },
   resetPassword: function(data) {
     return post('/user/resetPassword', data);
   },
-  verifyEmail: function(token) {
-    return get('/user/verifyEmail', { token });
+  updateEmail: function(data) {
+    return post('/user/updateEmail', data);
   },
   getProfile: function(success, error) {
     axios.get('/user/getProfile')

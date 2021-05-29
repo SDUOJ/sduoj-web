@@ -11,13 +11,11 @@
 <template>
   <Card title="Change Your Password" :padding="0" dis-hover>
       <div class="form">
-      <Form ref="passwordForm" :model="passwordForm" :rules="passwordRules" label-position="right" :label-width="105">
+      <Form ref="passwordForm" :model="passwordForm" :rules="passwordRules" label-position="top">
         <Row>
           <Col span="12">
             <FormItem label="Old Password" prop="oldPassword">
-              <Input type="password" v-model="passwordForm.oldPassword" style="width: 200px;">
-                <Icon type="ios-lock-outline" slot="prepend" />
-              </Input>
+              <Input type="password" v-model="passwordForm.oldPassword" style="width: 280px;" />
             </FormItem>
             <FormItem>
               <Button @click="handlePasswordUpdate('passwordForm')" :loading="btnLoading">Update</Button>
@@ -25,14 +23,10 @@
           </Col>
           <Col span="12">
             <FormItem label="New Password" prop="newPassword">
-              <Input type="password" v-model="passwordForm.newPassword" style="width: 200px;">
-                <Icon type="ios-lock-outline" slot="prepend" />
-              </Input>
+              <Input type="password" v-model="passwordForm.newPassword" style="width: 280px;" />
             </FormItem>
             <FormItem label="Confirm New Password" prop="confirmNewPassword">
-              <Input type="password" v-model="passwordForm.confirmNewPassword" style="width: 200px;">
-                <Icon type="ios-lock-outline" slot="prepend" />
-              </Input>
+              <Input type="password" v-model="passwordForm.confirmNewPassword" style="width: 280px;" />
             </FormItem>
           </Col>
         </Row>
@@ -107,5 +101,6 @@ export default {
 <style lang="less" scoped>
 .form {
   margin-top: 25px;
+  margin-left: 50px;
 }
 </style>

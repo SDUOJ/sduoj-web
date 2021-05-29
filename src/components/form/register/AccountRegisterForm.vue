@@ -15,15 +15,12 @@
         ref="registerForm"
         :model="registerForm"
         :rules="registerRules"
-        label-position="right">
+        label-position="top">
         <FormItem prop="username" label="Username">
           <Input
             v-model="registerForm.username"
             placeholder="Your login handler"
             style="width: 280px" />
-        </FormItem>
-        <FormItem prop="email" label="Email">
-          <Input v-model="registerForm.email" style="width: 280px" type="email" />
         </FormItem>
         <FormItem prop="password" label="Password">
           <Input
@@ -39,25 +36,7 @@
             style="width: 280px"
             type="password" />
         </FormItem>
-        <div v-if="token === ''">
-          <FormItem label="Student ID">
-            <Input v-model="registerForm.studentId" style="width: 280px" />
-          </FormItem>
-          <FormItem prop="captcha" label="Captcha">
-            <div class="captcha-code">
-              <Input
-                v-model="registerForm.captcha"
-                placeholder="Click to get captcha"
-                style="width: 280px"
-                @on-focus="onCaptchaInputFocus" />
-            </div>
-            <div class="captcha-img">
-              <Tooltip content="Click to refresh" placement="right">
-                <img :src="captchaImg" @click="getCaptcha"/>
-              </Tooltip>
-            </div>
-          </FormItem>
-        </div>
+        <EmailVerify :email.sync="registerForm.email" :email-code.sync="registerForm.emailCode" />
       </Form>
     </div>
     <div class="btnGroup" style="margin-top: -1px">
@@ -71,9 +50,11 @@
 
 <script>
 import api from '_u/api';
+import EmailVerify from '_c/form/EmailVerify';
 
 export default {
   name: 'AccountRegisterForm',
+  components: { EmailVerify },
   props: {
     token: {
       type: String,
@@ -125,10 +106,9 @@ export default {
       registerForm: {
         username: '',
         email: '',
+        emailCode: '',
         password: '',
-        confirmPassword: '',
-        studentId: '',
-        captcha: ''
+        confirmPassword: ''
       },
       registerRules: {
         username: [
@@ -145,46 +125,20 @@ export default {
         ],
         confirmPassword: [
           { required: true, validator: validateConfirmPass, trigger: 'change' }
-        ],
-        captcha: [{ required: true, trigger: 'blur', min: 1, max: 10 }]
+        ]
       },
-      captchaId: 0,
-      captchaImg: '',
       btnRegisterLoading: false
     };
   },
   methods: {
-    getCaptcha: function() {
-      // 模拟获得图形验证码
-      api.getCaptcha().then(ret => {
-        this.captchaId = ret.captchaId;
-        this.captchaImg = ret.captcha;
-      }).catch(err => {
-        this.$Message.error(err.message);
-      });
-    },
-    resetCaptcha: function() {
-      this.registerForm.captcha = '';
-      this.getCaptcha();
-    },
-    onCaptchaInputFocus: function() {
-      if (!this.captchaId) {
-        this.getCaptcha();
-      }
-    },
     handleRegister: function() {
-      this.$refs.registerForm.validate((valid) => {
+      this.$refs.registerForm.validate(valid => {
         if (valid) {
           const data = Object.assign({}, this.registerForm);
           let apiName = 'register';
           delete data.confirmPassword;
 
-          if (this.token === '') {
-            data.captchaId = this.captchaId;
-          } else {
-            delete data.studentId;
-            delete data.captcha;
-            delete data.captchaId;
+          if (this.token !== '') {
             data.token = this.token;
             apiName = 'thirdPartyRegister';
           }
@@ -197,15 +151,7 @@ export default {
             this.$Message.error(err.message);
           }).finally(() => {
             this.btnRegisterLoading = false;
-            if (this.token === '') {
-              this.resetCaptcha();
-            }
-          })
-          return;
-        }
-
-        if (this.token === '') {
-          this.resetCaptcha();
+          });
         }
       });
     }
@@ -232,13 +178,6 @@ export default {
   border-color: @sdu-red;
   &:hover {
     color: #fff;
-  }
-}
-
-.captcha-img {
-  margin-top: 5px;
-  :hover {
-    cursor: pointer;
   }
 }
 

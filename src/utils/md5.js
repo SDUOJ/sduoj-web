@@ -17,6 +17,10 @@
  * See http://pajhome.org.uk/crypt/md5 for more info.
  */
 
+export function getGravatarUrl (email, baseUrl = 'sdn.geekzu.org', size = 200, _default = 'mp', rating = 'g') {
+  return `https://${baseUrl}/avatar/${hex_md5(email)}?s=${size}&d=${_default}&r=${rating}`;
+}
+
 /*
  * Configurable variables. You may need to tweak these to be compatible with
  * the server-side, but the defaults work in most cases.
@@ -29,10 +33,7 @@ const chrsz = 8;  /* bits per input character. 8 - ASCII; 16 - Unicode      */
  * These are the functions you'll usually want to call
  * They take string arguments and return either hex or base-64 encoded strings
  */
-export function hex_md5(s) { return binl2hex(core_md5(str2binl(s), s.length * chrsz)); }
-export function getGravatarUrl (email, size = 200, _default = 'mp', rating = 'g', baseUrl = 'cn.gravatar.com') {
-  return `https://${baseUrl}/avatar/${hex_md5(email)}?s=${size}&d=${_default}&r=${rating}`;
-}
+function hex_md5(s) { return binl2hex(core_md5(str2binl(s), s.length * chrsz)); }
 
 /*
  * Calculate the MD5 of an array of little-endian words, and a bit length
