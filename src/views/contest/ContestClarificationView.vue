@@ -50,7 +50,7 @@
           </div>
           <div style="padding-top: 20px">
             <Select v-model="QuestionTitle" filterable style="margin: 0 3px 0 20px;width: 200px">
-              <Option v-for="item in nowOptions" :value="item.problemTitle" :key="item.problemTitle">{{ item.problemTitle }}</Option>
+              <Option v-for="item in nowOptions" :value="item.problemTitle" :key="item.problemCode">{{ item.problemTitle }}</Option>
             </Select>
             <input class="extraMsg" v-model="extraMsg">
           </div>
@@ -263,7 +263,7 @@ export default {
   },
   mounted: function () {
     this.$nextTick(() => {
-      this.$refs.md.setMarkdown(this.$store.getters['contest/template'])
+      if (this.$store.getters['contest/template']) this.$refs.md.setMarkdown(this.$store.getters['contest/template'])
     })
   },
   computed: {
