@@ -29,7 +29,9 @@
           <div :class=" 'dot bigger ' + ClarificationToShow[getSelected - 1].isPublic" style="margin-top: 30px"></div>
           <div style="font-size: 100%; display: inline-block;">{{ ClarificationToShow[getSelected - 1].isPublic }}</div>
           <checkbox v-model="isPublic" v-if="isAdmin" @on-change ="SetPublic(isPublic, ClarificationToShow[getSelected - 1].contestClarificationId)"
-            style="display: inline-block; color: black; margin-left: 20px">public</checkbox>
+                    style="display: inline-block; color: black; margin-left: 20px">
+            <p style="display: inline-block" class="publicState">{{ ClarificationToShow[getSelected - 1].isPublic }}</p>
+          </checkbox>
         </div>
         <ClarificationComment v-for="item in ClarificationReply"
                               :clarification-content="item.message"
@@ -56,9 +58,14 @@
             <h1>Question</h1>
           </div>
         </div>
+        <ClarificationComment :clarification-content="targetItem.message"
+                              :contest-clarification-id="targetItem.contestClarificationId"
+                              :username="targetItem.username"
+                              :time="targetItem.gmtCreate | fromnow"
+                              v-if="isAnswer"/>
         <MarkdownEditor style="margin: 50px 20px;" ref="md" v-model="QuestionContent" />
         <Button type="primary" class="btn" @click="SubmitForm">Submit</Button>
-        <Button type="success" class="btn" @click="ChangeSubmitFormShow(false); ">Cancel</Button>
+        <Button type="success" class="btn" @click="ChangeSubmitFormShow(false);">Cancel</Button>
       </div>
     </Content>
   </Layout>
@@ -104,11 +111,13 @@ export default {
       event: Number,
       targetItem: {},
       isPublic: true,
-      indexMp: {}
+      indexMp: {},
+      isAnswer: false
     }
   },
   methods: {
     ChangeSubmitFormShow(e) {
+      this.isAnswer = false;
       this.submitFormVisible = e;
       this.isCreate = e;
       this.event = this.eventType.Question
@@ -122,6 +131,7 @@ export default {
       this.event = this.eventType.Edit
     },
     handleReply(data) {
+      this.isAnswer = true;
       this.submitFormVisible = true;
       this.isCreate = false;
       this.event = this.eventType.Reply;
