@@ -42,11 +42,22 @@ export default {
       };
       this.websock.onerror = onerror;
       this.websock.onclose = onclose;
+    },
+    closeWebSocket: function() {
+      if (this.websock) {
+        this.websock.close();
+      }
+    }
+  },
+  watch: {
+    $route: function() {
+      this.closeWebSocket();
     }
   },
   destroyed: function() {
-    if (this.websock) {
-      this.websock.close();
-    }
+    this.closeWebSocket();
+  },
+  beforeRouteUpdate: function() {
+    this.closeWebSocket();
   }
 }
