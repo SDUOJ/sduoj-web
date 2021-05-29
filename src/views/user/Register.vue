@@ -9,7 +9,7 @@
  -->
 
 <template>
-    <div class="box clearfix" v-if="apply">
+    <div class="box clearfix">
       <div class="registerDiv">
         <div class="registerSwitchDiv">
           <div class="accountRegister">
@@ -17,45 +17,25 @@
           </div>
         </div>
         <div class="registerForm">
-          <AccountRegisterForm @on-success="handleRegister" />
+          <AccountRegisterForm @on-success="handleAccountRegister" />
         </div>
       </div>
-    </div>
-    <div class="container activation hover" v-else>
-      <Tooltip  content="Return to Home" placement="bottom">
-        <Icon type="md-checkmark-circle-outline" size="30"/>
-        <h1 style="display: inline" @click="$router.replace({ name: 'home' })">&nbsp; {{ message }}</h1>
-      </Tooltip>
     </div>
 </template>
 
 <script>
-import api from '_u/api';
 import AccountRegisterForm from '_c/form/register/AccountRegisterForm';
+import { mapActions } from 'vuex';
 
 export default {
   components: { AccountRegisterForm },
-  data: function () {
-    return {
-      apply: true,
-      message: ''
-    };
-  },
   methods: {
-    handleRegister: function() {
-      this.apply = false;
-      this.message = 'Success, check your email for activation';
-    }
-  },
-  mounted: function() {
-    if (this.$route.query.token) {
-      api.verifyEmail(this.$route.query.token)
-        .then(_ => {
-          this.apply = false;
-          this.message = 'You have activated';
-        }).catch(err => {
-          this.$Message.error(err.message);
-        });
+    ...mapActions('user', ['setProfile']),
+    handleAccountRegister: function(profile) {
+      this.$Message.success('Register successfully');
+
+      this.setProfile(profile);
+      this.$router.replace({ name: 'home' });
     }
   }
 };
@@ -114,10 +94,6 @@ export default {
 .registerSwitchDiv div.selectedType {
   border-bottom: 3px solid @sdu-red;
   color: @sdu-red;
-}
-
-.activation {
-  text-align: center;
 }
 
 .registerForm {
