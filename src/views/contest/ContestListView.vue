@@ -138,6 +138,7 @@ export default {
         groupId: groupId === 'all' ? undefined : groupId
       }).then(ret => {
         this.total = parseInt(ret.totalPage) * this.pageSize;
+        if (process.env.VUE_APP_OJ_ONLY_CONTEST) this.total = 1
       }).catch(err => {
         if (showErrMessage) {
           this.$Message.error(err.message);

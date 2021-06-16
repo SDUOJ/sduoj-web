@@ -10,7 +10,7 @@
 
 const routes = [
   {
-    redirect: '/home',
+    redirect: '/contest',
     path: '/'
   },
   {

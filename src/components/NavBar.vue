@@ -15,19 +15,19 @@
         <div class="logo" @click="$router.push('/')">
           <img src="../assets/logo.png" style="width: 100px; height: 30px;"/>
         </div>
-        <MenuItem name="home" :to="{ name: 'home' }">
+        <MenuItem name="home" :to="{ name: 'home' }" v-if="!only_contest">
           <span class="span__menu">Home</span>
         </MenuItem>
-        <MenuItem name="problem" :to="{ name: 'problem' }">
+        <MenuItem name="problem" :to="{ name: 'problem' }" v-if="!only_contest">
           <span class="span__menu">Problem</span>
         </MenuItem>
         <MenuItem name="contest" :to="{ name: 'contest' }">
           <span class="span__menu">Contest</span>
         </MenuItem>
-        <MenuItem name="submission" :to="{ name: 'submission' }">
+        <MenuItem name="submission" :to="{ name: 'submission' }" v-if="!only_contest">
           <span class="span__menu">Submission</span>
         </MenuItem>
-        <MenuItem name="group" :to="{ name: 'group' }">
+        <MenuItem name="group" :to="{ name: 'group' }" v-if="!only_contest">
           <span class="span__menu">Group</span>
         </MenuItem>
         <div class="navbar-user">
@@ -94,7 +94,7 @@ export default {
     handleLogout: function () {
       api.logout().then(_ => {
         this.$store.dispatch('user/clearProfile');
-        this.$router.push({ name: 'home' });
+        this.$router.push({ name: 'login' });
         this.$Message.success('Log out successfully');
       });
     },
@@ -110,7 +110,8 @@ export default {
       } else {
         return process.env.VUE_APP_OJ_MANAGE;
       }
-    }
+    },
+    only_contest: () => process.env.VUE_APP_OJ_ONLY_CONTEST === 'TRUE'
   },
   mounted: function () {
     api.getProfile();

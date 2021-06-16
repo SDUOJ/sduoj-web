@@ -124,6 +124,10 @@ export default {
           .then(ret => {
             this.contestList = ret.rows;
             resolve(ret);
+
+            if (process.env.VUE_APP_OJ_ONLY_CONTEST === 'TRUE') {
+              this.contestList = this.contestList.filter(item => parseInt(item.contestId) === 28)
+            }
           })
           .catch(reject)
           .finally(() => {

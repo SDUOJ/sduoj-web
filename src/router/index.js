@@ -59,6 +59,15 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   Vue.prototype.$Loading.start();
+
+  if (process.env.VUE_APP_OJ_ONLY_CONTEST === 'TRUE') {
+    console.log(to)
+    if (to.name !== 'login' && to.name.substr(0, 7) !== 'contest') return;
+    if (to.name === 'login') next();
+    if (to.name === 'contest') next();
+    if (to.path.substr(9, 2) !== '28') return;
+  }
+
   if (to.matched.some(route => route.meta.login)) {
     api.getProfile(_ => {
       next();
