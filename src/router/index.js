@@ -62,10 +62,11 @@ router.beforeEach((to, from, next) => {
 
   if (process.env.VUE_APP_OJ_ONLY_CONTEST === 'TRUE') {
     console.log(to)
-    if (to.name !== 'login' && to.name.substr(0, 7) !== 'contest') return;
-    if (to.name === 'login') next();
+    if (to.name !== 'login' && to.name !== 'third-party-login' && to.name.substr(0, 7) !== 'contest') return;
+    if (to.name === 'home') next({ name: 'contest' });
+    if (to.name === 'login' || to.name === 'third-party-login') next();
     if (to.name === 'contest') next();
-    if (to.path.substr(9, 2) !== '28') return;
+    if (to.path.substr(9, 2) !== '81') return;
   }
 
   if (to.matched.some(route => route.meta.login)) {

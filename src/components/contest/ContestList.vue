@@ -126,7 +126,7 @@ export default {
             resolve(ret);
 
             if (process.env.VUE_APP_OJ_ONLY_CONTEST === 'TRUE') {
-              this.contestList = this.contestList.filter(item => parseInt(item.contestId) === 28)
+              this.contestList = this.contestList.filter(item => parseInt(item.contestId) === 81)
             }
           })
           .catch(reject)
