@@ -70,7 +70,7 @@ export default {
     this.thirdParty.certificate(this.$route.query).then(ret => {
       if (ret.user) {
         this.setProfile(ret.user);
-        this.$router.replace({ name: 'home' });
+        this.$router.replace({ name: 'contest' });
       } else {
         this.ready = true;
         this.$nextTick(() => {
