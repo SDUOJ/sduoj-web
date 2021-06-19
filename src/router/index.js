@@ -61,6 +61,7 @@ router.beforeEach((to, from, next) => {
   Vue.prototype.$Loading.start();
 
   if (process.env.VUE_APP_OJ_ONLY_CONTEST === 'TRUE') {
+<<<<<<< HEAD
     console.log(to)
     if (to.name !== 'login' && to.name !== 'third-party-login' && to.name.substr(0, 7) !== 'contest') return;
     if (to.name === 'home') next({ name: 'contest' });
