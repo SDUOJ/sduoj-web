@@ -58,7 +58,7 @@
         </div>
       </div>
       <div>
-        <div class="label" v-if="functionTemplate.isShowFunctionTemplate">
+        <div class="label">
           <span>Your solution</span>
         </div>
         <div class="editor-code">
@@ -124,12 +124,7 @@ export default {
     }
   },
   mounted: function() {
-    this.functionTemplateSet.forEach(o => {
-      if (o.judgeTemplateId === this.judgeTemplate.id) {
-        this.editCode = o.initialTemplate;
-        this.functionTemplate = o;
-      }
-    });
+    this.changeFunctionTemplate(this.judgeTemplate);
     this.changeMode(this.judgeTemplate.title);
   },
   methods: {
@@ -145,16 +140,27 @@ export default {
         }
       }
     },
+    changeFunctionTemplate: function(judgeTemplate) {
+      this.editCode = '';
+      this.functionTemplate = {
+        isShowFunctionTemplate: 0
+      };
+
+      this.functionTemplateSet.some(o => {
+        if (o.judgeTemplateId === judgeTemplate.id) {
+          this.editCode = o.initialTemplate;
+          this.functionTemplate = o;
+          return true;
+        }
+        return false;
+      });
+    },
     onJudgeTemplateChange: function(id) {
       this.judgeTemplateSet.forEach(o => {
         if (o.id === id) {
+          this.changeFunctionTemplate(o);
           this.changeMode(o.title);
-          this.$emit('update:judgeTemplate', o);
-        }
-      });
-      this.functionTemplateSet.forEach(o => {
-        if (o.judgeTemplateId === id) {
-          this.functionTemplate = o;
+          this.$emit && this.$emit('update:judgeTemplate', o);
         }
       });
     }
@@ -168,9 +174,9 @@ export default {
   watch: {
     fileList: function() {
       if (this.fileList.length > 0) {
-        this.$emit('update:file', this.fileList[0].file);
+        this.$emit && this.$emit('update:file', this.fileList[0].file);
       } else {
-        this.$emit('update:file', null);
+        this.$emit && this.$emit('update:file', null);
       }
     },
     editCode: function (newCode) {
