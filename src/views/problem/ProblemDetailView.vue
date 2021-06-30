@@ -54,12 +54,13 @@
         <!-- 代码编辑器 -->
         <Card class="box clearfix" dis-hover :padding="0">
           <div style="padding-right: 15px;">
-            <CodeEditor
+            <SubmitBox
               :code.sync="code"
               :file.sync="file"
               :judgeTemplate.sync="judgeTemplate"
-              :judgeTemplateSet="problem.judgeTemplates">
-            </CodeEditor>
+              :judgeTemplateSet="problem.judgeTemplates"
+              :functionTemplateSet="problem.functionTemplates">
+            </SubmitBox>
             <Button
               style="float: right; margin: 5px 0 5px 10px;"
               :loading="submitBtnLoading"
@@ -184,7 +185,7 @@
 
 <script>
 import ProblemCode from '_c/problem/ProblemCode';
-import CodeEditor from '_c/editor/CodeEditor';
+import SubmitBox from '_c/editor/SubmitBox';
 import JudgeResult from '_c/JudgeResult';
 import Markdown from '_c/editor/Markdown';
 import moment from 'moment';
@@ -214,7 +215,7 @@ function setStorage(problemCode, contestId, value) {
 export default {
   components: {
     Markdown,
-    CodeEditor,
+    SubmitBox,
     ProblemCode
   },
   inject: ['reload'],

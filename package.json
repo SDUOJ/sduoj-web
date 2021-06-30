@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "axios": "^0.20.0",
+    "codemirror": "^5.61.1",
     "core-js": "^3.6.5",
     "file-saver": "^2.0.5",
     "highlight.js": "^10.3.2",
@@ -20,7 +21,6 @@
     "view-design": "^4.3.2",
     "vue": "^2.6.11",
     "vue-clipboard2": "^0.3.1",
-    "vue-codemirror-lite": "^1.0.4",
     "vue-router": "^3.2.0",
     "vuex": "^3.4.0",
     "webpack": "^4.44.2",

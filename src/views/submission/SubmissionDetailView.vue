@@ -229,7 +229,6 @@ export default {
               usedMemory: oneJudge[5].toString()
             };
             this.getSubmissionDetail(this.submission.submissionId);
-            // this.reload();
             break;
         }
       } else {
@@ -292,7 +291,9 @@ export default {
       if (name === 'rejudge') {
         // doRejudge
         api.rejudge([this.submission.submissionId]).then(_ => {
-          this.getSubmissionDetail(this.submission.submissionId);
+          this.reload();
+        }).catch(err => {
+          this.$Message.error(err.message);
         });
       } else if (name === 'invalidate') {
         // invalidate the grade
@@ -301,6 +302,8 @@ export default {
           contestId: this.contestId
         }).then(_ => {
           this.getSubmissionDetail(this.submission.submissionId);
+        }).catch(err => {
+          this.$Message.error(err.message);
         });
       }
     },
