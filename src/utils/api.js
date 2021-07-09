@@ -17,6 +17,7 @@ axios.defaults.withCredentials = true;
 
 function post(url, data) {
   data = data || {};
+
   return new Promise((resolve, reject) => {
     axios.post(url, data)
       .then(response => {
@@ -273,6 +274,28 @@ export default {
   // 单文件上传
   singleUpload: function(data) {
     return post('/filesys/upload', data);
+  },
+  /* QA part */
+  createQuestion: function(data) {
+    return post('/contest/createQuestion', data)
+  },
+  createReply: function (data) {
+    return post('/contest/reply', data)
+  },
+  getQuestion: function (data) {
+    return get('/contest/listQuestion', data)
+  },
+  getQuestionDetail: function (data) {
+    return get('/contest/questionDetail', data)
+  },
+  deleteQuestion: function (data) {
+    return get('/contest/delete', data)
+  },
+  editReply: function (data) {
+    return get('/manage/contest/edit', data)
+  },
+  setPublic: function (data) {
+    return post('/manage/contest/publicIt', data)
   },
   /* third-party-login */
   thirdPartyLogin: function(params) {

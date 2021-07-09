@@ -101,6 +101,12 @@ const routes = [
         path: 'rank',
         meta: { scrollToTop: true },
         component: () => import('@/views/contest/ContestRankView')
+      },
+      {
+        name: 'contest-clarification',
+        path: 'clarification',
+        meta: { scrollToTop: true },
+        component: () => import('@/views/contest/ContestClarificationView')
       }
     ]
   },
