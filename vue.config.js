@@ -9,6 +9,10 @@ module.exports = {
       .set('_u', resolve('src/utils'))
   },
   configureWebpack: {
+    resolve: {
+      /** other code */
+      extensions: ['.js', '.vue', '.json', '.ts'] // 添加 .ts 扩展名
+    },
     module: {
       rules: [
         {
@@ -19,6 +23,22 @@ module.exports = {
               options: { lessOptions: { javascriptEnabled: true } }
             }
           ]
+        },
+        {
+          test: /\.tsx?$/,
+          use: [
+            { loader: 'babel-loader' },
+            {
+              loader: 'ts-loader',
+              options: {
+                transpileOnly: true,
+                appendTsSuffixTo: [
+                  '\\.vue$'
+                ],
+                happyPackMode: false
+              }
+            }
+          ]
         }
       ]
     },
@@ -27,11 +47,11 @@ module.exports = {
         patterns: [
           {
             from: 'node_modules/mavon-editor/dist/highlightjs',
-            to: resolve('dist/highlightjs'), // 插件将会把文件导出于/dist/highlightjs之下
+            to: resolve('dist/highlightjs') // 插件将会把文件导出于/dist/highlightjs之下
           },
           {
             from: 'node_modules/mavon-editor/dist/markdown',
-            to: resolve('dist/markdown'), // 插件将会把文件导出于/dist/markdown之下
+            to: resolve('dist/markdown') // 插件将会把文件导出于/dist/markdown之下
           },
           {
             from: 'node_modules/mavon-editor/dist/katex', // 插件将会把文件导出

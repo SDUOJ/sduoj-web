@@ -21,6 +21,7 @@
 import { mapState } from 'vuex';
 import NavBar from '_c/NavBar';
 import api from '_u/api';
+import s from './types/interface'
 
 export default {
   components: { NavBar },
