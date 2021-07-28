@@ -30,6 +30,9 @@
         <MenuItem name="group" :to="{ name: 'group' }">
           <span class="span__menu">Group</span>
         </MenuItem>
+        <MenuItem name="util" :to="{ name: 'util' }">
+          <span class="span__menu">Util</span>
+        </MenuItem>
         <div class="navbar-user">
           <template v-if="isLogin">
             <Avatar :src="avatar"/>

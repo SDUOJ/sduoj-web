@@ -7,6 +7,7 @@ module.exports = {
       .set('@', resolve('src'))
       .set('_c', resolve('src/components'))
       .set('_u', resolve('src/utils'))
+      .set('_t', resolve('src/types'))
   },
   configureWebpack: {
     resolve: {
