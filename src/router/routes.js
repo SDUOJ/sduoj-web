@@ -115,14 +115,15 @@ const routes = [
     component: () => import('@/views/group/GroupDetailView')
   },
   {
-    name: 'util',
-    path: '/util',
-    component: () => import('@/views/util/utilView')
-  },
-  {
     name: 'third-party-login',
     path: '/thirdPartyLogin',
     component: () => import('@/views/third-party/ThirdPartyLogin')
+  },
+
+  {
+    path: '/testVuetify',
+    name: 'vuetify',
+    component: () => import('../test/testVuetify')
   },
   {
     path: '*',
