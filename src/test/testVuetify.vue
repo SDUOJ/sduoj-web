@@ -1,34 +1,35 @@
+<!-- App.vue -->
 <template>
-  <div>
-    <v-bottom-navigation
-      :value="value"
-      color="primary"
-    >
-      <v-btn>
-        <span>Recents</span>
+  <!-- App.vue -->
 
-        <v-icon>mdi-history</v-icon>
-      </v-btn>
+  <v-app>
+    <v-navigation-drawer app>
+      <!-- -->
+    </v-navigation-drawer>
 
-      <v-btn>
-        <span>Favorites</span>
+    <v-app-bar app>
+      <!-- -->
+    </v-app-bar>
 
-        <v-icon>mdi-heart</v-icon>
-      </v-btn>
+    <!-- 根据应用组件来调整你的内容 -->
+    <v-main>
 
-      <v-btn>
-        <span>Nearby</span>
+      <!-- 给应用提供合适的间距 -->
+      <v-container fluid>
 
-        <v-icon>mdi-map-marker</v-icon>
-      </v-btn>
-    </v-bottom-navigation>
-  </div>
+        <!-- 如果使用 vue-router -->
+        <router-view></router-view>
+      </v-container>
+    </v-main>
+
+    <v-footer app>
+      <!-- -->
+    </v-footer>
+  </v-app>
 </template>
 
 <script>
-import { VBtn, VBottomNavigation, VIcon } from 'vuetify/lib/components'
 export default {
-  components: { VBtn, VBottomNavigation, VIcon },
   props: {
     title: {
       type: String,

@@ -1,5 +1,6 @@
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const resolve = dir => require('path').join(__dirname, dir);
+const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin');
 
 module.exports = {
   chainWebpack: config => {
@@ -26,9 +27,27 @@ module.exports = {
           ]
         },
         {
-          test: /\.tsx?$/,
+          test: /\.js?$/,
+          exclude: /node_modules/,
           use: [
-            { loader: 'babel-loader' },
+            {
+              loader: 'babel-loader',
+              options: {
+                cacheDirectory: true
+              }
+            }
+          ]
+        },
+        {
+          test: /\.tsx?$/,
+          exclude: /node_modules/,
+          use: [
+            {
+              loader: 'babel-loader',
+              options: {
+                cacheDirectory: true
+              }
+            },
             {
               loader: 'ts-loader',
               options: {
@@ -58,7 +77,8 @@ module.exports = {
             from: 'node_modules/mavon-editor/dist/katex', // 插件将会把文件导出
             to: resolve('dist/katex')
           }]
-      })
+      }),
+      new VuetifyLoaderPlugin()
     ]
   },
   devServer: {
