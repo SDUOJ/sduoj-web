@@ -10,7 +10,7 @@
 
 <template>
   <div class="header fixed">
-    <div class="container">
+    <div class="bar-container">
       <Menu mode="horizontal" theme="light" :active-name="$route.path.split('/')[1]">
         <div class="logo" @click="$router.push('/')">
           <img src="../assets/logo.png" style="width: 100px; height: 30px;"/>
@@ -29,9 +29,6 @@
         </MenuItem>
         <MenuItem name="group" :to="{ name: 'group' }">
           <span class="span__menu">Group</span>
-        </MenuItem>
-        <MenuItem name="util" :to="{ name: 'util' }">
-          <span class="span__menu">Util</span>
         </MenuItem>
         <div class="navbar-user">
           <template v-if="isLogin">

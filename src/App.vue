@@ -9,7 +9,7 @@
  -->
 
 <template>
-  <div class="layout">
+  <div class="all-layout">
     <NavBar></NavBar>
     <transition name="fade" mode="out-in">
       <router-view v-if="isRouterAlive" />
