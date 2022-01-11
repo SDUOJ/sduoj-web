@@ -24,4 +24,4 @@ npm run build
 We will give a template of nginx config file later.
 
 ## LICENSE
-[GNU General Public License v3.0](https://github.com/SDUOJ/sduoj-web/blob/master/LICENSE)
+[GNU Affero General Public License v3.0](https://github.com/SDUOJ/sduoj-web/blob/master/LICENSE)
