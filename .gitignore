@@ -10,6 +10,8 @@ dist.zip
 .env.local
 .env.*.local
 
+*.gpg
+
 # Editor directories and files
 .idea
 .vscode
