@@ -10,7 +10,7 @@
 
 const routes = [
   {
-    redirect: '/home',
+    redirect: '/contest',
     path: '/'
   },
   {
@@ -28,12 +28,12 @@ const routes = [
     path: '/resetpass',
     component: () => import('@/views/user/ResetPass')
   },
-  {
-    name: 'home',
-    path: '/home',
-    component: () => import('@/views/HomeView'),
-    meta: { title: '首页' }
-  },
+  // {
+  //   name: 'home',
+  //   path: '/home',
+  //   component: () => import('@/views/HomeView'),
+  //   meta: { title: '首页' }
+  // },
   {
     name: 'user',
     path: '/user',

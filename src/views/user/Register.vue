@@ -35,7 +35,7 @@ export default {
       this.$Message.success('Register successfully');
 
       this.setProfile(profile);
-      this.$router.replace({ name: 'home' });
+      this.$router.replace({ name: 'contest' });
     }
   }
 };

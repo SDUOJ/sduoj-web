@@ -15,21 +15,21 @@
         <div class="logo" @click="$router.push('/')">
           <img src="../assets/logo.png" style="width: 100px; height: 30px;"/>
         </div>
-        <MenuItem name="home" :to="{ name: 'home' }">
-          <span class="span__menu">Home</span>
-        </MenuItem>
-        <MenuItem name="problem" :to="{ name: 'problem' }">
-          <span class="span__menu">Problem</span>
-        </MenuItem>
+<!--        <MenuItem name="home" :to="{ name: 'home' }">-->
+<!--          <span class="span__menu">Home</span>-->
+<!--        </MenuItem>-->
+<!--        <MenuItem name="problem" :to="{ name: 'problem' }">-->
+<!--          <span class="span__menu">Problem</span>-->
+<!--        </MenuItem>-->
         <MenuItem name="contest" :to="{ name: 'contest' }">
           <span class="span__menu">Contest</span>
         </MenuItem>
-        <MenuItem name="submission" :to="{ name: 'submission' }">
-          <span class="span__menu">Submission</span>
-        </MenuItem>
-        <MenuItem name="group" :to="{ name: 'group' }">
-          <span class="span__menu">Group</span>
-        </MenuItem>
+<!--        <MenuItem name="submission" :to="{ name: 'submission' }">-->
+<!--          <span class="span__menu">Submission</span>-->
+<!--        </MenuItem>-->
+<!--        <MenuItem name="group" :to="{ name: 'group' }">-->
+<!--          <span class="span__menu">Group</span>-->
+<!--        </MenuItem>-->
         <div class="navbar-user">
           <template v-if="isLogin">
             <Avatar :src="avatar"/>
@@ -75,7 +75,7 @@ export default {
       this.$router.push({
         name: 'login',
         query: {
-          to: this.$route.name === 'login' ? '/home' : this.$route.fullPath
+          to: this.$route.name === 'login' ? '/contest' : this.$route.fullPath
         }
       });
     },
@@ -94,7 +94,7 @@ export default {
     handleLogout: function () {
       api.logout().then(_ => {
         this.$store.dispatch('user/clearProfile');
-        this.$router.push({ name: 'home' });
+        this.$router.push({ name: 'contest' });
         this.$Message.success('Log out successfully');
       });
     },
