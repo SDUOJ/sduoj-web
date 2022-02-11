@@ -67,11 +67,11 @@ export default {
       },
       carouselImgs: [
         // test imgs
-        'https://www.cs.sdu.edu.cn/images/ban1news.jpg'
+        // 'https://www.cs.sdu.edu.cn/images/ban1news.jpg'
       ],
       announcements: [
-        { title: 'SDUOJ 于 2020年10月26日成功入塔', time: '2020-10-26', url: '1' },
-        { title: 'SDUOJ 国庆期间项目进度推进', time: '2020-10-01', url: '2' }
+        // { title: 'SDUOJ 于 2020年10月26日成功入塔', time: '2020-10-26', url: '1' },
+        // { title: 'SDUOJ 国庆期间项目进度推进', time: '2020-10-01', url: '2' }
       ]
     }
   }
