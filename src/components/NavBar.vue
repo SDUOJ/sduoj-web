@@ -12,9 +12,9 @@
   <div class="header fixed">
     <div class="container">
       <Menu mode="horizontal" theme="light" :active-name="$route.path.split('/')[1]">
-        <div class="logo" @click="$router.push('/')">
-          <img src="../assets/logo.png" style="width: 100px; height: 30px;"/>
-        </div>
+<!--        <div class="logo" @click="$router.push('/')">-->
+<!--          <img src="../assets/logo.png" style="width: 100px; height: 30px;"/>-->
+<!--        </div>-->
 <!--        <MenuItem name="home" :to="{ name: 'home' }">-->
 <!--          <span class="span__menu">Home</span>-->
 <!--        </MenuItem>-->
