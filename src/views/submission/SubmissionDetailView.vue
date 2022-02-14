@@ -37,7 +37,7 @@
             </Table>
           </Card>
           <Card v-if="showJudgeLog" class="box" title="Judge Log" dis-hover>
-            <div class="judge-log">{{ submission.judgeLog }}</div>
+            <div class="judge-log" v-html="submission.judgeLog"></div>
           </Card>
           <Card v-if="showCode" class="box" title="Your Code" icon="md-code" dis-hover :padding="0">
             <p slot="title">
