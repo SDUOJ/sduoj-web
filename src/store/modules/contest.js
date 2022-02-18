@@ -334,10 +334,12 @@ const actions = {
   },
   getContestRank: function({ commit }) {
     return new Promise((resolve, reject) => {
-      api.getContestRank(this.getters['contest/contestId']).then(ret => {
-        resolve(ret);
-        commit('setAllSubmissions', { allSubmissions: ret });
-      }).catch(reject);
+      if (this.getters['user/isAdmin']) {
+        api.getContestRank(this.getters['contest/contestId']).then(ret => {
+          resolve(ret);
+          commit('setAllSubmissions', { allSubmissions: ret });
+        }).catch(reject);
+      }
     })
   },
   settings: function({ commit }, settings) {

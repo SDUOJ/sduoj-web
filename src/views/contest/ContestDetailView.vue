@@ -134,7 +134,7 @@ export default {
   },
   computed: {
     ...mapState('contest', ['contest', 'sliderTime']),
-    ...mapGetters('user', ['username']),
+    ...mapGetters('user', ['username', 'isAdmin']),
     ...mapGetters('contest', [
       'contestLoaded',
       'hasParticipatedIn',
