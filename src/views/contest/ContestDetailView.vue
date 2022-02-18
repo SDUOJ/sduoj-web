@@ -69,7 +69,7 @@
           <MenuItem name="submission" :to="{ name: 'contest-submission' }">
             <span class="span__menu">Status</span>
           </MenuItem>
-          <MenuItem name="rank" :to="{
+          <MenuItem v-if="isAdmin" name="rank" :to="{
             name: 'contest-rank',
           }">
             <span class="span__menu">Rank</span>
