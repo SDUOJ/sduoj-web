@@ -42,15 +42,15 @@
                 }"
                 style="text-decoration: none; color: black">{{ row.problemTitle }}</router-link>
             </template>
-            <template slot-scope="{ row }" slot="ratio">
-              <span>{{ `${row.acceptNum || '-'} / ${row.submitNum || '-'}` }}</span>
-            </template>
-            <template slot-scope="{ row }" slot="status">
-              <JudgeResult :result="row.judgeResult" />
-            </template>
-            <template slot-scope="{ row }" slot="score">
-              <span v-if="row.judgeResult && showJudgeScore">{{ row.judgeScore }}</span>
-            </template>
+<!--            <template slot-scope="{ row }" slot="ratio">-->
+<!--              <span>{{ `${row.acceptNum || '-'} / ${row.submitNum || '-'}` }}</span>-->
+<!--            </template>-->
+<!--            <template slot-scope="{ row }" slot="status">-->
+<!--              <JudgeResult :result="row.judgeResult" />-->
+<!--            </template>-->
+<!--            <template slot-scope="{ row }" slot="score">-->
+<!--              <span v-if="row.judgeResult && showJudgeScore">{{ row.judgeScore }}</span>-->
+<!--            </template>-->
           </Table>
         </Card>
       </div>
