@@ -26,7 +26,7 @@
                          :email-code.sync="emailForm.emailCode"
                          email-label="New Email">
               <template slot="email-tip">
-                <span style="color: #aaa">Your email will be used at <a href="" target="_blank">Gravatar.com</a></span>
+                <span style="color: #aaa">Your email will be used at <a href="https://cravatar.cn/" target="_blank">Gravatar</a></span>
               </template>
             </EmailVerify>
           </Col>

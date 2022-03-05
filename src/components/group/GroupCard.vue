@@ -11,7 +11,7 @@
 <template>
   <div :class="`media__${size}`">
     <div class="media__left">
-      <img src="//cn.gravatar.com/avatar/?d=mm&s=200&r=g" :width="avatarSize" :height="avatarSize" :class="imgClasses"
+      <img src="//cravatar.cn/avatar/?d=mm&s=200&r=g" :width="avatarSize" :height="avatarSize" :class="imgClasses"
            @click.prevent="clickTitle">
     </div>
     <div class="media__body">
