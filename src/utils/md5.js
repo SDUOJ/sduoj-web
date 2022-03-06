@@ -17,7 +17,7 @@
  * See http://pajhome.org.uk/crypt/md5 for more info.
  */
 
-export function getGravatarUrl (email, baseUrl = 'sdn.geekzu.org', size = 200, _default = 'mp', rating = 'g') {
+export function getGravatarUrl (email, baseUrl = 'cravatar.cn', size = 200, _default = 'mp', rating = 'g') {
   return `https://${baseUrl}/avatar/${hex_md5(email)}?s=${size}&d=${_default}&r=${rating}`;
 }
 
