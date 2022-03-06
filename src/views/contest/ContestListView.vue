@@ -17,10 +17,10 @@
     <Row>
       <Col span="18">
         <div style="margin-right: 20px">
-          <Card title="List" :padding="0" dis-hover>
+          <Card title="实验列表" :padding="0" dis-hover>
             <Select v-if="false" size="small" v-model="selectContestMode" style="width: 100px" slot="extra">
               <Option value="all" label="All" />
-              <Option v-for="mode in CONTEST_MODE" :key="mode" :value="mode" :label="mode.toUpperCase()" />
+              <Option v-for="mode in CONTEST_MODE" :key="mode" :value="mode" :label="mode.toUpperCase()"w />
             </Select>
             <ContestList ref="contestList"/>
             <div class="float-right footer-pages">

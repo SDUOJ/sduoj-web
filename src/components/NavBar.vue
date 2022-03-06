@@ -12,9 +12,9 @@
   <div class="header fixed">
     <div class="container">
       <Menu mode="horizontal" theme="light" :active-name="$route.path.split('/')[1]">
-        <div class="logo" @click="$router.push('/')">
-          <img src="../../public/nju-logo.png" style="width: 30px; height: 30px;"/>
-        </div>
+<!--        <div class="logo" @click="$router.push('/')">-->
+<!--          <img src="../../public/nju-logo.png" style="width: 30px; height: 30px;"/>-->
+<!--        </div>-->
 <!--        <MenuItem name="home" :to="{ name: 'home' }">-->
 <!--          <span class="span__menu">Home</span>-->
 <!--        </MenuItem>-->
@@ -22,7 +22,7 @@
 <!--          <span class="span__menu">Problem</span>-->
 <!--        </MenuItem>-->
         <MenuItem name="contest" :to="{ name: 'contest' }">
-          <span class="span__menu">南京大学《编译原理》课程实验平台</span>
+          <span class="span__menu">南京大学编译原理实验平台</span>
         </MenuItem>
 <!--        <MenuItem name="submission" :to="{ name: 'submission' }">-->
 <!--          <span class="span__menu">Submission</span>-->
@@ -156,6 +156,10 @@ export default {
 
   /deep/ .ivu-menu-item:hover {
     background: rgba(0, 0, 0, .05);
+  }
+
+  /deep/ .ivu-menu-item {
+    font-size: 30px;
   }
 
   /deep/ .ivu-menu-horizontal {
