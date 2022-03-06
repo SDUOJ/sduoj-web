@@ -27,7 +27,7 @@
             <li v-if="hasParticipatedIn" style="color: #5cb85c">
               <Icon type="md-checkmark" /><span>&nbsp;Participated</span>
             </li>
-            <li>
+            <li v-if="false">
               <div :class="`contest-type--${contestMode}`">
                 <Icon type="md-bulb" color="#fff"/>&nbsp;
                 <span>{{ contestMode.toUpperCase() }}</span>

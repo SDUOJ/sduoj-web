@@ -47,7 +47,7 @@
             </template>
           </div>
           <ul slot="description" class="ivu-list-item-action">
-            <li>
+            <li v-if="false">
               <div :class="`contest-type--${contest.features.mode}`">
                 <Icon type="md-bulb" color="#fff"/>&nbsp;
                 <span>{{ contest.features.mode.toUpperCase() }}</span>

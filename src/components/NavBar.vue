@@ -22,7 +22,7 @@
 <!--          <span class="span__menu">Problem</span>-->
 <!--        </MenuItem>-->
         <MenuItem name="contest" :to="{ name: 'contest' }">
-          <span class="span__menu">Contest</span>
+          <span class="span__menu">Compiler</span>
         </MenuItem>
 <!--        <MenuItem name="submission" :to="{ name: 'submission' }">-->
 <!--          <span class="span__menu">Submission</span>-->
