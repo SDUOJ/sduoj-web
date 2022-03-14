@@ -73,14 +73,14 @@
 import { mapGetters, mapState } from 'vuex';
 import UserProfile from '@/views/user/children/UserProfile';
 import UserPassword from '@/views/user/children/UserPassword';
-import UserEmail from '@/views/user/children/UserEmail';
+// import UserEmail from '@/views/user/children/UserEmail';
 import Reconfirm from '_c/Reconfirm';
 
 import { THIRD_PARTY_CAS, THIRD_PARTY_ENUM } from '../third-party/js/ThirdPartyEnum';
 import api from '_u/api';
 
 export default {
-  components: { UserProfile, UserPassword, UserEmail, Reconfirm },
+  components: { UserProfile, UserPassword, Reconfirm },
   inject: ['reload'],
   data: function() {
     return {
