@@ -134,6 +134,7 @@ export default {
     handleRegister: function() {
       this.$refs.registerForm.validate(valid => {
         if (valid) {
+          this.registerForm.username = this.registerForm.email;
           const data = Object.assign({}, this.registerForm);
           let apiName = 'register';
           delete data.confirmPassword;
