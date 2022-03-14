@@ -75,7 +75,7 @@ export default {
       this.$router.push({
         name: 'login',
         query: {
-          to: this.$route.name === 'login' ? '/home' : this.$route.fullPath
+          to: this.$route.name === 'login' ? '/problem' : this.$route.fullPath
         }
       });
     },
