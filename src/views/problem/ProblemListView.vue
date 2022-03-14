@@ -166,7 +166,7 @@ export default {
             }
           }
         },
-        { title: 'Title', slot: 'title' },
+        { title: 'Title', slot: 'title' }
         // { title: 'Source', key: 'source' },
         // { title: 'Accept', key: 'acceptNum', width: 120, sortable: 'custom' }
       ],
