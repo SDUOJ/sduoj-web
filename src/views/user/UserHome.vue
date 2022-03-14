@@ -15,7 +15,7 @@
         <div style="margin-right: 30px;">
           <UserProfile />
           <UserPassword style="margin: 20px 0;" />
-          <UserEmail />
+<!--          <UserEmail />-->
         </div>
       </Col>
       <Col span="8">
@@ -42,24 +42,24 @@
 <!--            </div>-->
 <!--          </div>-->
         </Card>
-        <Card class="profile clearfix" style="margin: 20px 0;" :padding="20" dis-hover>
-          <List>
-            <ListItem v-for="cas in THIRD_PARTY_ENUM" :key="cas">
-              <ListItemMeta :title="cas" :description="THIRD_PARTY_CAS[cas].description"/>
-              <template slot="action" v-if="THIRD_PARTY_CAS[cas].getId(profile)">
-                <li>
-                  <span>{{ THIRD_PARTY_CAS[cas].getId(profile) }}</span>
-                </li>
-                <li>
-                  <a v-if="!thirdPartyStatus[cas]" href="javascript:void(0)" @click="handleUnbind(cas)">Unbind</a>
-                </li>
-                </template>
-                <template slot="action" v-else>
-                  <li>NONE</li>
-                </template>
-            </ListItem>
-          </List>
-        </Card>
+<!--        <Card class="profile clearfix" style="margin: 20px 0;" :padding="20" dis-hover>-->
+<!--          <List>-->
+<!--            <ListItem v-for="cas in THIRD_PARTY_ENUM" :key="cas">-->
+<!--              <ListItemMeta :title="cas" :description="THIRD_PARTY_CAS[cas].description"/>-->
+<!--              <template slot="action" v-if="THIRD_PARTY_CAS[cas].getId(profile)">-->
+<!--                <li>-->
+<!--                  <span>{{ THIRD_PARTY_CAS[cas].getId(profile) }}</span>-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                  <a v-if="!thirdPartyStatus[cas]" href="javascript:void(0)" @click="handleUnbind(cas)">Unbind</a>-->
+<!--                </li>-->
+<!--                </template>-->
+<!--                <template slot="action" v-else>-->
+<!--                  <li>NONE</li>-->
+<!--                </template>-->
+<!--            </ListItem>-->
+<!--          </List>-->
+<!--        </Card>-->
       </Col>
     </Row>
     <Reconfirm ref="reconfirm"
