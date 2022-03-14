@@ -2,7 +2,7 @@ name: build
 
 on:
   push:
-    branches: master
+    branches: pascal-oj
 
 jobs:
   build:
@@ -26,5 +26,5 @@ jobs:
         uses: peaceiris/actions-gh-pages@v2.5.0
         env:
           ACTIONS_DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
-          PUBLISH_BRANCH: release
+          PUBLISH_BRANCH: pascal-oj-release
           PUBLISH_DIR: dist
