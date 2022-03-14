@@ -17,30 +17,30 @@
           <Button type="text" @click="onReset">Reset</Button>
         </div>
       <Row class="clearfix filter-sets">
-        <Col span="6">
+        <Col span="6" v-if="false">
           <div class="filter-title">By Username</div>
           <Input v-model="tUsername"
             placeholder="Username"
             style="width: 200px;"
             @on-enter="onFiltering" />
         </Col>
-        <Col span="6">
+        <Col span="12">
           <div class="filter-title">By Problem</div>
           <Input
             v-model="tProblemCode"
             placeholder="Problem"
-            style="width: 200px;"
+            style="width: 300px;"
             @on-enter="onFiltering" />
         </Col>
         <Col span="6">
           <div class="filter-title">By Judge Result</div>
-          <Select v-model="tJudgeResult" style="width: 200px" clearable>
+          <Select v-model="tJudgeResult" style="width: 300px" clearable>
             <Option v-for="type in JUDGE_RESULT_TYPE" :value="type.value" :key="type.value" :label="type.label">
               <JudgeResult :result="type.value" />
             </Option>
           </Select>
         </Col>
-        <Col span="6">
+        <Col span="6" v-if="false">
           <div class="filter-title">By Judge Template</div>
           <Input
             disabled

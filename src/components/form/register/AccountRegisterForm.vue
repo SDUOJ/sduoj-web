@@ -16,12 +16,13 @@
         :model="registerForm"
         :rules="registerRules"
         label-position="top">
-        <FormItem prop="username" label="Username">
-          <Input
-            v-model="registerForm.username"
-            placeholder="Your login handler"
-            style="width: 280px" />
-        </FormItem>
+<!--        <FormItem prop="username" label="Username">-->
+<!--          <Input-->
+<!--            v-model="registerForm.username"-->
+<!--            placeholder="Your login handler"-->
+<!--            style="width: 280px" />-->
+<!--        </FormItem>-->
+        <EmailVerify :email.sync="registerForm.email" :email-code.sync="registerForm.emailCode" />
         <FormItem prop="password" label="Password">
           <Input
             v-model="registerForm.password"
@@ -36,7 +37,6 @@
             style="width: 280px"
             type="password" />
         </FormItem>
-        <EmailVerify :email.sync="registerForm.email" :email-code.sync="registerForm.emailCode" />
       </Form>
     </div>
     <div class="btnGroup" style="margin-top: -1px">
@@ -104,17 +104,17 @@ export default {
     };
     return {
       registerForm: {
-        username: '',
+        // username: '',
         email: '',
         emailCode: '',
         password: '',
         confirmPassword: ''
       },
       registerRules: {
-        username: [
-          { required: true, trigger: 'blur' },
-          { validator: validateUsername, trigger: 'blur' }
-        ],
+        // username: [
+        //   { required: true, trigger: 'blur' },
+        //   { validator: validateUsername, trigger: 'blur' }
+        // ],
         email: [
           { required: true, type: 'email', trigger: 'blur' },
           { validator: validateEmail, trigger: 'blur' }

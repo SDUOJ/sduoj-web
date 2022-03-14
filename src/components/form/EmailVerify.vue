@@ -72,7 +72,7 @@ export default {
     },
     emailLabel: {
       type: String,
-      default: 'Email'
+      default: 'Email (as your username)'
     },
     emailCodeProp: {
       type: String,

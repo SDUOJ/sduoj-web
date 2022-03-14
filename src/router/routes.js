@@ -10,7 +10,7 @@
 
 const routes = [
   {
-    redirect: '/home',
+    redirect: '/problem',
     path: '/'
   },
   {
@@ -28,12 +28,12 @@ const routes = [
     path: '/resetpass',
     component: () => import('@/views/user/ResetPass')
   },
-  {
-    name: 'home',
-    path: '/home',
-    component: () => import('@/views/HomeView'),
-    meta: { title: '首页' }
-  },
+  // {
+  //   name: 'home',
+  //   path: '/home',
+  //   component: () => import('@/views/HomeView'),
+  //   meta: { title: '首页' }
+  // },
   {
     name: 'user',
     path: '/user',
@@ -62,48 +62,48 @@ const routes = [
     meta: { scrollToTop: true },
     component: () => import('@/views/submission/SubmissionDetailView')
   },
-  {
-    name: 'contest',
-    path: '/contest',
-    component: () => import('@/views/contest/ContestListView')
-  },
-  {
-    name: 'contest-detail',
-    path: '/contest/:contestId',
-    redirect: '/contest/:contestId/overview',
-    meta: { login: true },
-    component: () => import('@/views/contest/ContestDetailView'),
-    children: [
-      {
-        name: 'contest-overview',
-        path: 'overview',
-        component: () => import('@/views/contest/ContestOverviewView')
-      },
-      {
-        name: 'contest-problem',
-        path: 'problem/:problemCode',
-        component: () => import('@/views/problem/ProblemDetailView')
-      },
-      {
-        name: 'contest-submission',
-        path: 'submission',
-        meth: { scrollToTop: true },
-        component: () => import('@/views/submission/SubmissionListView')
-      },
-      {
-        name: 'contest-submission-detail',
-        path: 'submission/:submissionId',
-        meta: { scrollToTop: true },
-        component: () => import('@/views/submission/SubmissionDetailView')
-      },
-      {
-        name: 'contest-rank',
-        path: 'rank',
-        meta: { scrollToTop: true },
-        component: () => import('@/views/contest/ContestRankView')
-      }
-    ]
-  },
+  // {
+  //   name: 'contest',
+  //   path: '/contest',
+  //   component: () => import('@/views/contest/ContestListView')
+  // },
+  // {
+  //   name: 'contest-detail',
+  //   path: '/contest/:contestId',
+  //   redirect: '/contest/:contestId/overview',
+  //   meta: { login: true },
+  //   component: () => import('@/views/contest/ContestDetailView'),
+  //   children: [
+  //     {
+  //       name: 'contest-overview',
+  //       path: 'overview',
+  //       component: () => import('@/views/contest/ContestOverviewView')
+  //     },
+  //     {
+  //       name: 'contest-problem',
+  //       path: 'problem/:problemCode',
+  //       component: () => import('@/views/problem/ProblemDetailView')
+  //     },
+  //     {
+  //       name: 'contest-submission',
+  //       path: 'submission',
+  //       meth: { scrollToTop: true },
+  //       component: () => import('@/views/submission/SubmissionListView')
+  //     },
+  //     {
+  //       name: 'contest-submission-detail',
+  //       path: 'submission/:submissionId',
+  //       meta: { scrollToTop: true },
+  //       component: () => import('@/views/submission/SubmissionDetailView')
+  //     },
+  //     {
+  //       name: 'contest-rank',
+  //       path: 'rank',
+  //       meta: { scrollToTop: true },
+  //       component: () => import('@/views/contest/ContestRankView')
+  //     }
+  //   ]
+  // },
   {
     name: 'group',
     path: '/group',
