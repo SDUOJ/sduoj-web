@@ -25,10 +25,10 @@ export default {
   },
   computed: {
     oj: function () {
-      return this.problemCode.split('-')[0];
+      return this.problemCode.substring(0, this.problemCode.lastIndexOf('-'))
     },
     code: function () {
-      return this.problemCode.split('-')[1];
+      return this.problemCode.substring(this.problemCode.lastIndexOf('-') + 1)
     }
   }
 }

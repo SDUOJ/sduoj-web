@@ -52,7 +52,7 @@
                     type="info"
                     size="small"
                     target="_blank"
-                    :to="downloadUrl">Download</Button>
+                    :to="downloadUrl">Download Your Code</Button>
             <div v-if="submission.code" v-highlight-linenumber="submission.code">
               <pre><code /></pre>
             </div>
@@ -63,9 +63,9 @@
         <Card title="Submission" icon="ios-options" dis-hover :padding="0">
           <CellGroup @on-click="onCellClick">
             <div style="margin-top: 24px;">
-              <Cell title="Public" v-if="submission.username === username">
-                <i-switch v-model="submission.isPublic" slot="extra" true-color="#19be6b"/>
-              </Cell>
+<!--              <Cell title="Public" v-if="submission.username === username">-->
+<!--                <i-switch v-model="submission.isPublic" slot="extra" true-color="#19be6b"/>-->
+<!--              </Cell>-->
               <Cell v-if="canDoRejudge" name="rejudge" :disabled="submission.judgeResult < 0">
                 <strong>Rejudge</strong>
                 <Icon slot="icon" type="md-refresh" color="#2d8cf0" />
@@ -95,13 +95,14 @@
                     }}"/>
               </template>
               <template v-else>
-                <Cell
+                <Cell v-if="false"
                   title="Problem Code"
                   :to="{ name: 'problem-detail', params: { problemCode: submission.problemCode }}">
                   <ProblemCode slot="extra" :problemCode="submission.problemCode"/>
                 </Cell>
               </template>
-              <Cell ref="problem_title_cell" title="Problem Title">
+              <Cell ref="problem_title_cell" title=""
+                    :to="{ name: 'problem-detail', params: { problemCode: submission.problemCode }}">
                 <span slot="extra" class="ellipsis" :style="`width: ${getEllipsisWidth('problem_title_cell')}px`">
                   {{ submission.problemTitle }}
                 </span>
@@ -117,20 +118,20 @@
               <Cell title="Judge Time">
                 <Time slot="extra" :time="submission.gmtModified | parseInt" type="datetime"/>
               </Cell>
-              <Cell title="Username" :extra="submission.username"/>
-              <Cell title="Judge Result">
+              <Cell title="User" :extra="submission.username"/>
+              <Cell title="Judge Result" v-if="canDoRejudge">
                 <JudgeResult slot="extra" :result="submission.judgeResult"/>
               </Cell>
               <Cell v-if="submission.judgeScore" title="Score">
                 <span slot="extra">{{ submission.judgeScore || 0 }}</span>
               </Cell>
               <Cell title="Judge Template" :extra="submission.judgeTemplateTitle"/>
-              <Cell title="Total Time">
-                <span class="time" slot="extra">{{ submission.usedTime || 0 }}</span>
-              </Cell>
-              <Cell title="Total Memory">
-                <span class="mem" slot="extra">{{ submission.usedMemory || 0 }}</span>
-              </Cell>
+<!--              <Cell title="Total Time">-->
+<!--                <span class="time" slot="extra">{{ submission.usedTime || 0 }}</span>-->
+<!--              </Cell>-->
+<!--              <Cell title="Total Memory">-->
+<!--                <span class="mem" slot="extra">{{ submission.usedMemory || 0 }}</span>-->
+<!--              </Cell>-->
             </div>
           </CellGroup>
         </Card>

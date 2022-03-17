@@ -51,14 +51,14 @@ export const JUDGE_RESULT = {
     abbr: 'CP',
     css: 'verdict-pending',
     color: 'grey',
-    icon: 'md-information'
+    icon: 'md-refresh'
   },
   [JUDGE_RESULT_TYPE.JG]: {
-    name: 'Judging',
+    name: 'Judging... (Please wait patiently)',
     abbr: 'JG',
     css: 'verdict-pending',
     color: 'grey',
-    icon: 'md-information'
+    icon: 'md-refresh'
   },
   [JUDGE_RESULT_TYPE.END]: {
     name: 'Ended',
@@ -72,7 +72,7 @@ export const JUDGE_RESULT = {
     abbr: 'PD',
     css: 'verdict-pending',
     color: 'grey',
-    icon: 'md-information'
+    icon: 'md-refresh'
   },
   [JUDGE_RESULT_TYPE.AC]: {
     name: 'Accepted',

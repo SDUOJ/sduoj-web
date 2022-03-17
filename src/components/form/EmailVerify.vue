@@ -10,6 +10,18 @@
 
 <template>
   <div>
+    <p style="width:280px;word-wrap:break-word;">
+      由于我们的OJ服务器资源有限，现仅支持教育邮箱(高校或科研院所)进行注册。
+      如果服务器判断有误，请通过您的教育邮箱给我们发邮件，邮件内容附带上机构名字，
+      我们会尽快添加到服务器的教育邮箱列表中。
+      <br>
+      Due to the limited resources of our OJ server, we now only support
+      education (or research institute) emails for registration. If the server judges that there is a mistake,
+      please send us an email through your educational email address with the organization's
+      name attached to it. We will add it to the educational email list of the server as soon as possible.
+    </p>
+    <br>
+
     <div>
       <FormItem :prop="emailProp" :label="emailLabel">
         <Input v-model="tempEmail"
@@ -80,7 +92,7 @@ export default {
     },
     emailCodeLabel: {
       type: String,
-      default: 'Email Code'
+      default: 'Verification Code'
     },
     email: {
       type: String

@@ -28,7 +28,7 @@
         }">{{ row.submissionId }}</router-link>
       </template>
       <template slot-scope="{ row }" slot="title" v-once>
-        <Tooltip :content="row.problemTitle" theme="light" transfer>
+        <Tooltip theme="light" transfer>
           <router-link :to="{
             name: contestId ? 'contest-problem' : 'problem-detail',
             params: { problemCode: row.problemCode }
@@ -106,9 +106,9 @@ export default {
         { title: 'Problem', key: 'problemCode', slot: 'title', align: 'center' },
         { title: 'Judge Result', key: 'judgeResult', slot: 'judge-result', width: 210, align: 'center' },
         { title: 'Score', key: 'judgeScore', maxWidth: 100, slot: 'score', align: 'center' },
-        { title: 'Time', key: 'usedTime', slot: 'time', sortable: true, align: 'right' },
-        { title: 'Memory', key: 'usedMemory', slot: 'mem', sortable: true, align: 'right' },
-        { title: 'Template', key: 'judgeTemplateTitle', props: { vOnce: true }, align: 'center' },
+        // { title: 'Time', key: 'usedTime', slot: 'time', sortable: true, align: 'right' },
+        // { title: 'Memory', key: 'usedMemory', slot: 'mem', sortable: true, align: 'right' },
+        // { title: 'Template', key: 'judgeTemplateTitle', props: { vOnce: true }, align: 'center' },
         { title: 'Submit Time', key: 'gmtCreate', sortable: true, slot: 'submit-time', align: 'center' }
       ]
     }

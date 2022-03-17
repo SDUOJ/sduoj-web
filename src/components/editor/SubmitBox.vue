@@ -12,7 +12,7 @@
   <div>
     <div class="utils clearfix">
       <div class="lang">
-        <span>Judge Templates: </span>
+<!--        <span>Judge Templates: </span>-->
         <Select @on-change="onJudgeTemplateChange" :value="judgeTemplate.id" class="adjust">
           <template v-for="template in judgeTemplateSet">
             <Tooltip v-if="template.comment.trim() !== ''" :key="template.id" :content="template.comment" style="width: 100%"  placement="right" transfer>
@@ -40,7 +40,7 @@
           <div v-if="uploadFile">
 
             <Button icon="ios-cloud-upload-outline" v-if="fileList.length === 0">
-              Upload
+              Choose your Zip file
             </Button>
             <Button icon="ios-cloud-upload-outline" v-else>{{ fileList[0].name }}</Button>
           </div>
