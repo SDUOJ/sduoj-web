@@ -28,12 +28,10 @@
         }">{{ row.submissionId }}</router-link>
       </template>
       <template slot-scope="{ row }" slot="title" v-once>
-        <Tooltip theme="light" transfer>
           <router-link :to="{
             name: contestId ? 'contest-problem' : 'problem-detail',
             params: { problemCode: row.problemCode }
           }">{{ row.problemCode | problemCodeEncode }}</router-link>
-        </Tooltip>
       </template>
       <template slot-scope="{ row }" slot="judge-result">
         <JudgeResult :result="row.judgeResult" :total="row.checkpointNum" :current="row.$judgedNum" />

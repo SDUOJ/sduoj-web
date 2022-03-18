@@ -38,7 +38,7 @@
                 class="problem-set-content-table"
                 @on-sort-change="onSort">
                 <template slot-scope="{ row }" slot="acceptance">
-                  <span>{{ (row.submitNum === 0 ? 1 : row.acceptNum / row.submitNum) * 100 }}%</span>
+                  <span>{{ (row.submitNum === 0 ? 1 : Math.round(row.acceptNum / row.submitNum)) * 100 }}%</span>
                 </template>
                 <template slot-scope="{ row }" slot="title">
                   <router-link
@@ -136,7 +136,7 @@ export default {
         {
           title: 'ID',
           key: 'problemCode',
-          width: 210,
+          width: 150,
           render: (h, params) => {
             if (params.row.problemCode !== undefined) {
               if (params.row.problemCode.length > 20) {
@@ -173,7 +173,7 @@ export default {
         { title: 'Title', slot: 'title' },
         // { title: 'Source', key: 'source' },
         // { title: 'Accept', key: 'acceptNum', width: 120, sortable: 'custom' }
-        { title: 'Acceptance', slot: 'acceptance' }
+        { title: 'Acceptance', slot: 'acceptance', width: 120 }
       ],
       acproblems: [],
       problems: [],

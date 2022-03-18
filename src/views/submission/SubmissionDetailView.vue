@@ -181,7 +181,7 @@ export default {
     // 获得元素宽度并且计算文本最大显示宽度
     getEllipsisWidth: function(ref) {
       const cell = this.$refs[ref];
-      return cell ? cell.$el.clientWidth - 107 : 200;
+      return cell ? cell.$el.clientWidth - 48 : 200;
     },
     copyToClipboard: function (content) {
       this.$copyText(content).then(_ => this.$Message.success('已复制到剪切板'));

@@ -96,12 +96,12 @@
                 <span v-else slot="extra">{{ problem.problemCode | contestProblemId }}</span>
               </Cell>
               <Cell title="Problem ID" v-if="!contestId" :extra="problem.problemId"/>
-              <Cell title="Time Limit">
-                <span class="time" slot="extra">{{ problem.timeLimit }}</span>
-              </Cell>
-              <Cell title="Memory Limit">
-                <span class="mem" slot="extra">{{ problem.memoryLimit }}</span>
-              </Cell>
+<!--              <Cell title="Time Limit">-->
+<!--                <span class="time" slot="extra">{{ problem.timeLimit }}</span>-->
+<!--              </Cell>-->
+<!--              <Cell title="Memory Limit">-->
+<!--                <span class="mem" slot="extra">{{ problem.memoryLimit }}</span>-->
+<!--              </Cell>-->
               <Cell title="Weight" v-if="problem.problemWeight">
                 <span slot="extra">{{ problem.problemWeight }}</span>
               </Cell>
@@ -110,15 +110,15 @@
                   <span v-for="lang in problem.judgeTemplates" :key="lang.id" class="judgeTemplate">{{ lang.title }}</span>
                 </div>
               </Cell>
-              <Cell title="Source" :extra="problem.source"/>
-              <Cell title="Remote" :extra="problem.problemCode" v-if="problem.remoteOj" :to="problem.remoteUrl"/>
+<!--              <Cell title="Source" :extra="problem.source"/>-->
+<!--              <Cell title="Remote" :extra="problem.problemCode" v-if="problem.remoteOj" :to="problem.remoteUrl"/>-->
             </CellGroup>
           </Card>
           <!--  -->
 <!--          题面描述选择列表-->
           <Card class="display__card"
                 title="Descriptions"
-                v-if="problem.problemDescriptionListDTOList"
+                v-if="false"
                 dis-hover :padding="0">
             <CellGroup>
               <Cell
