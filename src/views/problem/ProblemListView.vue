@@ -38,7 +38,7 @@
                 class="problem-set-content-table"
                 @on-sort-change="onSort">
                 <template slot-scope="{ row }" slot="acceptance">
-                  <span>{{ (row.submitNum === 0 ? 1 : Math.round(row.acceptNum / row.submitNum)) * 100 }}%</span>
+                  <span>{{ Math.round((row.submitNum === 0 ? 1 : row.acceptNum / row.submitNum) * 100) }}%</span>
                 </template>
                 <template slot-scope="{ row }" slot="title">
                   <router-link
