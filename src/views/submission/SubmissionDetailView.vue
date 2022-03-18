@@ -41,7 +41,7 @@
           </Card>
           <Card v-if="showCode" class="box" title="Your Code" icon="md-code" dis-hover :padding="0">
             <p slot="title">
-              <span>Your Code</span>
+<!--              <span>Your Code</span>-->
               <Tooltip v-if="submission.code" content="copy" placement="right">
                 <Icon class="hover" type="md-copy" @click="copyToClipboard(submission.code)" />
               </Tooltip>
