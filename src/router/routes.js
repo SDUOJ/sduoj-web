@@ -104,21 +104,21 @@ const routes = [
   //     }
   //   ]
   // },
-  {
-    name: 'group',
-    path: '/group',
-    component: () => import('@/views/group/GroupListView')
-  },
-  {
-    name: 'group-detail',
-    path: '/group/:groupId',
-    component: () => import('@/views/group/GroupDetailView')
-  },
-  {
-    name: 'third-party-login',
-    path: '/thirdPartyLogin',
-    component: () => import('@/views/third-party/ThirdPartyLogin')
-  },
+  // {
+  //   name: 'group',
+  //   path: '/group',
+  //   component: () => import('@/views/group/GroupListView')
+  // },
+  // {
+  //   name: 'group-detail',
+  //   path: '/group/:groupId',
+  //   component: () => import('@/views/group/GroupDetailView')
+  // },
+  // {
+  //   name: 'third-party-login',
+  //   path: '/thirdPartyLogin',
+  //   component: () => import('@/views/third-party/ThirdPartyLogin')
+  // },
   {
     path: '*',
     name: '404',
