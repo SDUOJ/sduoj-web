@@ -95,21 +95,21 @@
                 <ProblemCode v-if="!contestId" slot="extra" :problemCode="problem.problemCode"/>
                 <span v-else slot="extra">{{ problem.problemCode | contestProblemId }}</span>
               </Cell>
-              <Cell title="Problem ID" v-if="!contestId" :extra="problem.problemId"/>
+<!--              <Cell title="Problem ID" v-if="!contestId" :extra="problem.problemId"/>-->
 <!--              <Cell title="Time Limit">-->
 <!--                <span class="time" slot="extra">{{ problem.timeLimit }}</span>-->
 <!--              </Cell>-->
 <!--              <Cell title="Memory Limit">-->
 <!--                <span class="mem" slot="extra">{{ problem.memoryLimit }}</span>-->
 <!--              </Cell>-->
-              <Cell title="Weight" v-if="problem.problemWeight">
-                <span slot="extra">{{ problem.problemWeight }}</span>
-              </Cell>
-              <Cell title="Judge Templates">
-                <div slot="label">
-                  <span v-for="lang in problem.judgeTemplates" :key="lang.id" class="judgeTemplate">{{ lang.title }}</span>
-                </div>
-              </Cell>
+<!--              <Cell title="Weight" v-if="problem.problemWeight">-->
+<!--                <span slot="extra">{{ problem.problemWeight }}</span>-->
+<!--              </Cell>-->
+<!--              <Cell title="Judge Templates">-->
+<!--                <div slot="label">-->
+<!--                  <span v-for="lang in problem.judgeTemplates" :key="lang.id" class="judgeTemplate">{{ lang.title }}</span>-->
+<!--                </div>-->
+<!--              </Cell>-->
 <!--              <Cell title="Source" :extra="problem.source"/>-->
 <!--              <Cell title="Remote" :extra="problem.problemCode" v-if="problem.remoteOj" :to="problem.remoteUrl"/>-->
             </CellGroup>
