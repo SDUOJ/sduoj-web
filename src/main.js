@@ -21,7 +21,7 @@ import './styles/rank.css';
 Vue.config.productionTip = false;
 
 Vue.prototype.$Message.config({
-  duration: 3,
+  duration: 7,
   top: 60
 });
 
