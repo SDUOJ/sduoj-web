@@ -291,14 +291,7 @@ export default {
           this.initWebSocket(
             '/submission',
             [this.submission.submissionId],
-            this.wsSuccess,
-            function () {
-              console.log('ws onerror');
-              this.reconnect();
-            },
-            function () {
-              console.log('ws close');
-            }
+            this.wsSuccess
           );
         }
       }).finally(() => {
