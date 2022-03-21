@@ -68,7 +68,7 @@ export const JUDGE_RESULT = {
     icon: 'md-information'
   },
   [JUDGE_RESULT_TYPE.PD]: {
-    name: 'Pending',
+    name: 'Pending (Queuing for judging)',
     abbr: 'PD',
     css: 'verdict-pending',
     color: 'grey',
