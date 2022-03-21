@@ -119,13 +119,15 @@
                 <Time slot="extra" :time="submission.gmtModified | parseInt" type="datetime"/>
               </Cell>
               <Cell title="User" :extra="submission.username"/>
-              <Cell title="Judge Result" v-if="canDoRejudge">
+              <Cell title="Judge Result">
                 <JudgeResult slot="extra" :result="submission.judgeResult"/>
               </Cell>
               <Cell v-if="submission.judgeScore" title="Score">
                 <span slot="extra">{{ submission.judgeScore || 0 }}</span>
               </Cell>
-              <Cell title="Judge Template" :extra="submission.judgeTemplateTitle"/>
+              <Cell title="Judge Template"
+                    v-if="canDoRejudge"
+                    :extra="submission.judgeTemplateTitle"/>
 <!--              <Cell title="Total Time">-->
 <!--                <span class="time" slot="extra">{{ submission.usedTime || 0 }}</span>-->
 <!--              </Cell>-->
