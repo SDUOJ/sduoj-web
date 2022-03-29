@@ -17,6 +17,7 @@ const state = {
 
 const getters = {
   profile: state => state.profile || {},
+  nickname: state => state.profile.nickname || '',
   username: state => state.profile.username || '',
   avatar: state => getGravatarUrl(state.profile.email || ''),
   isLogin: state => !!state.profile.userId,

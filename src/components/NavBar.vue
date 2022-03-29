@@ -35,7 +35,7 @@
             <Avatar :src="avatar"/>
             <Dropdown @on-click="onClick">
               <div class="navbar-username">
-                {{username}}
+                {{nickname}} ({{username}})
                 <Icon type="ios-arrow-down"></Icon>
               </div>
               <DropdownMenu slot="list">
@@ -103,7 +103,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('user', ['isLogin', 'username', 'avatar', 'isAdmin']),
+    ...mapGetters('user', ['isLogin', 'username', 'nickname', 'avatar', 'isAdmin']),
     manageUrl: function() {
       if (SDUOJ_ENV.PROD) {
         return `${location.origin}${process.env.VUE_APP_OJ_MANAGE}`;
