@@ -122,9 +122,9 @@
               <Cell title="Judge Result">
                 <JudgeResult slot="extra" :result="submission.judgeResult"/>
               </Cell>
-              <Cell v-if="submission.judgeScore" title="Score">
-                <span slot="extra">{{ submission.judgeScore || 0 }}</span>
-              </Cell>
+<!--              <Cell v-if="submission.judgeScore" title="Score">-->
+<!--                <span slot="extra">{{ submission.judgeScore || 0 }}</span>-->
+<!--              </Cell>-->
               <Cell title="Judge Template"
                     v-if="canDoRejudge"
                     :extra="submission.judgeTemplateTitle"/>
