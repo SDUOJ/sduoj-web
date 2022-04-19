@@ -20,7 +20,7 @@
             <FormItem label="Nickname">
               <Input type="text" v-model="profileForm.nickname" style="width: 280px;" />
             </FormItem>
-            <FormItem label="Student ID">
+            <FormItem label="Student ID" v-show="false">
               <Input type="text" v-model="profileForm.studentId" style="width: 280px;" />
             </FormItem>
             <FormItem>
@@ -28,14 +28,14 @@
             </FormItem>
           </Col>
           <Col span="12">
-            <FormItem label="Gender">
+            <FormItem label="Gender" v-show="false">
               <RadioGroup v-model="profileForm.gender" border>
                 <Radio label=2><Icon type="md-help" /></Radio>
                 <Radio label=1><Icon type="md-male" /></Radio>
                 <Radio label=0><Icon type="md-female" /></Radio>
               </RadioGroup>
             </FormItem>
-            <FormItem label="Phone">
+            <FormItem label="Phone" v-show="false">
               <Input type="text" v-model="profileForm.phone" style="width: 280px;" />
             </FormItem>
             <FormItem label="Email">

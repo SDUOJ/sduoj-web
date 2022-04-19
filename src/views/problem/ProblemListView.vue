@@ -18,7 +18,9 @@
           <Card class="problem-set" :padding="0" dis-hover>
             <!-- 题库 header -->
             <div class="problem-set-header clearfix" slot="title">
-              <span class="problem-set-header-name">Problem</span>
+              <span class="problem-set-header-name">
+                <a href="https://tai-e.pascal-lab.net/" style="color:black;">Tai-e Programming Assignments</a>
+              </span>
             </div>
             <div slot="extra">
 <!--              TODO: 有bug 暂不可用-->
