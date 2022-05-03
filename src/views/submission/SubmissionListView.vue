@@ -17,7 +17,7 @@
           <Button type="text" @click="onReset">Reset</Button>
         </div>
       <Row class="clearfix filter-sets">
-        <Col span="6" v-if="false">
+        <Col span="6" v-if="this.isAdmin">
           <div class="filter-title">By Username</div>
           <Input v-model="tUsername"
             placeholder="Username"
