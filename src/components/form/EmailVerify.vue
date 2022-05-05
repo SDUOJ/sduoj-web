@@ -129,7 +129,7 @@ export default {
       validator: new AsyncValidator({
         email: [
           { required: true, type: 'email', trigger: 'blur' },
-          { validator: validateEmail, trigger: 'blur' }
+          { validator: validateEmail }
         ]
       })
     }

@@ -116,8 +116,8 @@ export default {
         //   { validator: validateUsername, trigger: 'blur' }
         // ],
         email: [
-          { required: true, type: 'email', trigger: 'blur' },
-          { validator: validateEmail, trigger: 'blur' }
+          { required: true, type: 'email', trigger: 'blur' }
+          // { validator: validateEmail, trigger: 'blur' }
         ],
         password: [
           { required: true, trigger: 'blur', min: 6, max: 32 },
