@@ -147,7 +147,9 @@ export default {
       };
 
       this.functionTemplateSet.some(o => {
-        if (o.judgeTemplateId === judgeTemplate.id) {
+        if (o.judgeTemplateId === judgeTemplate.id &&
+          o.initialTemplate !== null &&
+          o.functionTemplate !== null) {
           this.editCode = o.initialTemplate;
           this.functionTemplate = o;
           return true;
