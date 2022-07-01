@@ -15,7 +15,7 @@
         <div style="margin-right: 30px;">
           <UserProfile />
           <UserPassword style="margin: 20px 0;" />
-          <UserEmail />
+<!--          <UserEmail />-->
         </div>
       </Col>
       <Col span="8">
