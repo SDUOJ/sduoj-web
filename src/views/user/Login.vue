@@ -12,7 +12,7 @@
   <div class="box clearfix">
     <div class="loginDiv">
       <div class="loginSwitchDiv">
-        <div class="thirdPartyLogin" @click="switchLoginType(true)">
+        <div class="thirdPartyLogin" @click="switchLoginType(true)" v-if="false">
           <div :class="{ selectedType: isThirdPartyLogin }">Third Party</div>
         </div>
         <div class="intervalDiv"></div>
@@ -54,7 +54,7 @@ export default {
   components: { AccountLoginForm },
   data: function() {
     return {
-      isThirdPartyLogin: true
+      isThirdPartyLogin: false
     }
   },
   computed: {
