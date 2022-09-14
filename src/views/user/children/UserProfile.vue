@@ -20,7 +20,7 @@
             <FormItem label="Nickname">
               <Input type="text" v-model="profileForm.nickname" style="width: 280px;" />
             </FormItem>
-            <FormItem label="Student ID" v-show="false">
+            <FormItem label="Student ID">
               <Input type="text" v-model="profileForm.studentId" style="width: 280px;" />
             </FormItem>
             <FormItem>
