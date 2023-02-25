@@ -75,7 +75,7 @@ export const JUDGE_RESULT = {
     icon: 'md-information'
   },
   [JUDGE_RESULT_TYPE.AC]: {
-    name: 'Accepted',
+    name: 'Submitted Successfully',
     abbr: 'AC',
     css: 'verdict-accepted',
     color: '#5cb85c',
@@ -110,11 +110,11 @@ export const JUDGE_RESULT = {
     icon: 'md-close'
   },
   [JUDGE_RESULT_TYPE.WA]: {
-    name: 'Wrong Answer',
+    name: 'Submitted Successfully',
     abbr: 'WA',
-    css: 'verdict-failed',
-    color: '#d9534f',
-    icon: 'md-close'
+    css: 'verdict-partial-accepted',
+    color: '#2d8cf0',
+    icon: 'md-checkmark'
   },
   [JUDGE_RESULT_TYPE.PE]: {
     name: 'Presentation Error',

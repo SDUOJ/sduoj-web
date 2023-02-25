@@ -59,6 +59,12 @@ export default {
     font-weight: bold;
   }
 
+  // partial accepted
+  .verdict-partial-accepted {
+    color: #2d8cf0;
+    font-weight: bold;
+  }
+
   // judge failed
   .verdict-failed {
     color: #d9534f;
