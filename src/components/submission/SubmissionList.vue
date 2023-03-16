@@ -160,8 +160,6 @@ export default {
         data = JSON.parse(data);
       }
       for (let i = 0; i < data.length; ++i) {
-        // data[i]不是数组的话就是单独的一个数：表示评测状态 -3 compiling -2 judging
-        // 如果data[i]是数组但是只有一个元素也是表示评测状态，此时 fileCheckpointResults 会返回false
         if (Array.isArray(data[i])) {
           this.fillCheckpointResults(data[i]);
         } else {
@@ -171,19 +169,34 @@ export default {
       }
     },
     fillCheckpointResults: function (oneJudge) {
-      const index = this.listenedSubmissions[oneJudge[0]];
+      // oneJudge 格式为:
+      // [submissionIdHex, submissionVersion,
+      // checkpointType, checkpointIndex, checkpointId,
+      // judgeResult, judgeScore, usedTime, usedMemory]
+
+      const submissionIdHex = oneJudge[0]
+      // const submissionVersion = oneJudge[1]
+      // const checkpointType = oneJudge[2]
+      const checkpointIndex = oneJudge[3]
+      // const checkpointId = oneJudge[4]
+      const judgeResult = oneJudge[5]
+      const judgeScore = oneJudge[6]
+      const usedTime = oneJudge[7]
+      const usedMemory = oneJudge[8]
+
+      const index = this.listenedSubmissions[submissionIdHex];
       if (index === undefined) return;
-      if (oneJudge[1] < JUDGE_RESULT_TYPE.PD) {
-        if (oneJudge[1] === JUDGE_RESULT_TYPE.END) {
-          this.submissions[index].judgeResult = oneJudge[2];
-          this.submissions[index].judgeScore = oneJudge[3];
-          this.submissions[index].usedTime = oneJudge[4].toString();
-          this.submissions[index].usedMemory = oneJudge[5].toString();
+      if (checkpointIndex < 0) {
+        if (checkpointIndex === JUDGE_RESULT_TYPE.END) {
+          this.submissions[index].judgeResult = judgeResult;
+          this.submissions[index].judgeScore = judgeScore;
+          this.submissions[index].usedTime = usedTime.toString();
+          this.submissions[index].usedMemory = usedMemory.toString();
           if (--this.listenedSubmissions.$length === 0) {
             this.websock.close();
           }
         } else {
-          this.submissions[index].judgeResult = oneJudge[1];
+          this.submissions[index].judgeResult = checkpointIndex;
         }
       } else {
         // 统计该submission一共评了几个测试点

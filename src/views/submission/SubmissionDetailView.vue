@@ -196,8 +196,6 @@ export default {
         data = JSON.parse(data);
       }
       for (let i = 0; i < data.length; ++i) {
-        // data[i]不是数组的话就是单独的一个数：表示评测状态 -3 compiling -2 judging
-        // 如果data[i]是数组但是只有一个元素也是表示评测状态，此时 fileCheckpointResults 会返回false
         if (Array.isArray(data[i])) {
           this.fillCheckpointResults(data[i]);
         } else {
@@ -207,9 +205,23 @@ export default {
       }
     },
     fillCheckpointResults: function (oneJudge) {
-      if (oneJudge[1] < JUDGE_RESULT_TYPE.PD) {
-        // ['submissionId', -3/-2/-1]
-        switch (oneJudge[1]) {
+      // oneJudge 格式为:
+      // [submissionIdHex, submissionVersion,
+      // checkpointType, checkpointIndex, checkpointId,
+      // judgeResult, judgeScore, usedTime, usedMemory]
+
+      // const submissionIdHex = oneJudge[0]
+      // const submissionVersion = oneJudge[1]
+      // const checkpointType = oneJudge[2]
+      const checkpointIndex = oneJudge[3]
+      // const checkpointId = oneJudge[4]
+      const judgeResult = oneJudge[5]
+      const judgeScore = oneJudge[6]
+      const usedTime = oneJudge[7]
+      const usedMemory = oneJudge[8]
+
+      if (checkpointIndex < 0) {
+        switch (checkpointIndex) {
           case JUDGE_RESULT_TYPE.CP:
             this.$set(this.submission, 'judgeResult', JUDGE_RESULT_TYPE.CP);
             break;
@@ -223,22 +235,21 @@ export default {
             this.websock.close();
             this.submission = {
               ...this.submission,
-              judgeResult: oneJudge[2],
-              judgeScore: oneJudge[3],
-              usedTime: oneJudge[4].toString(),
-              usedMemory: oneJudge[5].toString()
+              judgeResult: judgeResult,
+              judgeScore: judgeScore,
+              usedTime: usedTime.toString(),
+              usedMemory: usedMemory.toString()
             };
             this.getSubmissionDetail(this.submission.submissionId);
             break;
         }
       } else {
-        // ['submissionId', caseIndex, judgeResult, judgeScore, usedTime, usedMemory]
-        this.submission.checkpointResults.splice(oneJudge[1], 1, {
-          id: oneJudge[1] + 1,
-          judgeResult: oneJudge[2],
-          judgeScore: oneJudge[3],
-          usedTime: oneJudge[4].toString(),
-          usedMemory: oneJudge[5].toString()
+        this.submission.checkpointResults.splice(checkpointIndex, 1, {
+          id: checkpointIndex + 1,
+          judgeResult: judgeResult,
+          judgeScore: judgeScore,
+          usedTime: usedTime.toString(),
+          usedMemory: usedMemory.toString()
         });
       }
     },
@@ -248,7 +259,7 @@ export default {
         // 数据脱敏后 ret.checkpointResults === null
         if (this.submission.checkpointResults) {
           this.submission.checkpointResults.forEach((o, i) => {
-            this.fillCheckpointResults([ret.submissionId, i, ...o]);
+            this.fillCheckpointResults([ret.submissionId, 0, 0, i, ...o]);
           });
         }
 

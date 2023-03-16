@@ -60,6 +60,13 @@ export const JUDGE_RESULT = {
     color: 'grey',
     icon: 'md-information'
   },
+  [JUDGE_RESULT_TYPE.END]: {
+    name: 'Ended',
+    abbr: 'END',
+    css: 'verdict-pending',
+    color: 'grey',
+    icon: 'md-information'
+  },
   [JUDGE_RESULT_TYPE.PD]: {
     name: 'Pending',
     abbr: 'PD',
