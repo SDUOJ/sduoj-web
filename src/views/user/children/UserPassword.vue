@@ -83,7 +83,7 @@ export default {
             newPassword: this.passwordForm.newPassword
           };
           this.btnLoading = true;
-          api.updateProfile(dataForm).then(ret => {
+          api.updatePassword(dataForm).then(ret => {
             this.$Message.success('Updated');
           }).catch(err => {
             this.$Message.error(err.message);

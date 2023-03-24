@@ -125,6 +125,9 @@ export default {
   updateProfile: function(data) {
     return post('/user/updateProfile', data);
   },
+  updatePassword: function(data) {
+    return post('/user/updatePassword', data);
+  },
   sendVerificationEmail: function(data) {
     return post('/user/sendVerificationEmail', data);
   },
