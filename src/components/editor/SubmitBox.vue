@@ -34,6 +34,7 @@
           :file-list.sync="fileList"
           :show-upload-list="false"
           :format="['zip']"
+          maxSize=1024
           accept=".zip">
           <!--:format="judgeTemplate.acceptFileExtensions || []"
           :accept="(judgeTemplate.acceptFileExtensions || []).map(o => `.${o}`).join(',')">-->

@@ -221,6 +221,7 @@ export default {
       // check maxSize
       if (this.maxSize) {
         if (file.size > this.maxSize * 1024) {
+          alert('File size exceeds the limit of ' + this.maxSize + 'Bytes. Please select a smaller file.')
           this.onExceededSize(file, this.fileList)
           return false
         }
