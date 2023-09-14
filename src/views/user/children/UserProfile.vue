@@ -81,6 +81,7 @@ export default {
       this.$refs.profileForm.validate(valid => {
         if (valid) {
           this.btnLoading = true;
+          this.profileForm.phone = null;
           api.updateProfile(this.profileForm).then(ret => {
             api.getProfile();
             this.$Message.success('Profile Updated');
