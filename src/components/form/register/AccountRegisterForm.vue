@@ -22,6 +22,12 @@
             placeholder="Your login handler"
             style="width: 280px" />
         </FormItem>
+        <FormItem prop="nickname" label="Nickname">
+          <Input
+            v-model="registerForm.nickname"
+            placeholder="Your nickname"
+            style="width: 280px" />
+        </FormItem>
         <FormItem prop="password" label="Password">
           <Input
             v-model="registerForm.password"
@@ -105,6 +111,7 @@ export default {
     return {
       registerForm: {
         username: '',
+        nickname: '',
         email: '',
         emailCode: '',
         password: '',
@@ -114,6 +121,9 @@ export default {
         username: [
           { required: true, trigger: 'blur' },
           { validator: validateUsername, trigger: 'blur' }
+        ],
+        nickname: [
+          { required: true, trigger: 'blur' }
         ],
         email: [
           { required: true, type: 'email', trigger: 'blur' },
