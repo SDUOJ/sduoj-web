@@ -15,7 +15,7 @@
             :model="accountLoginForm"
             :rules="accountLoginRules"
             label-position="right">
-        <FormItem prop="username" label="Username (or Email)">
+        <FormItem prop="username" label="Username">
           <Input v-model="accountLoginForm.username" style="width: 280px" />
         </FormItem>
         <FormItem prop="password" label="Password">
