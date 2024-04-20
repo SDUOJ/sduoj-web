@@ -2,7 +2,8 @@ name: CI
 
 on:
   pull_request:
-    branches: master
+    branches:
+      - master
 
 jobs:
   build:
@@ -13,9 +14,9 @@ jobs:
         node-version: [12.x]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
 
