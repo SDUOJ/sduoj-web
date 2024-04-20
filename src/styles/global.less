@@ -33,6 +33,12 @@ body {
   position: relative;
 }
 
+.layout-manageapp {
+  min-width: 900px;
+  height: 100%;
+  position: relative;
+}
+
 .container {
   max-width: 1500px;
   margin: 0 auto;
@@ -63,25 +69,22 @@ body {
   top: -6px;
 }
 
-.contest-type--acm {
+.contest-type--acm, .contest-type--oi, .contest-type--ioi {
   padding: 0 10px;
   color: #fff;
-  background-color: #3676B6;
   border-radius: .75rem;
+}
+
+.contest-type--acm {
+  background-color: #3676B6;
 }
 
 .contest-type--oi {
-  padding: 0 10px;
-  color: #fff;
   background-color: #f8df72;
-  border-radius: .75rem;
 }
 
 .contest-type--ioi {
-  padding: 0 10px;
-  color: #fff;
   background-color: #ea517f;
-  border-radius: .75rem;
 }
 
 .span__menu {
@@ -117,4 +120,48 @@ body {
 
 .footer-btn {
   margin-right: 5px;
+}
+
+.clickable {
+  color: #2D8cF0;
+  &:hover {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+}
+
+.hint-text {
+  color: #c5c8ce;
+}
+
+.content-table {
+  .ivu-table-header {
+    padding-right: 0;
+    th {
+      background-color: #fff;
+    }
+  }
+
+  .ivu-table::before {
+    height: 0;
+  }
+
+  .ivu-table-body {
+    padding-right: 0;
+  }
+
+  .ivu-table-tbody {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    border-spacing: 0;
+  }
+
+  .ivu-table-row-hover td {
+    background-color: #fbfcfc;
+  }
+
+  .name {
+    float: left;
+  }
 }

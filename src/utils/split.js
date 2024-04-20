@@ -8,8 +8,6 @@
  *      https://www.gnu.org/licenses/agpl-3.0.en.html
  */
 
-import Page from './page';
-import Websocket from './websocket';
-import Excel from './excel';
-
-export { Page, Websocket, Excel };
+export const split = function (str, splitter) {
+  return str.split(splitter).filter(o => o && o.trim());
+}

@@ -15,11 +15,11 @@
         <div style="margin-bottom: 15px">
           <span class="title">{{ contest.contestTitle }}</span>
           <span class="contest__subtitle">{{ contest.source }}</span>
-          <template v-if="contestOpenness === CONTEST_OPENNESS.PRIVATE">
+          <template v-if="contestOpenness === CONTEST_OPENNESS.PRIVATE.title">
             <Icon type="ios-unlock" color="#d9534f" size="19" v-if="hasParticipatedIn"/>
             <Icon type="md-lock" color="#d9534f" size="19" v-else />
           </template>
-          <template v-else-if="contestOpenness === CONTEST_OPENNESS.PROTECTED">
+          <template v-else-if="contestOpenness === CONTEST_OPENNESS.PROTECTED.title">
             <Icon type="ios-unlock" color="orange" size="19" v-if="hasParticipatedIn"/>
             <Icon type="md-lock" color="orange" size="19" v-else/>
           </template>
@@ -41,7 +41,7 @@
               <Icon type="ios-people-outline"/>
               {{ contest.participantNum }}
             </li>
-            <li v-if="contestOpenness !== CONTEST_OPENNESS.PRIVATE || hasParticipatedIn">
+            <li v-if="contestOpenness !== CONTEST_OPENNESS.PRIVATE.title || hasParticipatedIn">
               <div class="hover-background" @click="contestSettingsModal=true">
                 <Icon type="md-settings" :size="20"/>
               </div>
@@ -59,7 +59,7 @@
         }">
           <span class="span__menu">Overview</span>
         </MenuItem>
-        <template v-if="contestStarted && ($store.getters['contest/hasParticipatedIn'] || contestOpenness === CONTEST_OPENNESS.PROTECTED)">
+        <template v-if="contestStarted && ($store.getters['contest/hasParticipatedIn'] || contestOpenness === CONTEST_OPENNESS.PROTECTED.title)">
           <MenuItem name="problem" :to="{
             name: 'contest-problem',
             params: { problemCode: '1' }

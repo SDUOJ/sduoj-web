@@ -21,7 +21,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     copyright: '',
-    now: moment()
+    now: moment(),
+    pathComponents: []
   },
   mutations: {
     updateCopyright: function(state, payload) {

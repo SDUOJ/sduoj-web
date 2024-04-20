@@ -47,7 +47,7 @@
           </div>
         </template>
         <template v-else>
-          <div class="btn__clickable--apply" @click="handleJoin" v-if="group.status === GROUP_STATUS_TYPE.APPLYING">
+          <div class="btn__clickable--apply" @click="handleJoin" v-if="group.status === GROUP_STATUS_TYPE.APPLIED">
             <Row type="flex" align="middle">
               <Col span="14">
                 <span :class="`btn-font__${size}`">Applying</span>

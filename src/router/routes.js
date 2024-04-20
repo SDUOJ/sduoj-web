@@ -119,6 +119,43 @@ const routes = [
     path: '/thirdPartyLogin',
     component: () => import('@/views/third-party/ThirdPartyLogin')
   },
+  /* 管理端 */
+  {
+    path: '/manage',
+    redirect: '/manage/user'
+  },
+  {
+    path: '/manage/user',
+    name: 'manageuser',
+    component: () => import('@/views/manage/user/UserView'),
+    meta: { title: '用户' }
+  },
+  {
+    path: '/manage/problem',
+    name: 'manageproblem',
+    component: () => import('@/views/manage/problem/ProblemListView'),
+    meta: { title: '题库' }
+  },
+  {
+    path: '/manage/contest',
+    name: 'managecontest',
+    component: () => import('@/views/manage/contest/ContestListView')
+  },
+  {
+    path: '/manage/template',
+    name: 'managetemplate',
+    component: () => import('@/views/manage/template/JudgeTemplateView')
+  },
+  {
+    path: '/manage/group',
+    name: 'managegroup',
+    component: () => import('@/views/manage/group/GroupListView')
+  },
+  {
+    path: '/manage/util',
+    name: 'manageutil',
+    component: () => import('@/views/manage/util-information/UtilView')
+  },
   {
     path: '*',
     name: '404',

@@ -9,7 +9,7 @@
  -->
 
 <template>
-  <div :class="{ 'limit': maxHeight }">
+  <div :class="{ 'limit': maxHeight, 'codeEditor-box': !maxHeight }">
     <textarea ref="editor" class="codeEditor" />
   </div>
 </template>
@@ -17,6 +17,8 @@
 <script>
 import CodeMirror from 'codemirror'
 import 'codemirror/lib/codemirror.css';
+import 'codemirror/mode/javascript/javascript';
+import 'codemirror/mode/shell/shell';
 import 'codemirror/mode/clike/clike';
 import 'codemirror/mode/sql/sql';
 import 'codemirror/mode/python/python';
@@ -39,6 +41,7 @@ export default {
     return {
       editor: null,
       cmOptions: {
+        mode: 'application/json',
         cursorHeight: 1,
         tabSize: 2,
         smartIndent: true,        // 是否智能缩进
@@ -90,6 +93,13 @@ export default {
 </script>
 
 <style lang="less" scoped>
+
+.codeEditor-box {
+  border-radius: 4px;
+  border: 1px solid #dcdee2;
+  padding: 1px;
+}
+
 .limit /deep/ .CodeMirror {
   height: auto;
   max-height: 200px;

@@ -59,13 +59,13 @@ const getters = {
     return state.contest.features.openness;
   },
   publicContest: (state, getters) => {
-    return getters.contestOpenness === CONTEST_OPENNESS.PUBLIC;
+    return getters.contestOpenness === CONTEST_OPENNESS.PUBLIC.title;
   },
   protectedContest: (state, getters) => {
-    return getters.contestOpenness === CONTEST_OPENNESS.PROTECTED;
+    return getters.contestOpenness === CONTEST_OPENNESS.PROTECTED.title;
   },
   privateContest: (state, getters) => {
-    return getters.contestOpenness === CONTEST_OPENNESS.PRIVATE;
+    return getters.contestOpenness === CONTEST_OPENNESS.PRIVATE.title;
   },
   contestMode: state => {
     return state.contest.features.mode;
@@ -315,7 +315,7 @@ const actions = {
         resolve(contest);
         commit('setContest', { contest });
         const contestStatus = this.getters['contest/contestStatus'];
-        const showRank = !(this.getters['contest/contestOpenness'] === CONTEST_OPENNESS.PRIVATE && !this.getters['contest/hasParticipatedIn']);
+        const showRank = !(this.getters['contest/contestOpenness'] === CONTEST_OPENNESS.PRIVATE.title && !this.getters['contest/hasParticipatedIn']);
         if (contestStatus === CONTEST_STATUS.RUNNING) {
           dispatch('getQuestions');
           if (showRank) {

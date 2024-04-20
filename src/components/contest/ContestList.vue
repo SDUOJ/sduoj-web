@@ -37,11 +37,11 @@
             >
               <a :href="href" @click="navigate" class="contest__title">{{ contest.contestTitle }}</a>
             </router-link>
-            <template v-if="contest.features.openness === CONTEST_OPENNESS.PRIVATE">
+            <template v-if="contest.features.openness === CONTEST_OPENNESS.PRIVATE.title">
               <Icon type="ios-unlock" color="#d9534f" size="19" v-if="participatedContest.includes(contest.contestId)"/>
               <Icon type="md-lock" color="#d9534f" size="19" v-else/>
             </template>
-            <template v-else-if="contest.features.openness === CONTEST_OPENNESS.PROTECTED">
+            <template v-else-if="contest.features.openness === CONTEST_OPENNESS.PROTECTED.title">
               <Icon type="ios-unlock" color="orange" size="19" v-if="participatedContest.includes(contest.contestId)"/>
               <Icon type="md-lock" color="orange" size="19" v-else/>
             </template>

@@ -10,6 +10,7 @@
 
 import Vue from 'vue';
 import App from './App.vue';
+import ManageApp from './ManageApp.vue';
 import router from './router';
 import store from './store';
 
@@ -40,5 +41,8 @@ Vue.directive('format', {
 new Vue({
   router,
   store,
-  render: h => h(App)
+  render: h => {
+    const isManage = window.location.pathname.startsWith('/manage');
+    return h(isManage ? ManageApp : App);
+  }
 }).$mount('#app');

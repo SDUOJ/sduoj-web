@@ -15,9 +15,20 @@ export const CONTEST_STATUS = {
 };
 
 export const CONTEST_OPENNESS = {
-  PUBLIC: 'public',
-  PROTECTED: 'protected',
-  PRIVATE: 'private'
+  PUBLIC: {
+    title: 'public',
+    hint: 'Public: Anyone can participate in'
+  },
+  PROTECTED: {
+    title: 'protected',
+    hint: 'Protected: Problems are public but password is needed for submissions',
+    lockColor: 'orange'
+  },
+  PRIVATE: {
+    title: 'private',
+    hint: 'Private: Password is needed for both problems and submissions',
+    lockColor: '#d9534f'
+  }
 };
 
 export const CONTEST_MODE = {
@@ -148,7 +159,7 @@ export const JUDGE_RESULT = {
 
 export const JUDGE_TEMPLATE_TYPE = {
   IO: 0,
-  SPJ: 1,
+  SPJ: 1, // deprecated
   ADVANCED: 2
 }
 
@@ -194,9 +205,111 @@ export const GROUP_OPENNESS_TYPE = {
   PRIVATE: 2
 };
 
+export const GROUP_OPENNESS = {
+  [GROUP_OPENNESS_TYPE.PUBLIC]: {
+    title: 'Public',
+    description: 'Anybody can join in'
+  },
+  [GROUP_OPENNESS_TYPE.PROTECTED]: {
+    title: 'Apply',
+    description: 'Need the administrator audit'
+  },
+  [GROUP_OPENNESS_TYPE.PRIVATE]: {
+    title: 'Private',
+    description: 'Nobody can join in'
+  }
+}
+
 export const GROUP_STATUS_TYPE = {
   NONE: 0,
-  APPLYING: 1,
+  APPLIED: 1,
   JOINED: 2,
   REJECTED: 3
 };
+
+export const JUDGE_TEMPLATE_PROPERTY = {
+  [JUDGE_TEMPLATE_TYPE.IO]: {
+    type: 0,
+    name: 'IO',
+    color: 'blue',
+    zipFile: false
+  },
+  [JUDGE_TEMPLATE_TYPE.SPJ]: {
+    type: 1,
+    name: 'SPJ',
+    color: 'gold',
+    zipFile: true
+  },
+  [JUDGE_TEMPLATE_TYPE.ADVANCED]: {
+    type: 2,
+    name: 'Advanced',
+    color: 'purple',
+    zipFile: true
+  }
+}
+
+export const CONTEST_PROBLEM_STATUS = {
+  INIT: 0,
+  READY: 1,
+  FAILED: 2
+};
+
+export const NEWLINE_CONVERT_INDEX = {
+  DEFAULT: '',
+  DOS2UNIX: 'dos2unix',
+  UNIX2DOS: 'unix2dos'
+};
+
+export const NEWLINE_CONVERT = {
+  [NEWLINE_CONVERT_INDEX.DOS2UNIX]: {
+    name: NEWLINE_CONVERT_INDEX.DOS2UNIX,
+    description: 'Convert DOS(CR-LF) to UNIX(LF)'
+  },
+  [NEWLINE_CONVERT_INDEX.UNIX2DOS]: {
+    name: NEWLINE_CONVERT_INDEX.UNIX2DOS,
+    description: 'Convert UNIX(LF) to DOS(CR-LF)'
+  },
+  [NEWLINE_CONVERT_INDEX.DEFAULT]: {
+    name: NEWLINE_CONVERT_INDEX.DEFAULT,
+    description: 'Do not convert'
+  }
+};
+
+export const PREDEFINED_CHECKERS = [
+  {
+    name: 'lcmp.cpp',
+    description: 'Lines, ignores whitespaces'
+  },
+  {
+    name: 'hcmp.cpp',
+    description: 'Single huge integer'
+  },
+  {
+    name: 'ncmp.cpp',
+    description: 'Single or more int64, ignores whitespaces'
+  },
+  {
+    name: 'nyesno.cpp',
+    description: 'Zero or more yes/no, case insensitive'
+  },
+  {
+    name: 'rcmp4.cpp',
+    description: 'Single or more double, max any error 1E-4'
+  },
+  {
+    name: 'rcmp6.cpp',
+    description: 'Single or more double, max any error 1E-6'
+  },
+  {
+    name: 'rcmp9.cpp',
+    description: 'Single or more double, max any error 1E-9'
+  },
+  {
+    name: 'wcmp.cpp',
+    description: 'Sequence of tokens'
+  },
+  {
+    name: 'yesno.cpp',
+    description: 'Single yes or no, case insensitive'
+  }
+];

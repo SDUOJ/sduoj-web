@@ -4,7 +4,6 @@ body {
     color: black;
     background-color: var(--background-color);
     font-family: Roboto, sans-serif;
-    padding-bottom: 4em;
 }
 
 /* menu */

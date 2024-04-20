@@ -10,7 +10,7 @@
 
 <template>
   <div class="container">
-    <div v-if="contestOpenness === CONTEST_OPENNESS.PRIVATE && !$store.getters['contest/hasParticipatedIn']">
+    <div v-if="contestOpenness === CONTEST_OPENNESS.PRIVATE.title && !$store.getters['contest/hasParticipatedIn']">
       <Form :model="participateForm" inline>
         <FormItem>
           <Input style="width: 200px;" type="password" v-model="participateForm.password" placeholder="Password">
@@ -92,7 +92,7 @@ export default {
   methods: {
     handleParticipate: function() {
       this.participateForm.contestId = this.contest.contestId;
-      if (this.contestOpenness !== CONTEST_OPENNESS.PROTECTED && !this.hasParticipatedIn) {
+      if (this.contestOpenness !== CONTEST_OPENNESS.PROTECTED.title && !this.hasParticipatedIn) {
         api.participateIn(this.participateForm)
           .then(_ => {
             this.reload();
@@ -132,7 +132,7 @@ export default {
     }
   },
   mounted: function () {
-    if (this.contestOpenness === CONTEST_OPENNESS.PUBLIC) {
+    if (this.contestOpenness === CONTEST_OPENNESS.PUBLIC.title) {
       this.handleParticipate();
     }
   }
