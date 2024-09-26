@@ -30,6 +30,11 @@
         <MenuItem name="group" :to="{ name: 'group' }">
           <span class="span__menu">Group</span>
         </MenuItem>
+        <MenuItem name="newSiteRoute">
+          <div class="new-site-route" @click="goToNewSite">
+            <span class="span__menu">New Site</span>
+          </div>
+        </MenuItem>
         <div class="navbar-user">
           <template v-if="isLogin">
             <Avatar :src="avatar"/>
@@ -100,6 +105,9 @@ export default {
     },
     toUser: function () {
       this.$router.push({ name: 'user' });
+    },
+    goToNewSite: function() {
+      window.location.href = 'https://oj.qd.sdu.edu.cn/v2/'
     }
   },
   computed: {
